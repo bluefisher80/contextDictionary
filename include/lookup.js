@@ -196,9 +196,7 @@ function event_mouseup(e) {
                 var hhitshop = doc.getElementsByTagName("dict");
                 for (var i = 0; i< hhitshop.length; i++){
                     shop =  hhitshop[i]; 
-                    WrHtml += escapeHTML( shop.getElementsByTagName("key")[0].firstChild.nodeValue);
-                    WrHtml += "<br>";
-
+                    WrHtml += '<p class="phonetic"><span> ';
 
                     for(var c = 0; c< shop.getElementsByTagName("ps").length; c++){
                         if(shop.getElementsByTagName("ps")[c].firstChild){
@@ -206,60 +204,23 @@ function event_mouseup(e) {
                             WrHtml += "&nbsp;&nbsp;&nbsp;";
                         }
                     }
-                    WrHtml += "<br>";
+
+                    WrHtml += '</span></p>';
 
                     for (var e = 0; e< shop.getElementsByTagName("pos").length; e++){
+                        WrHtml += "<p>";
                         if(shop.getElementsByTagName("pos")[e].firstChild){
                             WrHtml += escapeHTML(shop.getElementsByTagName("pos")[e].firstChild.nodeValue);
                             WrHtml += "&nbsp;&nbsp;&nbsp;";
                         }
                         WrHtml += escapeHTML(shop.getElementsByTagName("acceptation")[e].firstChild.nodeValue);
-                        WrHtml += "<br>";
+                        WrHtml += "</p>";
                      }
-    //                            WrHtml += "<br>";
-    //                            for (var f = 0; f< shop.getElementsByTagName("sent").length; f++){
-    //                                WrHtml += escapeHTML(shop.getElementsByTagName("orig")[f].firstChild.nodeValue);
-    //                                WrHtml += "<br>";
-    //                                WrHtml += escapeHTML(shop.getElementsByTagName("trans")[f].firstChild.nodeValue);
-    //                                WrHtml += "<br>";
-    //                             }
                 }
 
 
-            alert(WrHtml);
-            $("#extradef .phonetic").html("<span>" + WrHtml + "</span>");
- 
-
-                    var def = "", i;
-                    if (data.errorCode === 0) {
-                        alert(data.getXML());
-                        if (data.basic) {
-                            if (data.basic.phonetic) {
-                                def += '<p class="phonetic"><span>' + data.basic.phonetic + '</span></p>';
-                            }
-
-                            for (i in data.basic.explains) {
-                                def += "<p>" + data.basic.explains[i] + "</p>";
-                            }
-
-                            $("#haloword-content").html(def);
-
+                            $("#haloword-content").html(WrHtml);
                             pron_exist(selection.toLowerCase(), false);
-                        }
-                        else if (data.translation) {
-                            for (i in data.translation) {
-                                def += "<p>" + data.translation[i] + "</p>";
-                            }
-                            $("#haloword-content").html(def);
-                        }
-                        else {
-                            // no definition and translation
-                            $("#haloword-content").html("<p>I'm sorry, Dave.</p><p>I'm afraid I can't find that.</p>");
-                        }
-                    }
-                    else {
-                        $("#haloword-content").html("<p>I'm sorry, Dave.</p><p>I'm afraid I can't find that.</p>");
-                    }
                 },
                 error: function(data) {
                     $("#extradef").hide();
