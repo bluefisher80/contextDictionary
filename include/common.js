@@ -1,3 +1,1 @@
-const YOUDAO_API_KEYFROM = "HaloWordDictionary";
-const YOUDAO_API_KEY = "1311342268";
-var youdao_url = "http://fanyi.youdao.com/fanyiapi.do?keyfrom=" + YOUDAO_API_KEYFROM + "&key=" + YOUDAO_API_KEY + "&type=data&doctype=json&version=1.1&q=";
+var dic_url = "http://dict-co.iciba.com/api/dictionary.php?key=9A801B3C3A8D0AB5A5059C2F4B71AC50&w=";

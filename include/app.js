@@ -171,6 +171,8 @@ function query(word) {
     location.hash = word;
 }
 
+function escapeHTML(str) str.replace(/[&"<>]/g, function (m) ({ "&": "&amp;", '"': "&quot", "<": "&lt;", ">": "&gt;" })[m]);
+
 window.onhashchange = function() {
     show_def(location.hash.substring(1));
 }
@@ -232,9 +234,46 @@ function show_def(word) {
     $("#extradef .content").html("<p>loading...</p>");
 
     $.ajax({
-        url: youdao_url + word,
-        dataType: "json",
+        url: dic_url + word,
         success: function(data) {
+
+            var doc = data.getXML();
+            var shop = "null";
+            var WrHtml = "";
+            var hhitshop = doc.getElementsByTagName("dict");
+            for (var i = 0; i< hhitshop.length; i++){
+                shop =  hhitshop[i]; 
+                WrHtml += escapeHTML( shop.getElementsByTagName("key")[0].firstChild.nodeValue);
+                WrHtml += "<br>";
+
+
+                for(var c = 0; c< shop.getElementsByTagName("ps").length; c++){
+                    if(shop.getElementsByTagName("ps")[c].firstChild){
+                        WrHtml += '[' + escapeHTML(shop.getElementsByTagName("ps")[c].firstChild.nodeValue) + ']';
+                        WrHtml += "&nbsp;&nbsp;&nbsp;";
+                    }
+                }
+                WrHtml += "<br>";
+
+                for (var e = 0; e< shop.getElementsByTagName("pos").length; e++){
+                    if(shop.getElementsByTagName("pos")[e].firstChild){
+                        WrHtml += escapeHTML(shop.getElementsByTagName("pos")[e].firstChild.nodeValue);
+                        WrHtml += "&nbsp;&nbsp;&nbsp;";
+                    }
+                    WrHtml += escapeHTML(shop.getElementsByTagName("acceptation")[e].firstChild.nodeValue);
+                    WrHtml += "<br>";
+                 }
+//                            WrHtml += "<br>";
+//                            for (var f = 0; f< shop.getElementsByTagName("sent").length; f++){
+//                                WrHtml += escapeHTML(shop.getElementsByTagName("orig")[f].firstChild.nodeValue);
+//                                WrHtml += "<br>";
+//                                WrHtml += escapeHTML(shop.getElementsByTagName("trans")[f].firstChild.nodeValue);
+//                                WrHtml += "<br>";
+//                             }
+            }
+
+
+            $("#extradef .phonetic").html("<span>" + WrHtml + "</span>");
             var def = "", i;
             if (data.errorCode === 0) {
                 $("#extradef .from").html("Youdao");

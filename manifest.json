@@ -1,9 +1,4 @@
 {
-   "app": {
-      "launch": {
-         "local_path": "main.html"
-      }
-   },
    "background": {
       "page": "background.html"
    },

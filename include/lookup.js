@@ -2,6 +2,10 @@ function is_chinese(word) {
     return (/^[\u4e00-\u9fa5]+$/g).test(word);
 }
 
+//function escapeHTML(str) {str.replace(/[&"<>]/g, function (m) ({ "&": "&amp;", '"': "&quot", "<": "&lt;", ">": "&gt;" })[m]);}
+
+function escapeHTML(str){return str;}
+
 function is_english(word) {
     return (/^[a-z\sA-Z]+$/g).test(word);
 }
@@ -183,11 +187,52 @@ function event_mouseup(e) {
             $("#haloword-lookup").show();
 
             $.ajax({
-                url: youdao_url + selection,
-                dataType: "json",
+                url: dic_url + selection,
                 success: function(data) {
+                
+                var doc = data;
+                var shop = "null";
+                var WrHtml = "";
+                var hhitshop = doc.getElementsByTagName("dict");
+                for (var i = 0; i< hhitshop.length; i++){
+                    shop =  hhitshop[i]; 
+                    WrHtml += escapeHTML( shop.getElementsByTagName("key")[0].firstChild.nodeValue);
+                    WrHtml += "<br>";
+
+
+                    for(var c = 0; c< shop.getElementsByTagName("ps").length; c++){
+                        if(shop.getElementsByTagName("ps")[c].firstChild){
+                            WrHtml += '[' + escapeHTML(shop.getElementsByTagName("ps")[c].firstChild.nodeValue) + ']';
+                            WrHtml += "&nbsp;&nbsp;&nbsp;";
+                        }
+                    }
+                    WrHtml += "<br>";
+
+                    for (var e = 0; e< shop.getElementsByTagName("pos").length; e++){
+                        if(shop.getElementsByTagName("pos")[e].firstChild){
+                            WrHtml += escapeHTML(shop.getElementsByTagName("pos")[e].firstChild.nodeValue);
+                            WrHtml += "&nbsp;&nbsp;&nbsp;";
+                        }
+                        WrHtml += escapeHTML(shop.getElementsByTagName("acceptation")[e].firstChild.nodeValue);
+                        WrHtml += "<br>";
+                     }
+    //                            WrHtml += "<br>";
+    //                            for (var f = 0; f< shop.getElementsByTagName("sent").length; f++){
+    //                                WrHtml += escapeHTML(shop.getElementsByTagName("orig")[f].firstChild.nodeValue);
+    //                                WrHtml += "<br>";
+    //                                WrHtml += escapeHTML(shop.getElementsByTagName("trans")[f].firstChild.nodeValue);
+    //                                WrHtml += "<br>";
+    //                             }
+                }
+
+
+            alert(WrHtml);
+            $("#extradef .phonetic").html("<span>" + WrHtml + "</span>");
+ 
+
                     var def = "", i;
                     if (data.errorCode === 0) {
+                        alert(data.getXML());
                         if (data.basic) {
                             if (data.basic.phonetic) {
                                 def += '<p class="phonetic"><span>' + data.basic.phonetic + '</span></p>';
