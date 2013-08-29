@@ -28,11 +28,7 @@ var haloword_html = '<div id="haloword-lookup" class="ui-widget-content">\
 <div id="haloword-title">\
 <span id="haloword-word"></span>\
 <a herf="#" id="haloword-pron" class="haloword-button" title="发音"></a>\
-<audio id="haloword-audio"></audio>\
 <div id="haloword-control-container">\
-<a herf="#" id="haloword-add" class="haloword-button" title="加入单词表"></a>\
-<a herf="#" id="haloword-remove" class="haloword-button" title="移出单词表"></a>\
-<a href="#" id="haloword-open" class="haloword-button" title="查看单词详细释义" target="_blank"></a>\
 <a herf="#" id="haloword-close" class="haloword-button" title="关闭查询窗"></a>\
 </div>\
 <br style="clear: both;" />\
@@ -63,8 +59,6 @@ function event_click(event) {
         var target = $(event.target);
         if (target.attr("id") != "haloword-lookup" && !target.parents("#haloword-lookup")[0]) {
             $("#haloword-lookup").hide();
-            $("#haloword-remove").hide();
-            $("#haloword-add").show();
             haloword_opened = false;
         }
     }
@@ -77,11 +71,7 @@ var style_content = "<style>\
 #haloword-open { background: url(" + icon_url + ") -94px -17px; }\
 #haloword-open:hover { background: url(" + icon_url + ") -111px -17px; }\
 #haloword-close { background: url(" + icon_url + ") -94px 0; }\
-#haloword-close:hover { background: url(" + icon_url + ") -111px 0; }\
-#haloword-add { background: url(" + icon_url + ") -94px -51px; }\
-#haloword-add:hover { background: url(" + icon_url + ") -111px -51px; }\
-#haloword-remove { background: url(" + icon_url + ") -94px -68px; }\
-#haloword-remove:hover { background: url(" + icon_url + ") -111px -68px; }</style>";
+#haloword-close:hover { background: url(" + icon_url + ") -111px 0; }</style>";
 if ($("head")[0]) {
     $($("head")[0]).append(style_content);
 }
@@ -90,39 +80,6 @@ else {
 }
 
 $("#haloword-lookup").draggable({ handle: "#haloword-title" });
-
-$("#haloword-pron").click(function() {
-    // HACK: fix Chrome won't play second time
-    // unfortunately this doesn't work properly. more: crbug.com/129165.
-    //$("#haloword-audio")[0].load();
-    $("#haloword-audio")[0].play();
-});
-
-function pron_exist(word, is_upper) {
-    /* two URLs:
-    http://www.gstatic.com/dictionary/static/sounds/de/0/halo.mp3
-    http://www.gstatic.com/dictionary/static/sounds/de/0/!Capella.mp3
-    */
-    var pron_url = "http://www.gstatic.com/dictionary/static/sounds/de/0/" + word + ".mp3";
-    if (is_english(word) || is_upper) {
-        $.ajax({
-            url: pron_url,
-            timeout: 3000,
-            success: function() {
-                var current_word = $("#haloword-word").html().toLowerCase();
-                if (word == current_word || word.substring(1).toLowerCase() == current_word) {
-                    $("#haloword-audio").attr("src", pron_url);
-                    $("#haloword-pron").show();
-                }
-            },
-            error: function(xhr, d, e) {
-                if (!is_upper) {
-                    pron_exist('!' + word[0].toUpperCase() + word.substring(1), true);
-                }
-            }
-        });
-    }
-}
 
 function event_mouseup(e) {
     // chrome.storage.local.set({'disable_querybox': true})
@@ -152,34 +109,8 @@ function event_mouseup(e) {
             $("#haloword-open").attr("href", chrome.extension.getURL("main.html#" + selection));
             $("#haloword-close").click(function() {
                 $("#haloword-lookup").hide();
-                $("#haloword-remove").hide();
-                $("#haloword-add").show();
                 haloword_opened = false;
                 return false;
-            });
-
-            $("#haloword-remove").hide();
-
-            chrome.extension.sendMessage({method: "find", word: selection}, function(response) {
-                if (response.exist) {
-                    $("#haloword-add").hide();
-                    $("#haloword-remove").show();
-                }
-                else {
-                    $("#haloword-remove").hide();
-                    $("#haloword-add").show();
-                }
-            });
-
-            $("#haloword-add").click(function() {
-                $("#haloword-add").hide();
-                $("#haloword-remove").show();
-                chrome.extension.sendMessage({method: "add", word: selection});
-            });
-            $("#haloword-remove").click(function() {
-                $("#haloword-remove").hide();
-                $("#haloword-add").show();
-                chrome.extension.sendMessage({method: "remove", word: selection});
             });
 
             $("#haloword-pron").hide();
@@ -187,7 +118,7 @@ function event_mouseup(e) {
             $("#haloword-lookup").show();
 
             $.ajax({
-                url: dic_url + selection,
+                url: dic_url + selection.toLowerCase(),
                 success: function(data) {
                 
                 var doc = data;
@@ -220,7 +151,6 @@ function event_mouseup(e) {
 
 
                             $("#haloword-content").html(WrHtml);
-                            pron_exist(selection.toLowerCase(), false);
                 },
                 error: function(data) {
                     $("#extradef").hide();
