@@ -68,8 +68,6 @@ var icon_url = chrome.extension.getURL("img/icon.svg");
 var style_content = "<style>\
 #haloword-pron { background: url(" + icon_url + ") -94px -34px; }\
 #haloword-pron:hover { background: url(" + icon_url + ") -111px -34px; }\
-#haloword-open { background: url(" + icon_url + ") -94px -17px; }\
-#haloword-open:hover { background: url(" + icon_url + ") -111px -17px; }\
 #haloword-close { background: url(" + icon_url + ") -94px 0; }\
 #haloword-close:hover { background: url(" + icon_url + ") -111px 0; }</style>";
 if ($("head")[0]) {
@@ -82,7 +80,6 @@ else {
 $("#haloword-lookup").draggable({ handle: "#haloword-title" });
 
 function event_mouseup(e) {
-    // chrome.storage.local.set({'disable_querybox': true})
     chrome.storage.local.get('disable_querybox', function(ret) {
         if (!ret.disable_querybox) {
             if (!e.ctrlKey && !e.metaKey) {
@@ -106,7 +103,6 @@ function event_mouseup(e) {
 
             $("#haloword-word").html(selection);
             $("#haloword-lookup").attr("style", "left: " + e.pageX + "px;" + "top: " + e.pageY + "px;");
-            $("#haloword-open").attr("href", chrome.extension.getURL("main.html#" + selection));
             $("#haloword-close").click(function() {
                 $("#haloword-lookup").hide();
                 haloword_opened = false;
