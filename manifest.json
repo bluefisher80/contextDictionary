@@ -1,8 +1,4 @@
 {
-   "background": {
-      "page": "background.html",
-      "persistent": false
-   },
    "content_scripts": [ {
       "all_frames": true,
       "css": [ "style/lookup.css" ],
