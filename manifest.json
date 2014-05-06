@@ -2,7 +2,7 @@
    "content_scripts": [ {
       "all_frames": true,
       "css": [ "style/lookup.css" ],
-      "js": [ "include/jquery.min.js", "include/jquery-ui.min.js", "include/common.js", "include/lookup.js" ],
+      "js": [ "include/jquery.min.js", "include/jquery-ui.min.js", "include/common.js", "include/lookup.js", "include/selection.js" ],
       "matches": [ "\u003Call_urls\u003E" ]
    } ],
    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
@@ -14,12 +14,11 @@
       "32": "icon32.png",
       "48": "icon48.png"
    },
-   "key": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDLMAo4zbngUrzbWJMViY5fMSB/pTpgvP3Vtmt4OYTiTWVZHIjFxU/evfS5jMHQ4eaHgaKdQ2tVlc2muuSftXsfzlY5c+/PCbBzEm8NCEneSt894nz02D53WndJ0GPqa3mP3H9F8RGn18pPHrHgVoOdfz8K8kKCv3CVMQH3k4vRgQIDAQAB",
    "manifest_version": 2,
    "minimum_chrome_version": "20",
    "name": "Context Dictionary Lookup",
    "permissions": [ "\u003Call_urls\u003E", "unlimitedStorage", "storage", "contextMenus", "tabs" ],
    "update_url": "http://clients2.google.com/service/update2/crx",
-   "version": "0.1",
+   "version": "2.1",
    "web_accessible_resources": [ "img/icon.svg" ]
 }
