@@ -80,25 +80,40 @@ else {
 $("#haloword-lookup").draggable({ handle: "#haloword-title" });
 
 function event_mouseup(e) {
+    console.log("final lookup method, the event_mouseup method");
     chrome.storage.local.get('disable_querybox', function(ret) {
         if (!ret.disable_querybox) {
-            if (!e.ctrlKey && !e.metaKey) {
+            if ((!e.ctrlKey && !e.metaKey) && !theSelection) {
+                console.log("keys detection");
+                console.log("the Long click word is " + theSelection);
                 return;
             }
             var selection = $.trim(window.getSelection());
             if (!selection) {
+                console.log("Debug 1");
                 $("iframe").each(function() {
                     if (this.contentDocument) {
+                        console.log("Debug 2");
                         selection = $.trim(this.contentDocument.getSelection());
                     }
                     if (selection) {
+                        console.log("Debug 3");
                         return false;
                     }
                 });
             }
-            var lang = valid_word(selection);
-            if (!lang) {
+
+            console.log("check the original word selection" + selection);
+            var lang1 = valid_word(selection);
+            var lang2 = valid_word(theSelection);
+            if (!lang1 && !lang2) {
+                console.log("word detection");
                 return;
+            }
+
+
+            if(!selection){
+                selection = theSelection;
             }
 
             $("#haloword-word").html(selection);
@@ -145,8 +160,8 @@ function event_mouseup(e) {
                      }
                 }
 
+                $("#haloword-content").html(WrHtml);
 
-                            $("#haloword-content").html(WrHtml);
                 },
                 error: function(data) {
                     $("#extradef").hide();

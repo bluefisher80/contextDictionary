@@ -129,7 +129,8 @@ function onMouseDown(e) {
 
 
 function lookupWord(){
-    self.port.emit("lookup",theSelection,window.navigator.language);
+    //self.port.emit("lookup",theSelection,window.navigator.language);
+    event_mouseup(initEvent);
     //self.port.emit("lookup",theSelection,'ja');
 }
 
