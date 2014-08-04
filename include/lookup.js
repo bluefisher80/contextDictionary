@@ -55,6 +55,7 @@ $("body").mouseup(event_mouseup);
 $("body").click(event_click);
 
 function event_click(event) {
+    console.log("when this method triggered");
     if (haloword_opened) {
         var target = $(event.target);
         if (target.attr("id") != "haloword-lookup" && !target.parents("#haloword-lookup")[0]) {
@@ -83,7 +84,7 @@ function event_mouseup(e) {
     console.log("final lookup method, the event_mouseup method");
     chrome.storage.local.get('disable_querybox', function(ret) {
         if (!ret.disable_querybox) {
-            if ((!e.ctrlKey && !e.metaKey) && !theSelection) {
+            if ((!e.ctrlKey && !e.metaKey) && !isLongPressing) {
                 console.log("keys detection");
                 console.log("the Long click word is " + theSelection);
                 return;
