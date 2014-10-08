@@ -3,7 +3,7 @@
 	position: absolute;
 	border: 2px solid #95CBF9;
 	padding: 3px 3px 5px 3px;
-	width: 260px;
+	width: 310px;
 	font-family: "Helvetica Neue", Helvetica, "Liberation Sans", Arial, "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
 
 	/* avoid affections */
@@ -28,7 +28,7 @@
 	cursor: move;
 
 	/* avoid affections */
-	width: 252px;
+	width: 302px;
 }
 #haloword-word {
 	float: left;
