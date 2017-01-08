@@ -83,13 +83,20 @@ $("#haloword-lookup").draggable({ handle: "#haloword-title" });
 function event_mouseup(e) {
     console.log("final lookup method, the event_mouseup method");
     chrome.storage.local.get('disable_querybox', function(ret) {
+
+        console.log("disable_querybox must be false now: " + ret.disable_querybox);
         if (!ret.disable_querybox) {
-            if ((!e.ctrlKey && !e.metaKey) && !isLongPressing) {
-                console.log("keys detection");
+
+            //if ((!e.ctrlKey && !e.metaKey) && !isLongPressing) {
+            if (!isLongPressing &&  !(e.ctrlKey || e.metaKey) ) {
+                console.log("keys detection,but user random click without modify key down case, ignore it.");
                 console.log("the Long click word is " + theSelection);
                 return;
             }
+
             var selection = $.trim(window.getSelection());
+//comment out for http://stackoverflow.com/questions/25098021/securityerror-blocked-a-frame-with-origin-from-accessing-a-cross-origin-frame
+/**
             if (!selection) {
                 console.log("Debug 1");
                 $("iframe").each(function() {
@@ -103,7 +110,7 @@ function event_mouseup(e) {
                     }
                 });
             }
-
+*/
             console.log("check the original word selection" + selection);
             var lang1 = valid_word(selection);
             var lang2 = valid_word(theSelection);
@@ -128,6 +135,13 @@ function event_mouseup(e) {
             $("#haloword-pron").hide();
             $("#haloword-content").html("<p>Loading definitions...</p>");
             $("#haloword-lookup").show();
+            
+            console.log(window.document.URL);
+            $.ajax({
+                    url: bank_url + selection + "&pageurl=" + window.document.URL + "&context=" + "this is the context",
+                    success: function(data){}
+                    }
+                  );
 
             $.ajax({
                 url: dic_url + selection.toLowerCase(),

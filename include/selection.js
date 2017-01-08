@@ -120,6 +120,7 @@ function onMouseDown(e) {
 
     theSelection = findTargetWord(startOffset, rangeParentNode);
     console.log("In the onMouseDown handler show the original event range offset " + startOffset);
+    console.log("In the onMouseDown handler show the window URL:" + window.document.URL);
     console.log("In the onMouseDown handler show the original event content " + rangeParentNode.textContent);
     
     // launch a timer to detect "long press"
@@ -136,8 +137,8 @@ function lookupWord(){
 
 function findTargetWord(startOffset, parentNode){
 
-console.log("Enter find target word logic");
-table = [];
+    console.log("Enter find target word logic");
+    table = [];
     
     console.log("Enter find target word logic 1");
     //disalbe this method for just right now
