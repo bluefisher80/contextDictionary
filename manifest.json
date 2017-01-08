@@ -20,5 +20,8 @@
    "permissions": [ "\u003Call_urls\u003E", "unlimitedStorage", "storage", "contextMenus", "tabs" ],
    "update_url": "http://clients2.google.com/service/update2/crx",
    "version": "2.2",
-   "web_accessible_resources": [ "img/icon.svg" ]
+   "web_accessible_resources": [ "img/icon.svg" ],
+   "background":{
+       "scripts": ["background.js"]
+   } 
 }
