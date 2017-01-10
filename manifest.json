@@ -2,7 +2,7 @@
    "content_scripts": [ {
       "all_frames": true,
       "css": [ "style/lookup.css" ],
-      "js": [ "include/jquery.min.js", "include/jquery-ui.min.js", "include/common.js", "include/lookup.js", "include/selection.js" ],
+      "js": [ "include/jquery.min.js", "include/jquery-ui.min.js", "include/lookup.js", "include/selection.js" ],
       "matches": [ "\u003Call_urls\u003E" ]
    } ],
    "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
@@ -22,6 +22,6 @@
    "version": "2.2",
    "web_accessible_resources": [ "img/icon.svg" ],
    "background":{
-       "scripts": ["background.js"]
+       "scripts": ["background.js","common.js"]
    } 
 }
