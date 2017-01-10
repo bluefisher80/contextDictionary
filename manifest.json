@@ -22,6 +22,6 @@
    "version": "2.2",
    "web_accessible_resources": [ "img/icon.svg" ],
    "background":{
-       "scripts": ["background.js","common.js"]
+       "scripts": ["background.js","common.js","include/jquery.min.js"]
    } 
 }

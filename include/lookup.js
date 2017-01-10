@@ -1,11 +1,6 @@
 function is_chinese(word) {
     return (/^[\u4e00-\u9fa5]+$/g).test(word);
 }
-
-//function escapeHTML(str) {str.replace(/[&"<>]/g, function (m) ({ "&": "&amp;", '"': "&quot", "<": "&lt;", ">": "&gt;" })[m]);}
-
-function escapeHTML(str){return str;}
-
 function is_english(word) {
     return (/^[a-z\sA-Z]+$/g).test(word);
 }
@@ -123,10 +118,13 @@ function event_mouseup(e) {
             if(!selection){
                 selection = theSelection;
             }
-
-            chrome.runtime.sendMessage({greeting: "hello"}, function(response) {
-                  console.log(response.farewell);
+            var dicResult ;
+            chrome.runtime.sendMessage({selection: selection}, function(response) {
+                console.log("page message call back method being invoked");
+                 dicResult = response.farewell;
             });
+
+            console.log("The page script dic query result is " + dicResult);
 
             $("#haloword-word").html(selection);
             $("#haloword-lookup").attr("style", "left: " + e.pageX + "px;" + "top: " + e.pageY + "px;");
@@ -138,9 +136,9 @@ function event_mouseup(e) {
 
             $("#haloword-pron").hide();
             $("#haloword-content").html("<p>Loading definitions...</p>");
+            $("#haloword-content").html(dicResult);
             $("#haloword-lookup").show();
             
-            $("#haloword-content").html(WrHtml);
             // HACK: fix dict window not openable
             setTimeout(function() {
                 haloword_opened = true;
@@ -148,4 +146,13 @@ function event_mouseup(e) {
         }
     })
 }
+
+
+chrome.runtime.onMessage.addListener(
+    function(request,sender,sendResponse){
+            console.log("Get the dic message in the page script");
+            $("#haloword-content").html(request.dicMessage);
+            $("#haloword-lookup").show();
+        }
+       );
 
