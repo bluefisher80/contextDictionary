@@ -6,12 +6,6 @@ function escapeHTML(str){return str;}
 var WrHtml = "";
 var originalTabId ;
 
-function sendDicMessage(){
-    chrome.tabs.sendMessage(originalTabId,{dicMessage:WrHtml},function(response){});
-    console.log("Sending out the dic message from the backgroud page");
-}
-
-
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
       originalTabId = sender.tab.id;
@@ -19,11 +13,8 @@ chrome.runtime.onMessage.addListener(
       console.log(sender.tab ?
             "from a content script:" + sender.tab.url :
             "from the extension");
-      console.log("Start the xhr ajax method");
-
-      backwork(request.selection , "url" , "context");
-      sendResponse({farewell: "<strong>Win Win</strong>"});//useless
-      return true; //async or sync ? 
+      console.log("Start the xhr ajax query request to dic engine");
+      backwork(request.selection , "url","context");
   });
 
 
@@ -80,7 +71,7 @@ function backwork(selection,pageUrl,context){
                  }
             }
 
-        sendDicMessage();
+        chrome.tabs.sendMessage(originalTabId,{dicMessage:WrHtml});
      },
      error: function(data) {
             $("#extradef").hide();

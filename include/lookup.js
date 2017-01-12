@@ -118,13 +118,7 @@ function event_mouseup(e) {
             if(!selection){
                 selection = theSelection;
             }
-            var dicResult ;
-            chrome.runtime.sendMessage({selection: selection}, function(response) {
-                console.log("page message call back method being invoked");
-                 dicResult = response.farewell;
-            });
-
-            console.log("The page script dic query result is " + dicResult);
+            chrome.runtime.sendMessage({selection: selection});
 
             $("#haloword-word").html(selection);
             $("#haloword-lookup").attr("style", "left: " + e.pageX + "px;" + "top: " + e.pageY + "px;");
@@ -136,8 +130,7 @@ function event_mouseup(e) {
 
             $("#haloword-pron").hide();
             $("#haloword-content").html("<p>Loading definitions...</p>");
-            $("#haloword-content").html(dicResult);
-            $("#haloword-lookup").show();
+            //$("#haloword-lookup").show();
             
             // HACK: fix dict window not openable
             setTimeout(function() {
