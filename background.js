@@ -15,6 +15,7 @@ chrome.runtime.onMessage.addListener(
             "from the extension");
       console.log("Start the xhr ajax query request to dic engine");
       backwork(request.selection , "url","context");
+      sendResponse({"result" : WrHtml});
   });
 
 
@@ -29,6 +30,7 @@ function backwork(selection,pageUrl,context){
           );
 
     $.ajax({
+        async: false,
         url: dic_url + selection.toLowerCase(),
         success: function(data) {
             var doc = data;

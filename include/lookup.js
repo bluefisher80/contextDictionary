@@ -29,7 +29,7 @@ var haloword_html = '<div id="haloword-lookup" class="ui-widget-content">\
 <br style="clear: both;" />\
 </div><div id="haloword-content"></div></div>';
 $("body").append(haloword_html);
-
+console.log("How many bodies in the page loading");
 // deal with Clearly
 document.addEventListener("DOMNodeInserted", function(event) {
     var element = event.target;
@@ -118,7 +118,11 @@ function event_mouseup(e) {
             if(!selection){
                 selection = theSelection;
             }
-            chrome.runtime.sendMessage({selection: selection});
+
+            var result;
+            chrome.runtime.sendMessage({selection: selection},function(response){
+                $("#haloword-content").html(response.result);
+            });
 
             $("#haloword-word").html(selection);
             $("#haloword-lookup").attr("style", "left: " + e.pageX + "px;" + "top: " + e.pageY + "px;");
@@ -130,8 +134,10 @@ function event_mouseup(e) {
 
             $("#haloword-pron").hide();
             $("#haloword-content").html("<p>Loading definitions...</p>");
-            //$("#haloword-lookup").show();
+            $("#haloword-lookup").show();
+            //
             
+            console.log("mouse up method  in the page script");
             // HACK: fix dict window not openable
             setTimeout(function() {
                 haloword_opened = true;
@@ -139,13 +145,4 @@ function event_mouseup(e) {
         }
     })
 }
-
-
-chrome.runtime.onMessage.addListener(
-    function(request,sender,sendResponse){
-            console.log("Get the dic message in the page script");
-            $("#haloword-content").html(request.dicMessage);
-            $("#haloword-lookup").show();
-        }
-       );
 
