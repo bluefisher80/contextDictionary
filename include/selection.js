@@ -1,4 +1,4 @@
-var longPressTimer, isLoading, loaded, isLongPressing, mouseDown, initEvent, selection, startOffset, rangeParentNode, theSelection;
+var longPressTimer, isLoading, loaded, isLongPressing, mouseDown, initEvent, selection, startOffset, rangeParentNode, theSelection,theURL,theContext;
 
 
 var cancelLongPress = function() {
@@ -119,6 +119,8 @@ function onMouseDown(e) {
     }
 
     theSelection = findTargetWord(startOffset, rangeParentNode);
+    theURL = window.document.URL;
+    theContext = rangeParentNode.textContent;
     console.log("In the onMouseDown handler show the original event range offset " + startOffset);
     console.log("In the onMouseDown handler show the window URL:" + window.document.URL);
     console.log("In the onMouseDown handler show the original event content " + rangeParentNode.textContent);

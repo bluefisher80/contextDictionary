@@ -120,7 +120,7 @@ function event_mouseup(e) {
             }
 
             var result;
-            chrome.runtime.sendMessage({selection: selection},function(response){
+            chrome.runtime.sendMessage({selection: selection,theURL: theURL , theContext: theContext},function(response){
                 $("#haloword-content").html(response.result);
             });
 

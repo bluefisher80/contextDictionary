@@ -14,7 +14,7 @@ chrome.runtime.onMessage.addListener(
             "from a content script:" + sender.tab.url :
             "from the extension");
       console.log("Start the xhr ajax query request to dic engine");
-      backwork(request.selection , "url","context");
+      backwork(request.selection,request.theURL,request.theContext);
       sendResponse({"result" : WrHtml});
   });
 
@@ -22,12 +22,12 @@ chrome.runtime.onMessage.addListener(
 
 function backwork(selection,pageUrl,context){
 
+    //TODO URLEncode
     $.ajax({
-            url: bank_url + selection + "&pageurl=" + 
-                pageUrl + "&context=" + "this is the context",
-            success: function(data){}
-            }
-          );
+        url: bank_url + selection + "&pageurl=" + 
+              pageUrl + "&context=" + context ,
+        success: function(data){}
+    });
 
     $.ajax({
         async: false,
