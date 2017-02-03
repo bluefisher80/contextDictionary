@@ -22,7 +22,7 @@ var haloword_opened = false;
 var haloword_html = '<div id="haloword-lookup" class="ui-widget-content">\
 <div id="haloword-title">\
 <span id="haloword-word"></span>\
-<a herf="http://www.context-dictionary.com/list/" id="haloword-pron" class="haloword-button" target="_blank">history</a>\
+<a href="http://www.context-dictionary.com/list/" id="haloword-pron" class="haloword-button" target="_blank">@history</a>\
 <div id="haloword-control-container">\
 <a herf="#" id="haloword-close" class="haloword-button" title="关闭查询窗"></a>\
 </div>\
@@ -61,9 +61,9 @@ function event_click(event) {
 }
 
 var icon_url = chrome.extension.getURL("img/icon.svg");
+var history_icon_url = chrome.extension.getURL("img/history.png");
 var style_content = "<style>\
-#haloword-pron { background: url(" + icon_url + ") -94px -34px; }\
-#haloword-pron:hover { background: url(" + icon_url + ") -111px -34px; }\
+#haloword-pron { background: url(" + history_icon_url + "); }\
 #haloword-close { background: url(" + icon_url + ") -94px 0; }\
 #haloword-close:hover { background: url(" + icon_url + ") -111px 0; }</style>";
 if ($("head")[0]) {
@@ -131,10 +131,10 @@ function event_mouseup(e) {
                 haloword_opened = false;
                 return false;
             });
-            $("#haloword-pron").click(function() {
-                window.open('http://www.context-dictionary.com/list','_blank');
-                return false;
-            });
+         //   $("#haloword-pron").click(function() {
+         //       window.open('http://www.context-dictionary.com/list','_blank');
+         //       return false;
+         //   });
 
 
             $("#haloword-content").html("<p>Loading definitions...</p>");
