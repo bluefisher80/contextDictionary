@@ -22,7 +22,7 @@ var haloword_opened = false;
 var haloword_html = '<div id="haloword-lookup" class="ui-widget-content">\
 <div id="haloword-title">\
 <span id="haloword-word"></span>\
-<a herf="#" id="haloword-pron" class="haloword-button" title="发音"></a>\
+<a herf="http://www.context-dictionary.com/list/" id="haloword-pron" class="haloword-button" target="_blank">history</a>\
 <div id="haloword-control-container">\
 <a herf="#" id="haloword-close" class="haloword-button" title="关闭查询窗"></a>\
 </div>\
@@ -131,8 +131,12 @@ function event_mouseup(e) {
                 haloword_opened = false;
                 return false;
             });
+            $("#haloword-pron").click(function() {
+                window.open('http://www.context-dictionary.com/list','_blank');
+                return false;
+            });
 
-            $("#haloword-pron").hide();
+
             $("#haloword-content").html("<p>Loading definitions...</p>");
             $("#haloword-lookup").show();
             //
