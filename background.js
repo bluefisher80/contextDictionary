@@ -10,9 +10,6 @@ chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
       originalTabId = sender.tab.id;
       console.log("this is background receive method,got message from tab " + sender.tab.id);
-      console.log(sender.tab ?
-            "from a content script:" + sender.tab.url :
-            "from the extension");
       console.log("Start the xhr ajax query request to dic engine");
       backwork(request.selection,request.theURL,request.theContext);
       sendResponse({"result" : WrHtml});
