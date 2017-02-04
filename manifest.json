@@ -19,7 +19,7 @@
    "name": "Context Dictionary Lookup",
    "permissions": [ "\u003Call_urls\u003E", "unlimitedStorage", "storage", "contextMenus", "tabs" ],
    "update_url": "http://clients2.google.com/service/update2/crx",
-   "version": "2.2",
+   "version": "6.0.1",
    "web_accessible_resources": [ "img/icon.svg" ],
    "background":{
        "scripts": ["background.js","common.js","include/jquery.min.js"]
