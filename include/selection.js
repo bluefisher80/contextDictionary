@@ -127,7 +127,7 @@ function onMouseDown(e) {
     
     // launch a timer to detect "long press"
     var isLink = e.target.tagName == 'A' || (e.target.parentNode && e.target.parentNode.tagName == 'A');
-    longPressTimer = setTimeout(onLongPress, isLink ? 1400 : 700);
+    longPressTimer = setTimeout(onLongPress, isLink ? 2000: 700);
 };
 
 
