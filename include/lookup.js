@@ -76,7 +76,7 @@ else {
 $("#haloword-lookup").draggable({ handle: "#haloword-title" });
 
 function event_mouseup(e) {
-    console.log("final lookup method, the event_mouseup method");
+    console.log("final lookup method 2222 ");
     chrome.storage.local.get('disable_querybox', function(ret) {
 
         console.log("disable_querybox must be false now: " + ret.disable_querybox);
@@ -89,42 +89,19 @@ function event_mouseup(e) {
                 return;
             }
 
-            var selection = $.trim(window.getSelection());
 //comment out for http://stackoverflow.com/questions/25098021/securityerror-blocked-a-frame-with-origin-from-accessing-a-cross-origin-frame
-/**
-            if (!selection) {
-                console.log("Debug 1");
-                $("iframe").each(function() {
-                    if (this.contentDocument) {
-                        console.log("Debug 2");
-                        selection = $.trim(this.contentDocument.getSelection());
-                    }
-                    if (selection) {
-                        console.log("Debug 3");
-                        return false;
-                    }
-                });
-            }
-*/
-            console.log("check the original word selection" + selection);
-            var lang1 = valid_word(selection);
             var lang2 = valid_word(theSelection);
-            if (!lang1 && !lang2) {
+            if (!lang2) {
                 console.log("word detection");
                 return;
             }
 
-
-            if(!selection){
-                selection = theSelection;
-            }
-
             var result;
-            chrome.runtime.sendMessage({selection: selection,theURL: theURL , theContext: theContext},function(response){
+            chrome.runtime.sendMessage({selection: theSelection,theURL: theURL , theContext: theContext},function(response){
                 $("#haloword-content").html(response.result);
             });
 
-            $("#haloword-word").html(selection);
+            $("#haloword-word").html(theSelection);
             $("#haloword-lookup").attr("style", "left: " + e.pageX + "px;" + "top: " + e.pageY + "px;");
             $("#haloword-close").click(function() {
                 $("#haloword-lookup").hide();
