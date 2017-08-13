@@ -1,3 +1,12 @@
+var saveInServerUIControl = false;
+chrome.storage.sync.get({
+    saveInServer: false 
+    }, function(items) {
+        console.log("In the lookup JS code , when this method triggered" + items.saveInServer);
+        saveInServerUIControl = items.saveInServer;
+      });
+
+
 function is_chinese(word) {
     return (/^[\u4e00-\u9fa5]+$/g).test(word);
 }
@@ -19,15 +28,24 @@ function valid_word(word) {
 }
 
 var haloword_opened = false;
+
 var haloword_html = '<div id="haloword-lookup" class="ui-widget-content">\
 <div id="haloword-title">\
-<span id="haloword-word"></span>\
-<a href="http://www.context-dictionary.com/list/" id="haloword-pron" class="haloword-button" target="_blank">@history</a>\
-<div id="haloword-control-container">\
+<span id="haloword-word"></span>';
+
+if(saveInServerUIControl){
+    haloword_html = haloword_html + 
+        '<a href="http://www.context-dictionary.com/list/" id="haloword-pron" class="haloword-button" target="_blank" title="查询历史">-------history</a>';
+}else{
+}
+
+haloword_html = haloword_html + 
+'<div id="haloword-control-container">\
 <a herf="#" id="haloword-close" class="haloword-button" title="关闭查询窗"></a>\
 </div>\
 <br style="clear: both;" />\
 </div><div id="haloword-content"></div></div>';
+
 $("body").append(haloword_html);
 console.log("How many bodies in the page loading");
 // deal with Clearly

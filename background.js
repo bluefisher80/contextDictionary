@@ -6,6 +6,8 @@ function escapeHTML(str){return str;}
 var WrHtml = "";
 var originalTabId ;
 
+var saveInServer = false;
+
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
       originalTabId = sender.tab.id;
@@ -20,11 +22,20 @@ chrome.runtime.onMessage.addListener(
 function backwork(selection,pageUrl,context){
 
     //TODO URLEncode
+
+      chrome.storage.sync.get({
+        saveInServer: false 
+      }, function(items) {
+        saveInServer = items.saveInServer;
+      });
+
+
+    if(saveInServer){
     $.ajax({
         url: bank_url + selection + "&pageurl=" + 
               pageUrl + "&context=" + context ,
         success: function(data){}
-    });
+    });}
 
     $.ajax({
         async: false,
