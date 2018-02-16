@@ -2,8 +2,8 @@ var saveInServerUIControl = false;
 chrome.storage.sync.get({
     saveInServer: false 
     }, function(items) {
-        console.log("In the lookup JS code , when this method triggered" + items.saveInServer);
         saveInServerUIControl = items.saveInServer;
+		console.log("SaveInServerUIControl callback value  is " + saveInServerUIControl);
       });
 
 
@@ -31,16 +31,11 @@ var haloword_opened = false;
 
 var haloword_html = '<div id="haloword-lookup" class="ui-widget-content">\
 <div id="haloword-title">\
-<span id="haloword-word"></span>';
-
-if(saveInServerUIControl){
-    haloword_html = haloword_html + 
-        '<a href="http://www.context-dictionary.com/list/" id="haloword-pron" class="haloword-button" target="_blank" title="查询历史">-------history</a>';
-}else{
-}
-
-haloword_html = haloword_html + 
-'<div id="haloword-control-container">\
+<span id="haloword-word"></span>\
+<div id="haloword-control-container-if">\
+ <a href="http://www.context-dictionary.com/list/" id="haloword-pron" class="haloword-button" target="_blank" title="查询历史">history</a>\
+</div>\
+<div id="haloword-control-container">\
 <a herf="#" id="haloword-close" class="haloword-button" title="关闭查询窗"></a>\
 </div>\
 <br style="clear: both;" />\
@@ -100,14 +95,12 @@ function event_mouseup(e) {
         console.log("disable_querybox must be false now: " + ret.disable_querybox);
         if (!ret.disable_querybox) {
 
-            //if ((!e.ctrlKey && !e.metaKey) && !isLongPressing) {
             if (!isLongPressing &&  !(e.ctrlKey || e.metaKey) ) {
                 console.log("keys detection,but user random click without modify key down case, ignore it.");
                 console.log("the Long click word is " + theSelection);
                 return;
             }
 
-//comment out for http://stackoverflow.com/questions/25098021/securityerror-blocked-a-frame-with-origin-from-accessing-a-cross-origin-frame
             var lang2 = valid_word(theSelection);
             if (!lang2) {
                 console.log("word detection");
@@ -126,22 +119,18 @@ function event_mouseup(e) {
                 haloword_opened = false;
                 return false;
             });
-         //   $("#haloword-pron").click(function() {
-         //       window.open('http://www.context-dictionary.com/list','_blank');
-         //       return false;
-         //   });
-
 
             $("#haloword-content").html("<p>Loading definitions...</p>");
             $("#haloword-lookup").show();
-            //
-            
+            if (!saveInServerUIControl){
+				$("#haloword-control-container-if").hide();
+			}
             console.log("mouse up method  in the page script");
             // HACK: fix dict window not openable
             setTimeout(function() {
                 haloword_opened = true;
             }, 100);
         }
-    })
+    });
 }
 

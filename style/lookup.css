@@ -39,9 +39,16 @@
 #haloword-pron {
     margin-left: 3px;
 }
+
+#haloword-control-container-if {
+	float: right;
+}
+
+
 #haloword-control-container {
 	float: right;
 }
+
 .haloword-button {
 	float: left;
 	margin: 2px;
