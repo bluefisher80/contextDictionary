@@ -111,11 +111,18 @@ function onMouseDown(e) {
     initEvent = e;
     startOffset = initEvent.rangeOffset;
     rangeParentNode = initEvent.rangeParent;
+       
+    console.log("The rangeParent of the event model " + initEvent.rangeParent);
 
+    console.log("Support document caretRangeFromPoint" + document.caretRangeFromPoint());
     if(document.caretRangeFromPoint){
-       range = document.caretRangeFromPoint(e.clientX, e.clientY),
+       console.log("Support document caretRangeFromPoint" + document.caretRangeFromPoint());
+       range = document.caretRangeFromPoint(e.clientX, e.clientY);
+       console.log("The original event position X is " +  e.clientX + " Y is " +  e.clientY);
+       console.log("The range clicked by original event is " + range );
        rangeParentNode = range.startContainer;
        startOffset = range.startOffset; 
+       console.log("The rangeParentNode found within the caretRangeFromPoint method is " + rangeParentNode );
     }
 
     theSelection = findTargetWord(startOffset, rangeParentNode);
@@ -150,6 +157,7 @@ function findTargetWord(startOffset, parentNode){
     console.log("Enter find target word logic 1.2");
     
     console.log("Enter find target word logic 2");
+    console.log("Enter find target node "+  parentNode.textContent);
     var textarray = parentNode.textContent.split("");
     var textlen = parentNode.textContent.length;
 
