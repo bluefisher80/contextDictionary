@@ -8,7 +8,7 @@ var cancelLongPress = function() {
 
 
 var onKikinGesture = function(event){
-    console.log("bypassing the customDispatchEvent " + event.detail.status + " " + event.detail.reason );
+//    console.log("bypassing the customDispatchEvent " + event.detail.status + " " + event.detail.reason );
 }
 
 

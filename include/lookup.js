@@ -86,6 +86,9 @@ else {
     $($("body")[0]).prepend(style_content);
 }
 
+//news.google.com
+$(".VDXfz").css('z-index',-1);
+
 $("#haloword-lookup").draggable({ handle: "#haloword-title" });
 
 function event_mouseup(e) {
