@@ -18,9 +18,9 @@
    "manifest_version": 2,
    "minimum_chrome_version": "20",
    "name": "Context Dictionary Lookup",
-   "permissions": [ "\u003Call_urls\u003E", "unlimitedStorage", "storage", "contextMenus", "tabs" ],
+   "permissions": [ "\u003Call_urls\u003E", "unlimitedStorage", "storage", "contextMenus", "activeTab" ],
    "update_url": "http://clients2.google.com/service/update2/crx",
-   "version": "6.2.5",
+   "version": "6.2.6",
    "web_accessible_resources": [ "img/icon.svg" ,"img/history.png"],
    "background":{
        "scripts": ["background.js","common.js","include/jquery.min.js"]
