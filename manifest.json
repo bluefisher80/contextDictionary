@@ -2,10 +2,16 @@
    "content_scripts": [ {
       "all_frames": true,
       "css": [ "style/lookup.css" ],
-      "js": [ "include/jquery.min.js", "include/jquery-ui.min.js", "include/lookup.js", "include/selection.js" ],
-      "matches": [ "\u003Call_urls\u003E" ]
+      "js": [ "include/jquery.min.js", "include/jquery-ui.min.js", "include/lookup.js"],
+      "matches": ["*://*/*"] 
    } ],
-   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+
+
+   "content_security_policy" : {
+       "extension_page": "script-src 'self'; object-src 'self'"
+   },
+
+
    "description": "Web dictionary with context information.",
    "options_page":"options.html",
    "icons": {
@@ -15,14 +21,21 @@
       "32": "icon32.png",
       "48": "icon48.png"
    },
-   "manifest_version": 2,
+   "manifest_version": 3,
    "minimum_chrome_version": "20",
    "name": "Context Dictionary Lookup",
-   "permissions": [ "\u003Call_urls\u003E", "unlimitedStorage", "storage", "contextMenus", "activeTab" ],
-   "update_url": "http://clients2.google.com/service/update2/crx",
-   "version": "6.2.6",
-   "web_accessible_resources": [ "img/icon.svg" ,"img/history.png"],
+   "permissions": ["storage" ],
+
+   "host_permissions": [
+      "*://*/*"
+    ],
+
+    "update_url": "http://clients2.google.com/service/update2/crx",
+    "version": "8.0.0",
+    "web_accessible_resources": [{"resources": [ "img/icon.svg" ,"img/history.png"], 
+       "matches": ["https://what-is-this.com/*"]
+    }],
    "background":{
-       "scripts": ["background.js","common.js","include/jquery.min.js"]
+       "service_worker": "background_rename.js"
    } 
 }
