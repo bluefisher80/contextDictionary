@@ -2,7 +2,7 @@
    "content_scripts": [ {
       "all_frames": true,
       "css": [ "style/lookup.css" ],
-      "js": [ "include/jquery.min.js", "include/jquery-ui.min.js", "include/lookup.js"],
+      "js": [ "include/jquery.min.js", "include/jquery-ui.min.js", "include/selection.js", "include/lookup.js"],
       "matches": ["*://*/*"] 
    } ],
 
@@ -27,15 +27,16 @@
    "permissions": ["storage" ],
 
    "host_permissions": [
+      "http://dict-co.iciba.com/*",
       "*://*/*"
     ],
 
     "update_url": "http://clients2.google.com/service/update2/crx",
     "version": "8.0.0",
     "web_accessible_resources": [{"resources": [ "img/icon.svg" ,"img/history.png"], 
-       "matches": ["https://what-is-this.com/*"]
+      "matches": ["*://*/*"] 
     }],
    "background":{
-       "service_worker": "background_rename.js"
+       "service_worker": "background.js"
    } 
 }
