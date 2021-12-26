@@ -73,7 +73,6 @@ function event_click(event) {
     }
 }
 
-//var icon_url = chrome.extension.getURL("img/icon.svg");
 var icon_url = chrome.runtime.getURL("img/icon.svg");
 var history_icon_url = chrome.runtime.getURL("img/history.png");
 var style_content = "<style>\
