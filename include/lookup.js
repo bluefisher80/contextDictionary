@@ -1,12 +1,3 @@
-var saveInServerUIControl = false;
-chrome.storage.sync.get({
-    saveInServer: false 
-    }, function(items) {
-        saveInServerUIControl = items.saveInServer;
-		console.log("SaveInServerUIControl callback value  is " + saveInServerUIControl);
-      });
-
-
 function is_chinese(word) {
     return (/^[\u4e00-\u9fa5]+$/g).test(word);
 }
@@ -124,9 +115,6 @@ function event_mouseup(e) {
 
         $("#haloword-content").html("<p>Loading definitions...</p>");
         $("#haloword-lookup").show();
-        if (!saveInServerUIControl){
-            $("#haloword-control-container-if").hide();
-        }
         console.log("mouse up method  in the page script");
         // HACK: fix dict window not openable
 
