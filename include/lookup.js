@@ -35,12 +35,15 @@ var haloword_html = '<div id="haloword-lookup" class="ui-widget-content">\
 $("body").append(haloword_html);
 console.log("How many bodies in the page loading");
 // deal with Clearly
+
+
+
 document.addEventListener("DOMNodeInserted", function(event) {
     var element = event.target;
     if ($(element).attr("id") == "readable_iframe") {
         // HACK: wait for iframe ready
         setTimeout(function() {
-            $("body", element.contentDocument).mouseup(event_mouseup);
+            console.log("Register event hander handle_longpressing and event_click for only iframe readable_iframe case");
             $("body", element.contentDocument).click(event_click);
             if ($(element).css('z-index') >= 2147483647) {
                 var style = $(element).attr('style') + ' z-index: 2147483646 !important';
@@ -50,12 +53,12 @@ document.addEventListener("DOMNodeInserted", function(event) {
     }
 });
 
-$("body").mouseup(event_mouseup);
 $("body").click(event_click);
 
 function event_click(event) {
-    console.log("when this method triggered");
-    if (haloword_opened) {
+    console.log("this method was triggered in the event_click method");
+    console.log("In event_click, the type of the event is " + event.type);
+    if (haloword_opened && !isLongPressing) {
         var target = $(event.target);
         if (target.attr("id") != "haloword-lookup" && !target.parents("#haloword-lookup")[0]) {
             $("#haloword-lookup").hide();
@@ -82,12 +85,11 @@ $(".VDXfz").css('z-index',-1);
 
 $("#haloword-lookup").draggable({ handle: "#haloword-title" });
 
-function event_mouseup(e) {
-    console.log("final lookup method 2222 ");
+function handle_longpressing(event) {
+    console.log("final lookup method in the handle_longpressing handler, current event type is " + event.type);
 
-        if (!isLongPressing &&  !(e.ctrlKey || e.metaKey) ) {
-            console.log("keys detection,but user random click without modify key down case, ignore it.");
-            console.log("the Long click word is " + theSelection);
+        if (!isLongPressing &&  !(event.ctrlKey || event.metaKey) ) {
+            console.log("keys detection,but user random click without modify key down case, ignore the target word: ", theSelection);
             return;
         }
 
@@ -100,14 +102,15 @@ function event_mouseup(e) {
         var result;
 
         chrome.runtime.sendMessage({selection: theSelection,theURL: theURL , theContext: theContext}, (response) => {
-          console.log('received user data', response);
+          console.log('received user data in promise action, prepare to parse for the data and show it' );
           $("#haloword-content").html(parseDicData(response));
 
         });
 
         $("#haloword-word").html(theSelection);
-        $("#haloword-lookup").attr("style", "left: " + e.pageX + "px;" + "top: " + e.pageY + "px;");
+        $("#haloword-lookup").attr("style", "left: " + event.pageX + "px;" + "top: " + event.pageY + "px;");
         $("#haloword-close").click(function() {
+            console.log("Define a hander for the close icon in  the popup and bind the handler for it.");
             $("#haloword-lookup").hide();
             haloword_opened = false;
             return false;
@@ -115,7 +118,8 @@ function event_mouseup(e) {
 
         $("#haloword-content").html("<p>Loading definitions...</p>");
         $("#haloword-lookup").show();
-        console.log("mouse up method  in the page script");
+        console.log("handle_longpressing method,the #halowword-lookup div is shown.  ");
+
         // HACK: fix dict window not openable
 
         setTimeout(function() {

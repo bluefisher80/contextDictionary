@@ -36,7 +36,7 @@ var onMouseUp = function(e) {
 
     startOffset = 0;
     rangeParentNode = null;
-    console.log("The initEvent object was set to null, " + initEvent + " right?" );
+    console.log("The initEvent object was cleared to null in the onMouseUp registered handler?" );
 };
 
 var onMouseMove = function(e) {
@@ -140,7 +140,7 @@ function onMouseDown(e) {
 
 function lookupWord(){
     //self.port.emit("lookup",theSelection,window.navigator.language);
-    event_mouseup(initEvent);
+    handle_longpressing(initEvent);
     //self.port.emit("lookup",theSelection,'ja');
 }
 
