@@ -20,7 +20,7 @@ function valid_word(word) {
 
 var haloword_opened = false;
 
-var haloword_html = '<div id="haloword-lookup" class="ui-widget-content">\
+var haloword_html = '<div id="haloword-lookup" class="ui-widget-content" draggable="true">\
 <div id="haloword-title">\
 <span id="haloword-word"></span>\
 <div id="haloword-control-container-if">\
@@ -83,7 +83,7 @@ else {
 //news.google.com
 $(".VDXfz").css('z-index',-1);
 
-$("#haloword-lookup").draggable({ handle: "#haloword-title" });
+//$("#haloword-lookup").draggable({ handle: "#haloword-title" });
 
 function handle_longpressing(event) {
     console.log("final lookup method in the handle_longpressing handler, current event type is " + event.type);
