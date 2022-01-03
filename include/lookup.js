@@ -103,7 +103,8 @@ function handle_longpressing(event) {
 
         chrome.runtime.sendMessage({selection: theSelection,theURL: theURL , theContext: theContext}, (response) => {
           console.log('received user data in promise action, prepare to parse for the data and show it' );
-          $("#haloword-content").html(parseDicData(response));
+            //$("#haloword-content").html(parseDicData(response));
+            document.getElementById("haloword-content").innerHTML = parseDicData(response);
 
         });
 
