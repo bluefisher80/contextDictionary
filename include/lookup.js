@@ -61,7 +61,7 @@ function event_click(event) {
     if (haloword_opened && !isLongPressing) {
         var target = $(event.target);
         if (target.attr("id") != "haloword-lookup" && !target.parents("#haloword-lookup")[0]) {
-            $("#haloword-lookup").hide();
+            document.getElementById("haloword-lookup").style.display = "none";
             haloword_opened = false;
         }
     }
@@ -102,23 +102,19 @@ function handle_longpressing(event) {
         var result;
 
         chrome.runtime.sendMessage({selection: theSelection,theURL: theURL , theContext: theContext}, (response) => {
-          console.log('received user data in promise action, prepare to parse for the data and show it' );
-            //$("#haloword-content").html(parseDicData(response));
+            console.log('received user data in promise action, prepare to parse for the data and show it' );
             document.getElementById("haloword-content").innerHTML = parseDicData(response);
 
         });
 
-        $("#haloword-word").html(theSelection);
-        $("#haloword-lookup").attr("style", "left: " + event.pageX + "px;" + "top: " + event.pageY + "px;");
-        $("#haloword-close").click(function() {
-            console.log("Define a hander for the close icon in  the popup and bind the handler for it.");
-            $("#haloword-lookup").hide();
-            haloword_opened = false;
-            return false;
-        });
+        document.getElementById("haloword-word").innerHTML = theSelection;
+//        $("#haloword-lookup").attr("style", "left: " + event.pageX + "px;" + "top: " + event.pageY + "px;");
 
-        $("#haloword-content").html("<p>Loading definitions...</p>");
-        $("#haloword-lookup").show();
+        document.getElementById("haloword-lookup").style.left = event.pageX + "px";
+        document.getElementById("haloword-lookup").style.top = event.pageY + "px";
+        document.getElementById("haloword-lookup").style.display = "block";
+
+        document.getElementById("haloword-content").innerHTML = "<p>Loading definitions...</p>"
         console.log("handle_longpressing method,the #halowword-lookup div is shown.  ");
 
         // HACK: fix dict window not openable
