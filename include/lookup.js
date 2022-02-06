@@ -27,7 +27,7 @@ var haloword_html = '<div id="haloword-lookup" class="ui-widget-content" draggab
 </div>\
 <div id="haloword-control-container">\
  <!-- <a herf="#" id="haloword-close" class="haloword-button" title="关闭查询窗"></a> -->\
- <span><a href="http://www.context-dictionary.com:8080/list/" target="_blank" title="查询历史">history</a></span>\
+ <span><a href="http://www.context-dictionary.com/list/" target="_blank" title="查询历史">history</a></span>\
 </div>\
 <br style="clear: both;" />\
 </div><div id="haloword-content"></div></div>';
