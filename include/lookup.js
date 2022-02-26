@@ -32,7 +32,16 @@ var haloword_html = '<div id="haloword-lookup" class="ui-widget-content" draggab
 <br style="clear: both;" />\
 </div><div id="haloword-content"></div></div>';
 
-$("body").append(haloword_html);
+//$("body").append(haloword_html);
+
+var div = document.createElement('div');
+div.className = 'tooltip';
+div.id = 'op';
+div.style.cssText = 'position: absolute; z-index: 999; height: 16px; width: 16px; top:70px';
+div.innerHTML = haloword_html;
+
+document.body.appendChild(div);
+
 console.log("How many bodies in the page loading");
 // deal with Clearly
 
