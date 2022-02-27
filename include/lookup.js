@@ -97,7 +97,8 @@ var startLoading = function(clbk) {
 
 function onClick(e){
 
-    var isLink = e.target.tagName == 'A' || (e.target.parentNode && e.target.parentNode.tagName == 'A');
+    var isLink = e.target.tagName == 'A' || 
+        (e.target.parentNode && e.target.parentNode.tagName == 'A');
 
     if(isLink && isLongPressing){
         e.preventDefault();
