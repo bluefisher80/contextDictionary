@@ -7,7 +7,9 @@ var DEFAULT_LANGUAGE = 'cn',
 
 
 
-var longPressTimer, isLoading, loaded, isLongPressing, mouseDown, initEvent, selection, startOffset, rangeParentNode, theSelection,theURL,theContext;
+var longPressTimer, isLoading, isLongPressing, mouseDown, 
+        initEvent, selection, startOffset, rangeParentNode, theSelection,
+         theURL,theContext;
 
 
 var cancelLongPress = function() {
@@ -20,8 +22,8 @@ var onKikinGesture = function(event){
 //    console.log("bypassing the customDispatchEvent " + event.detail.status + " " + event.detail.reason );
 }
 
-
 window.addEventListener('mychromeGesture', onKikinGesture, true);
+
 var customDispatchEvent = function(s, r) {
     window.dispatchEvent(new CustomEvent('mychromeGesture', {
         //TODO
@@ -79,6 +81,7 @@ var onLongPress = function(e) {
     console.log("Start to call the lookup communicate method");
     //lookupWord();    
 
+    haloword_opened = true;
     showMeaning(initEvent);
  
 };
@@ -173,6 +176,7 @@ function findWordByEvent(event){
 
 function lookupWord(){
     //self.port.emit("lookup",theSelection,window.navigator.language);
+    console.log("window.navigator.language is " , window.navigator.language);
     handle_longpressing(initEvent);
     //self.port.emit("lookup",theSelection,'ja');
 }
@@ -452,31 +456,16 @@ function valid_word(word) {
 
 var haloword_opened = false;
 
-var haloword_html = '<div id="haloword-lookup" class="ui-widget-content" draggable="true">\
-<div id="haloword-title">\
-<span id="haloword-word"></span>\
-<div id="haloword-control-container-if">\
-</div>\
-<div id="haloword-control-container">\
- <!-- <a herf="#" id="haloword-close" class="haloword-button" title="关闭查询窗"></a> -->\
+var haloword_html = 
+'<div id="haloword-lookup" class="ui-widget-content" draggable="true">\
  <span><a href="https://www.context-dictionary.com/list/" target="_blank" title="查询历史">history</a></span>\
-</div>\
-<br style="clear: both;" />\
 </div><div id="haloword-content"></div></div>';
 
-var div = document.createElement('div');
-div.className = 'tooltip';
-div.id = 'op';
-div.style.cssText = 'position: absolute; z-index: 999; height: 16px; width: 16px; top:70px';
-div.innerHTML = haloword_html;
-
-document.body.appendChild(div);
 
 console.log("How many bodies in the page loading");
+
 // deal with Clearly
-
-
-
+/*
 document.addEventListener("DOMNodeInserted", function(event) {
     var element = event.target;
     if ($(element).attr("id") == "readable_iframe") {
@@ -491,6 +480,7 @@ document.addEventListener("DOMNodeInserted", function(event) {
         }, 1000);
     }
 });
+*/
 
 document.addEventListener('click', event_click);
 
@@ -498,31 +488,15 @@ function event_click(event) {
     console.log("this method was triggered in the event_click method");
     console.log("In event_click, the type of the event is " + event.type);
     if (haloword_opened && !isLongPressing) {
-        var target = event.target;
-        if (target.id != "haloword-lookup" && !target.parents("#haloword-lookup")[0]) {
-            document.getElementById("haloword-lookup").style.display = "none";
             haloword_opened = false;
-        }
+            removeMeaning(event);
     }
 }
 
-var icon_url = chrome.runtime.getURL("img/icon.svg");
-var history_icon_url = chrome.runtime.getURL("img/history.png");
-var style_content = "<style>\
-#haloword-pron { background: url(" + history_icon_url + "); }\
-#haloword-close { background: url(" + icon_url + ") -94px 0; }\
-#haloword-close:hover { background: url(" + icon_url + ") -111px 0; }</style>";
-if ($("head")[0]) {
-    $($("head")[0]).append(style_content);
-}
-else {
-    $($("body")[0]).prepend(style_content);
-}
 
 //news.google.com
 $(".VDXfz").css('z-index',-1);
 
-//$("#haloword-lookup").draggable({ handle: "#haloword-title" });
 
 function handle_longpressing(event) {
     console.log("final lookup method in the handle_longpressing handler, current event type is " + event.type);
@@ -549,16 +523,6 @@ function handle_longpressing(event) {
             document.getElementById("haloword-content").innerHTML = parseDicData(response);
 
         });
-
-        document.getElementById("haloword-word").innerHTML = theSelection;
-//        $("#haloword-lookup").attr("style", "left: " + event.pageX + "px;" + "top: " + event.pageY + "px;");
-
-        document.getElementById("haloword-lookup").style.left = event.pageX + "px";
-        document.getElementById("haloword-lookup").style.top = event.pageY + "px";
-        document.getElementById("haloword-lookup").style.display = "block";
-
-        document.getElementById("haloword-content").innerHTML = "<p>Loading definitions...</p>"
-        console.log("the #halowword-lookup div is shown.  ");
 
         // HACK: fix dict window not openable
 
