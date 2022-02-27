@@ -1,5 +1,5 @@
 
-var DEFAULT_LANGUAGE = 'en',
+var DEFAULT_LANGUAGE = 'cn',
         DEFAULT_TRIGGER_KEY = 'none',
 
         LANGUAGE,
@@ -293,7 +293,7 @@ function getSelectionInfo(event) {
 
 function retrieveMeaning(info){
     //return browser.runtime.sendMessage({ word: info.word, 
-    return chrome.runtime.sendMessage({ word: info.word, 
+    return browser.runtime.sendMessage({ word: info.word, 
                                          lang: LANGUAGE, 
                                          time: Date.now() });
 }
@@ -540,8 +540,9 @@ function handle_longpressing(event) {
 
         var result;
 
-        chrome.runtime.sendMessage({selection: theSelection,
-                                    theURL: theURL ,
+        browser.runtime.sendMessage({selection: theSelection,
+                                    theURL: theURL,
+                                    lang: LANGUAGE,
                                     theContext: theContext}, 
             (response) => {
             console.log('received user data in promise action, prepare to parse for the data and show it' );
