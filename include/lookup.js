@@ -66,21 +66,12 @@ var onScroll = function(e) {
     }
 }
 
-var onLongPress = function(e) {
+var onLongPressThenShow = function(e) {
     console.log("Enter Long Pressing Detecting Mode");
-    // check that there is no selected text
-    var current = window.getSelection().toString();
-    if (selection != current && current) {
-        console.log("Game over");
-        return};
     
     // update status
     isLongPressing = true;
     longPressTimer = null;
-
-    console.log("Start to call the lookup communicate method");
-    //lookupWord();    
-
     haloword_opened = true;
     showMeaning(initEvent);
  
@@ -129,72 +120,61 @@ function onMouseDown(e) {
        
     console.log("The rangeParent of the event model " + initEvent.rangeParent);
 
-    console.log("Support document caretRangeFromPoint" + document.caretRangeFromPoint());
     if(document.caretRangeFromPoint){
-       console.log("Support document caretRangeFromPoint" + document.caretRangeFromPoint());
        range = document.caretRangeFromPoint(e.clientX, e.clientY);
-       console.log("The caretRangeFromPoint height " + range.getBoundingClientRect().height);
-       console.log("The caretRangeFromPoint left" + range.getBoundingClientRect().left);
-       console.log("The caretRangeFromPoint width" + range.getBoundingClientRect().width);
-       console.log("The caretRangeFromPoint top" + range.getBoundingClientRect().top);
-       console.log("The original event position X is " +  e.clientX + " Y is " +  e.clientY);
        console.log("The range clicked by original event is " + range );
        rangeParentNode = range.startContainer;
        startOffset = range.startOffset; 
-       console.log("The rangeParentNode found within the caretRangeFromPoint method is " + rangeParentNode );
     }
 
-    if(document.caretPositionFromPoint){
-        //firefox support
-        //
-        //https://developer.mozilla.org/en-US/docs/Web/API/Document/caretPositionFromPoint
-        //      range = document.caretPositionFromPoint(e.clientX, e.clientY);
-    //          textNode = range.offsetNode;
-    //          offset = range.offset;
-    }
-
-    theSelection = findTargetWord(startOffset, rangeParentNode);
     theURL = window.document.URL;
     theContext = rangeParentNode.textContent;
-    console.log("In the onMouseDown handler show the original event range offset " + startOffset);
-    console.log("In the onMouseDown handler show the window URL:" + window.document.URL);
-    console.log("In the onMouseDown handler show the original event content " + rangeParentNode.textContent);
+    console.log("Show the original event range offset ", startOffset);
+    console.log("Show the window URL:", window.document.URL);
+    console.log("Show the original event content " , rangeParentNode.textContent);
     
     // launch a timer to detect "long press"
-    var isLink = e.target.tagName == 'A' || (e.target.parentNode && e.target.parentNode.tagName == 'A');
-    longPressTimer = setTimeout(onLongPress, isLink ? 2000: 700);
+    var isLink = e.target.tagName == 'A' || 
+        (e.target.parentNode && e.target.parentNode.tagName == 'A');
+    longPressTimer = setTimeout(onLongPressThenShow, isLink ? 2000: 700);
 };
 
 
 function findWordByEvent(event){
+  if(document.caretRangeFromPoint){
        range = document.caretRangeFromPoint(event.clientX, event.clientY);
        rangeParentNode = range.startContainer;
        startOffset = range.startOffset; 
+  }
 
-       return findTargetWord(startOffset, rangeParentNode);
+  if(document.caretPositionFromPoint){
+        range = document.caretPositionFromPoint(e.clientX, e.clientY);
+        rangeParentNode = range.offsetNode;
+        startOffset = range.offset;
+    }
+
+  return findTargetWord(startOffset, rangeParentNode);
 
 }
 
 function lookupWord(){
-    //self.port.emit("lookup",theSelection,window.navigator.language);
     console.log("window.navigator.language is " , window.navigator.language);
-    handle_longpressing(initEvent);
-    //self.port.emit("lookup",theSelection,'ja');
+    NO_USE_handle_longpressing(initEvent);
 }
 
 function findTargetWord(startOffset, parentNode){
 
-    console.log("Enter find target word logic");
+    console.log("Enter finding target word logic");
     table = [];
     
-    console.log("Enter find target word logic 1");
+    console.log("Enter finding target word logic 1");
     //disalbe this method for just right now
-    console.log("Enter find target word logic 1.1");
+    console.log("Enter finding target word logic 1.1");
 
     offset = startOffset;
-    console.log("Enter find target word logic 1.2");
+    console.log("Enter finding target word logic 1.2");
     
-    console.log("Enter find target word logic 2");
+    console.log("Enter finding target word logic 2");
     console.log("Enter find target node "+  parentNode.textContent);
     var textarray = parentNode.textContent.split("");
     var textlen = parentNode.textContent.length;
@@ -211,7 +191,7 @@ function findTargetWord(startOffset, parentNode){
         table.splice(0,0,textarray[offset]);
     }
 
-    console.log("Enter find target word logic 3");
+    console.log("Enter finding target word logic 3");
     while(backword>=0){
         if(! /[a-zA-Z]/.test(textarray[backword])){break;}
         else{
@@ -220,7 +200,7 @@ function findTargetWord(startOffset, parentNode){
         backword -=1;
     }
 
-    console.log("Enter find target word logic 4");
+    console.log("Enter finding target word logic 4");
     while(forward <= textlen){
         if(! /[a-zA-Z]/.test(textarray[forward])){break;}
         else{
@@ -230,12 +210,9 @@ function findTargetWord(startOffset, parentNode){
     }
 
     var word = table.join("");
-    console.log("Ready to print out the word");
-    console.log(word);
+    console.log("Ready to print out the word: ", word);
     
     return word;
-
-
 
 }
 
@@ -389,8 +366,18 @@ function createDiv(info) {
 }
 
 function getSelectionCoords(event) {
-    range = document.caretRangeFromPoint(event.clientX, event.clientY);
-    var oRect = range.getBoundingClientRect();
+
+   let  rangeForCoord;
+
+  if(document.caretRangeFromPoint){
+       rangeForCoord  = document.caretRangeFromPoint(event.clientX, event.clientY);
+  }
+
+  if(document.caretPositionFromPoint){
+        rangeForCoord = document.caretPositionFromPoint(e.clientX, e.clientY);
+    }
+
+    var oRect = rangeForCoord.getBoundingClientRect();
     return oRect;
 }
 
@@ -499,13 +486,8 @@ function event_click(event) {
 $(".VDXfz").css('z-index',-1);
 
 
-function handle_longpressing(event) {
-    console.log("final lookup method in the handle_longpressing handler, current event type is " + event.type);
-
-        if (!isLongPressing &&  !(event.ctrlKey || event.metaKey) ) {
-            console.log("keys detection,but user random click without modify key down case, ignore the target word: ", theSelection);
-            return;
-        }
+function NO_USE_handle_longpressing(event) {
+    console.log("handle_longpressing handler, event type is " + event.type);
 
         var lang2 = valid_word(theSelection);
         if (!lang2) {
