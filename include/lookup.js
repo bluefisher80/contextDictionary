@@ -1,4 +1,3 @@
-
 var DEFAULT_LANGUAGE = 'cn',
         DEFAULT_TRIGGER_KEY = 'none',
 
@@ -9,7 +8,7 @@ var DEFAULT_LANGUAGE = 'cn',
 
 var longPressTimer, isLoading, isLongPressing, mouseDown, 
         initEvent, selection, startOffset, rangeParentNode, theSelection,
-         theURL,theContext;
+         theURL,theContext, targetWord;
 
 
 var cancelLongPress = function() {
@@ -43,11 +42,11 @@ var onMouseUp = function(e) {
         customDispatchEvent('failed', 'short');
     }
     mouseDown = false;
-    initEvent = null;
+    //initEvent = null;
 
     startOffset = 0;
     rangeParentNode = null;
-    console.log("The initEvent object was cleared to null in the onMouseUp registered handler?" );
+    console.log("onMouseUp registered handler is called");
 };
 
 var onMouseMove = function(e) {
@@ -68,7 +67,6 @@ var onScroll = function(e) {
 
 var onLongPressThenShow = function(e) {
     console.log("Enter Long Pressing Detecting Mode");
-    
     // update status
     isLongPressing = true;
     longPressTimer = null;
@@ -114,18 +112,24 @@ function onMouseDown(e) {
     //There is no window object in the this script TODO 
     //selection = window.getSelection().toString();
     selection = "TODO"
-    initEvent = e;
-    startOffset = initEvent.rangeOffset;
-    rangeParentNode = initEvent.rangeParent;
-       
-    console.log("The rangeParent of the event model " + initEvent.rangeParent);
+    initEvent= e;
+    console.error("this is only once every click");
 
-    if(document.caretRangeFromPoint){
-       range = document.caretRangeFromPoint(e.clientX, e.clientY);
-       console.log("The range clicked by original event is " + range );
+if(document.caretRangeFromPoint){
+       range = document.caretRangeFromPoint(initEvent.clientX, initEvent.clientY);
        rangeParentNode = range.startContainer;
        startOffset = range.startOffset; 
+  }
+
+  console.log("mouse download, carent position for FF");
+  if(document.caretPositionFromPoint){
+     startOffset = initEvent.rangeOffset;
+     rangeParentNode = initEvent.rangeParent;
+    
     }
+  console.log("call the findTargetWord method");
+  targetWord = findTargetWord(startOffset, rangeParentNode);
+
 
     theURL = window.document.URL;
     theContext = rangeParentNode.textContent;
@@ -137,10 +141,12 @@ function onMouseDown(e) {
     var isLink = e.target.tagName == 'A' || 
         (e.target.parentNode && e.target.parentNode.tagName == 'A');
     longPressTimer = setTimeout(onLongPressThenShow, isLink ? 2000: 700);
+    console.log("onMouseDown3, the initEvent.rangeParent.textContent is ", initEvent.rangeParent.textContent);
+    console.log("onMouseDown3, the initEvent.target id ", initEvent.target.id);
 };
 
 
-function findWordByEvent(event){
+function NO_USE_findWordByEvent(event){
   if(document.caretRangeFromPoint){
        range = document.caretRangeFromPoint(event.clientX, event.clientY);
        rangeParentNode = range.startContainer;
@@ -148,11 +154,13 @@ function findWordByEvent(event){
   }
 
   if(document.caretPositionFromPoint){
-        range = document.caretPositionFromPoint(e.clientX, e.clientY);
-        rangeParentNode = range.offsetNode;
-        startOffset = range.offset;
+     startOffset = event.rangeOffset;
+     rangeParentNode = event.rangeParent;
+      //rangeParent turn null here out of no reason
+    
     }
-
+  console.log("findWordByEvent event method");
+  console.log("event.rangeParent.textContent is ", initEvent.rangeParent.textContent);
   return findTargetWord(startOffset, rangeParentNode);
 
 }
@@ -233,7 +241,7 @@ function showMeaning (event){
     var createdDiv,
         info = getSelectionInfo(event);
 
-    info.word = findWordByEvent(event)
+    info.word = targetWord;
 
     if (!info) { return; }
     retrieveMeaning(info)
@@ -369,15 +377,18 @@ function getSelectionCoords(event) {
 
    let  rangeForCoord;
 
+   let oRect;
+
   if(document.caretRangeFromPoint){
-       rangeForCoord  = document.caretRangeFromPoint(event.clientX, event.clientY);
+    rangeForCoord  = document.caretRangeFromPoint(event.clientX, event.clientY);
+    oRect = rangeForCoord.getBoundingClientRect();
   }
 
   if(document.caretPositionFromPoint){
-        rangeForCoord = document.caretPositionFromPoint(e.clientX, e.clientY);
+    rangeForCoord = document.caretPositionFromPoint(event.clientX, event.clientY);
+    oRect = rangeForCoord.getClientRect();
     }
 
-    var oRect = rangeForCoord.getBoundingClientRect();
     return oRect;
 }
 
@@ -474,7 +485,6 @@ document.addEventListener('click', event_click);
 
 function event_click(event) {
     console.log("this method was triggered in the event_click method");
-    console.log("In event_click, the type of the event is " + event.type);
     if (haloword_opened && !isLongPressing) {
             haloword_opened = false;
             removeMeaning(event);
@@ -487,7 +497,6 @@ $(".VDXfz").css('z-index',-1);
 
 
 function NO_USE_handle_longpressing(event) {
-    console.log("handle_longpressing handler, event type is " + event.type);
 
         var lang2 = valid_word(theSelection);
         if (!lang2) {
