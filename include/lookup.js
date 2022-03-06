@@ -7,7 +7,7 @@ var DEFAULT_LANGUAGE = 'cn',
 
 
 var longPressTimer, isLoading, isLongPressing, mouseDown, 
-        initEvent, selection, startOffset, rangeParentNode, theSelection,
+        initEvent, startOffset, rangeParentNode, theSelection,
          theURL,theContext, targetWord;
 
 
@@ -111,7 +111,6 @@ function onMouseDown(e) {
     mouseDown = true;
     //There is no window object in the this script TODO 
     //selection = window.getSelection().toString();
-    selection = "TODO"
     initEvent= e;
     console.error("this is only once every click");
 
@@ -121,8 +120,8 @@ if(document.caretRangeFromPoint){
        startOffset = range.startOffset; 
   }
 
-  console.log("mouse download, carent position for FF");
   if(document.caretPositionFromPoint){
+    console.log("mouse download, carent position for FF");
      startOffset = initEvent.rangeOffset;
      rangeParentNode = initEvent.rangeParent;
     
@@ -140,9 +139,7 @@ if(document.caretRangeFromPoint){
     // launch a timer to detect "long press"
     var isLink = e.target.tagName == 'A' || 
         (e.target.parentNode && e.target.parentNode.tagName == 'A');
-    longPressTimer = setTimeout(onLongPressThenShow, isLink ? 2000: 700);
-    console.log("onMouseDown3, the initEvent.rangeParent.textContent is ", initEvent.rangeParent.textContent);
-    console.log("onMouseDown3, the initEvent.target id ", initEvent.target.id);
+    longPressTimer = setTimeout(onLongPressThenShow, isLink ? 1500: 700);
 };
 
 
@@ -454,12 +451,6 @@ function valid_word(word) {
 }
 
 var haloword_opened = false;
-
-var haloword_html = 
-'<div id="haloword-lookup" class="ui-widget-content" draggable="true">\
- <span><a href="https://www.context-dictionary.com/list/" target="_blank" title="查询历史">history</a></span>\
-</div><div id="haloword-content"></div></div>';
-
 
 console.log("How many bodies in the page loading");
 
