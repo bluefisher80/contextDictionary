@@ -99,6 +99,13 @@ function onClick(e){
 
 function onMouseDown(e) {
 
+
+    document.querySelectorAll(".VDXfz").forEach(function(Node){
+        Node.remove();
+   });
+
+
+
     console.log("this is inside the mousedown check");
     // check if left click
     if (e.which != 1) return;
@@ -484,8 +491,7 @@ function event_click(event) {
 
 
 //news.google.com
-$(".VDXfz").css('z-index',-1);
-
+//$(".VDXfz").css('z-index',-1);
 
 function NO_USE_handle_longpressing(event) {
 
