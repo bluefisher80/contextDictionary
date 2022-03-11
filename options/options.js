@@ -21,9 +21,6 @@ function saveOptions(e) {
             dblClick: {
                 key: document.querySelector("#popup-dblclick-key").value
             }
-        },
-        history: {
-            enabled: document.querySelector("#store-history-checkbox").checked
         }
     }).then(showSaveStatusAnimation);
 
@@ -48,9 +45,6 @@ function saveOptions(e) {
         // document.querySelector("#popup-select-checkbox").checked = interaction.select.enabled;
         // document.querySelector("#popup-select-key").value = interaction.select.key;
 
-        // history
-        document.querySelector("#store-history-checkbox").checked = history.enabled;
-        document.querySelector("#num-words-in-history").innerText = Object.keys(definitions).length;
     });
   }
   
