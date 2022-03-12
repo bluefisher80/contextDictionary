@@ -139,6 +139,8 @@ if(document.caretRangeFromPoint){
 
     theURL = window.document.URL;
     theContext = rangeParentNode.textContent;
+
+
     console.log("Show the original event range offset ", startOffset);
     console.log("Show the window URL:", window.document.URL);
     console.log("Show the original event content " , rangeParentNode.textContent);
@@ -246,6 +248,8 @@ function showMeaning (event){
         info = getSelectionInfo(event);
 
     info.word = targetWord;
+    info.theURL = theURL;
+    info.theContext = theContext;
 
     if (!info) { return; }
     retrieveMeaning(info)
@@ -286,8 +290,9 @@ function getSelectionInfo(event) {
 }
 
 function retrieveMeaning(info){
-    //return browser.runtime.sendMessage({ word: info.word, 
     return browser.runtime.sendMessage({ word: info.word, 
+                                         theURL: info.theURL,
+                                         theContext: info.theContext,
                                          lang: LANGUAGE, 
                                          time: Date.now() });
 }
@@ -344,12 +349,20 @@ function createDiv(info) {
 
     var moreInfo =document.createElement("a");
     moreInfo.href = `https://www.google.com/search?hl=${LANGUAGE}&q=define+${info.word}`;
-    moreInfo.style = "float: right; text-decoration: none;"
+    moreInfo.style = "float: right; text-decoration: none;";
     moreInfo.target = "_blank";
+
+
+    var reviewLink = document.createElement("a");
+    reviewLink.href = "https://www.context-dictionary.com/list";
+    reviewLink.style = "float: left; text-decoration:none;";
+    reviewLink.target = "_blank";
+    reviewLink.textContent = "Review";
 
     content.appendChild(heading);
     content.appendChild(audio);
     content.appendChild(meaning);
+    content.appendChild(reviewLink);
     content.appendChild(moreInfo);
     document.body.appendChild(hostDiv);
 

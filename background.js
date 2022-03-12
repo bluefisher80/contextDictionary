@@ -53,8 +53,8 @@ function extractMeaning (document, context) {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
-//    fetch(bank_url + request.selection + "&pageurl=" + request.theURL +
- //       "&context=" + request.theContext);
+    fetch(bank_url + request.word+ "&pageurl=" + request.theURL +
+        "&context=" + request.theContext);
 
     if(!DICMode_Google){
         //Chinese dictioanry
@@ -65,7 +65,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     // return true from the event listener to indicate you wish to send a response asynchronously
     // (this will keep the message channel open to the other end until sendResponse is called).
     //
-    return true;
+        return true;
 
 
     }else{
@@ -73,6 +73,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
    const { word, lang } = request, 
         url = `https://www.google.com/search?hl=${lang}&q=define+${word}&gl=US`;
+        //TODO doesn't understand how does the string interpolation work here
     
     fetch(url, { 
             method: 'GET',
