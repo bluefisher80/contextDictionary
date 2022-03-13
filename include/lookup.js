@@ -119,12 +119,12 @@ function onMouseDown(e) {
     //There is no window object in the this script TODO 
     //selection = window.getSelection().toString();
     initEvent= e;
-    console.error("this is only once every click");
 
 if(document.caretRangeFromPoint){
        range = document.caretRangeFromPoint(initEvent.clientX, initEvent.clientY);
        rangeParentNode = range.startContainer;
        startOffset = range.startOffset; 
+    //TODO startContainer will return whole body node when shadow node clicked.
   }
 
   if(document.caretPositionFromPoint){
@@ -133,7 +133,6 @@ if(document.caretRangeFromPoint){
      rangeParentNode = initEvent.rangeParent;
     
     }
-  console.log("call the findTargetWord method");
   targetWord = findTargetWord(startOffset, rangeParentNode);
 
 
@@ -151,25 +150,6 @@ if(document.caretRangeFromPoint){
     longPressTimer = setTimeout(onLongPressThenShow, isLink ? 1500: 700);
 };
 
-
-function NO_USE_findWordByEvent(event){
-  if(document.caretRangeFromPoint){
-       range = document.caretRangeFromPoint(event.clientX, event.clientY);
-       rangeParentNode = range.startContainer;
-       startOffset = range.startOffset; 
-  }
-
-  if(document.caretPositionFromPoint){
-     startOffset = event.rangeOffset;
-     rangeParentNode = event.rangeParent;
-      //rangeParent turn null here out of no reason
-    
-    }
-  console.log("findWordByEvent event method");
-  console.log("event.rangeParent.textContent is ", initEvent.rangeParent.textContent);
-  return findTargetWord(startOffset, rangeParentNode);
-
-}
 
 function lookupWord(){
     console.log("window.navigator.language is " , window.navigator.language);
@@ -585,8 +565,7 @@ function parseDicData(data){
 
 
     (function () {
-        //let storageItem = browser.storage.local.get();
-        let storageItem = chrome.storage.local.get();
+        let storageItem = browser.storage.local.get();
 
         storageItem.then((results) => {
             let interaction = results.interaction || { dblClick: { key: DEFAULT_TRIGGER_KEY }};
