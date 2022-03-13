@@ -516,53 +516,6 @@ function NO_USE_handle_longpressing(event) {
 
 
 
-function escapeHTML(str){return str;}
-
-function parseDicData(data){
-            var parser = new DOMParser();
-            var xml = parser.parseFromString(data, "application/xml");
-            var shop = "null";
-            WrHtml = "";//clear it
-            var hhitshop = xml.getElementsByTagName("dict");
-            for (var i = 0; i< hhitshop.length; i++){
-                shop =  hhitshop[i]; 
-
-                var key = shop.getElementsByTagName("key")[0].firstChild.nodeValue;
-                key = escapeHTML(key);
-
-                if(shop.getElementsByTagName("ps").length > 0 || shop.getElementsByTagName("pos").length > 0){
-                   // WrHtml += "<div id=key><strong>" + key + "</strong></div>";
-                }else{
-                   //WrHtml += "<div id=key><strong>Sorry, no definition found for the word.</strong></div>";
-                }
-
-
-                WrHtml += '<div class="phonetic">';
-
-                for(var c = 0; c< shop.getElementsByTagName("ps").length; c++){
-                    if(shop.getElementsByTagName("ps")[c].firstChild){
-                        WrHtml += '<div class=ps><strong>[' + escapeHTML(shop.getElementsByTagName("ps")[c].firstChild.nodeValue) + ']</strong></div>';
-                        WrHtml += '<audio controls><source src=' + escapeHTML(shop.getElementsByTagName("pron")[c].firstChild.nodeValue) +'></audio>';
-
-                    }
-                }
-
-                WrHtml += '</div>';
-
-                for (var e = 0; e< shop.getElementsByTagName("pos").length; e++){
-                    WrHtml += "<p>";
-                    if(shop.getElementsByTagName("pos")[e].firstChild){
-                        WrHtml += "<strong>" + escapeHTML(shop.getElementsByTagName("pos")[e].firstChild.nodeValue) + "</strong>";
-                        WrHtml += "&nbsp;&nbsp;&nbsp;";
-                    }
-                    WrHtml += escapeHTML(shop.getElementsByTagName("acceptation")[e].firstChild.nodeValue);
-                    WrHtml += "</p>";
-                 }
-            }
-
-    return WrHtml;
-}
-
 
     (function () {
         let storageItem = browser.storage.local.get();
