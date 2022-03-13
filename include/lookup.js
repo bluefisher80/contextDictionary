@@ -357,7 +357,7 @@ function createDiv(info) {
     reviewLink.href = "https://www.context-dictionary.com/list";
     reviewLink.style = "float: left; text-decoration:none;";
     reviewLink.target = "_blank";
-    reviewLink.textContent = "Review";
+    reviewLink.textContent = "« Review";
 
     content.appendChild(heading);
     content.appendChild(audio);
