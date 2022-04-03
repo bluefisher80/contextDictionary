@@ -84,7 +84,7 @@ var startLoading = function(clbk) {
 }
 
 
-function onClick(e){
+function urlLongClick(e){
 
     var isLink = e.target.tagName == 'A' || 
         (e.target.parentNode && e.target.parentNode.tagName == 'A');
@@ -98,12 +98,9 @@ function onClick(e){
 
 
 function onMouseDown(e) {
-
-
     document.querySelectorAll(".VDXfz").forEach(function(Node){
         Node.remove();
    });
-
 
 
     console.log("this is inside the mousedown check");
@@ -120,26 +117,23 @@ function onMouseDown(e) {
     //selection = window.getSelection().toString();
     initEvent= e;
 
-if(document.caretRangeFromPoint){
-       range = document.caretRangeFromPoint(initEvent.clientX, initEvent.clientY);
-       rangeParentNode = range.startContainer;
-       startOffset = range.startOffset; 
-    //TODO startContainer will return whole body node when shadow node clicked.
-  }
-
-  if(document.caretPositionFromPoint){
-    console.log("mouse download, carent position for FF");
-     startOffset = initEvent.rangeOffset;
-     rangeParentNode = initEvent.rangeParent;
-    
+    if(document.caretRangeFromPoint){
+        range = document.caretRangeFromPoint(initEvent.clientX, initEvent.clientY);
+        rangeParentNode = range.startContainer;
+        startOffset = range.startOffset; 
+        //TODO startContainer will return whole body node when shadow node clicked.
     }
-  targetWord = findTargetWord(startOffset, rangeParentNode);
 
+    if(document.caretPositionFromPoint){
+        console.log("mouse download, carent position for FF");
+        startOffset = initEvent.rangeOffset;
+        rangeParentNode = initEvent.rangeParent;
+    }
+
+    targetWord = findTargetWord(startOffset, rangeParentNode);
 
     theURL = window.document.URL;
     theContext = rangeParentNode.textContent;
-
-
     console.log("Show the original event range offset ", startOffset);
     console.log("Show the window URL:", window.document.URL);
     console.log("Show the original event content " , rangeParentNode.textContent);
@@ -212,11 +206,12 @@ function findTargetWord(startOffset, parentNode){
 
 
   //the LongClick handler
-  window.addEventListener('mouseup', onMouseUp, true);
-  window.addEventListener('click', onClick, true);
-  window.addEventListener('mousedown', onMouseDown, true);
-  window.addEventListener('mousemove', onMouseMove, true);
-  window.addEventListener('scroll', onScroll, true);
+    window.addEventListener('mouseup', onMouseUp, true);
+    window.addEventListener('click', urlLongClick, true);
+    document.addEventListener('click', event_click,true);
+    window.addEventListener('mousedown', onMouseDown, true);
+    window.addEventListener('mousemove', onMouseMove, true);
+    window.addEventListener('scroll', onScroll, true);
 
 
 
@@ -427,6 +422,8 @@ function removeMeaning(event){
         document.querySelectorAll(".dictionaryDiv").forEach(function(Node){
             Node.remove();
         });
+
+    haloword_opened = false;
     }
 }
 
@@ -472,19 +469,13 @@ document.addEventListener("DOMNodeInserted", function(event) {
 });
 */
 
-document.addEventListener('click', event_click);
 
 function event_click(event) {
     console.log("this method was triggered in the event_click method");
     if (haloword_opened && !isLongPressing) {
-            haloword_opened = false;
             removeMeaning(event);
     }
 }
-
-
-//news.google.com
-//$(".VDXfz").css('z-index',-1);
 
 function NO_USE_handle_longpressing(event) {
 
