@@ -1,8 +1,4 @@
-var DEFAULT_LANGUAGE = 'cn',
-        DEFAULT_TRIGGER_KEY = 'none',
-
-        LANGUAGE,
-        TRIGGER_KEY;
+var DEFAULT_LANGUAGE = "cn" , DEFAULT_TRIGGER_KEY = "none" , LANGUAGE , TRIGGER_KEY;
 
 
 
@@ -21,10 +17,10 @@ var onKikinGesture = function(event){
 //    console.log("bypassing the customDispatchEvent " + event.detail.status + " " + event.detail.reason );
 }
 
-window.addEventListener('mychromeGesture', onKikinGesture, true);
+window.addEventListener("mychromeGesture", onKikinGesture, true);
 
 var customDispatchEvent = function(s, r) {
-    window.dispatchEvent(new CustomEvent('mychromeGesture', {
+    window.dispatchEvent(new CustomEvent("mychromeGesture", {
         //TODO
         detail: {
             status: s,
@@ -72,22 +68,21 @@ var onLongPressThenShow = function(e) {
     longPressTimer = null;
     haloword_opened = true;
     showMeaning(initEvent);
- 
 };
 
 
 var startLoading = function(clbk) {
     // only load the thing once
-    if (isLoading) return;
+    if (isLoading) {return;}
     isLoading = true;
-    console.log("loading here");	
+    console.log("loading here");
 }
 
 
 function urlLongClick(e){
 
-    var isLink = e.target.tagName == 'A' || 
-        (e.target.parentNode && e.target.parentNode.tagName == 'A');
+    var isLink = e.target.tagName == "A" || 
+        (e.target.parentNode && e.target.parentNode.tagName == "A");
 
     if(isLink && isLongPressing){
         e.preventDefault();
@@ -355,7 +350,7 @@ function createDiv(info) {
         }
     }
 
-    return { 
+    return {
         heading,
         meaning,
         moreInfo,
