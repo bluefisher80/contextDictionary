@@ -205,11 +205,6 @@ window.addEventListener("mousedown", onMouseDown, true);
 window.addEventListener("mousemove", onMouseMove, true);
 window.addEventListener("scroll", onScroll, true);
 
-
-
-
-
-
 function showMeaning(event) {
     var createdDiv,
         info = getSelectionInfo(event);
