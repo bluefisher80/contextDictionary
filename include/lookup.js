@@ -20,7 +20,7 @@ var onKikinGesture = function(event){
 
 window.addEventListener("mychromeGesture", onKikinGesture, true);
 
-var customDispatchEvent = function(s, r) {
+var customDispatchEvent = function (s, r) {
     window.dispatchEvent(new CustomEvent("mychromeGesture", {
         //TODO
         detail: {
@@ -32,7 +32,7 @@ var customDispatchEvent = function(s, r) {
 }
 
 
-var onMouseUp = function(e) {
+var onMouseUp = function (e) {
     if (longPressTimer) {
         isLongPressing = false;
         cancelLongPress();
@@ -80,12 +80,12 @@ var startLoading = function(clbk) {
 }
 
 
-function urlLongClick(e){
+function urlLongClick(e) {
 
     var isLink = e.target.tagName == "A" ||
         (e.target.parentNode && e.target.parentNode.tagName == "A");
 
-    if(isLink && isLongPressing){
+    if (isLink && isLongPressing) {
         e.preventDefault();
     }
 
@@ -197,20 +197,20 @@ function findTargetWord(startOffset, parentNode){
 }
 
 
-  //the LongClick handler
-    window.addEventListener("mouseup", onMouseUp, true);
-    window.addEventListener("click", urlLongClick, true);
-    document.addEventListener("click", event_click,true);
-    window.addEventListener("mousedown", onMouseDown, true);
-    window.addEventListener("mousemove", onMouseMove, true);
-    window.addEventListener("scroll", onScroll, true);
+//the LongClick handler
+window.addEventListener("mouseup", onMouseUp, true);
+window.addEventListener("click", urlLongClick, true);
+document.addEventListener("click", event_click, true);
+window.addEventListener("mousedown", onMouseDown, true);
+window.addEventListener("mousemove", onMouseMove, true);
+window.addEventListener("scroll", onScroll, true);
 
 
 
 
 
 
-function showMeaning (event){
+function showMeaning(event) {
     var createdDiv,
         info = getSelectionInfo(event);
 
@@ -220,8 +220,8 @@ function showMeaning (event){
 
     if (!info) { return; }
     retrieveMeaning(info)
-        .then((response) => {                
-            if (!response.content) { return noMeaningFound(createdDiv);}
+        .then((response) => {
+            if (!response.content) { return noMeaningFound(createdDiv); }
             appendToDiv(createdDiv, response.content);
         });
 
@@ -256,12 +256,14 @@ function getSelectionInfo(event) {
     };
 }
 
-function retrieveMeaning(info){
-    return browser.runtime.sendMessage({ word: info.word,
-                                         theURL: info.theURL,
-                                         theContext: info.theContext,
-                                         lang: LANGUAGE,
-                                         time: Date.now() });
+function retrieveMeaning(info) {
+    return browser.runtime.sendMessage({
+        word: info.word,
+        theURL: info.theURL,
+        theContext: info.theContext,
+        lang: LANGUAGE,
+        time: Date.now()
+    });
 }
 
 function createDiv(info) {
@@ -471,42 +473,44 @@ function event_click(event) {
 
 function NO_USE_handle_longpressing(event) {
 
-        var lang2 = valid_word(theSelection);
-        if (!lang2) {
-            console.log("word detection");
-            return;
-        }
+    var lang2 = valid_word(theSelection);
+    if (!lang2) {
+        console.log("word detection");
+        return;
+    }
 
-        var result;
+    var result;
 
-        browser.runtime.sendMessage({selection: theSelection,
-                                    theURL: theURL,
-                                    lang: LANGUAGE,
-                                    theContext: theContext},
-            (response) => {
-            console.log("received user data in promise action, prepare to parse for the data and show it" );
+    browser.runtime.sendMessage({
+        selection: theSelection,
+        theURL: theURL,
+        lang: LANGUAGE,
+        theContext: theContext
+    },
+        (response) => {
+            console.log("received user data in promise action, prepare to parse for the data and show it");
             document.getElementById("haloword-content").innerHTML = parseDicData(response);
 
         });
 
-        // HACK: fix dict window not openable
+    // HACK: fix dict window not openable
 
-        setTimeout(function() {
-            haloword_opened = true;
-        }, 100);
+    setTimeout(function () {
+        haloword_opened = true;
+    }, 100);
 
 }
 
 
 
 
-    (function () {
-        let storageItem = browser.storage.local.get();
+(function () {
+    let storageItem = browser.storage.local.get();
 
-        storageItem.then((results) => {
-            let interaction = results.interaction || { dblClick: { key: DEFAULT_TRIGGER_KEY }};
+    storageItem.then((results) => {
+        let interaction = results.interaction || { dblClick: { key: DEFAULT_TRIGGER_KEY } };
 
-            LANGUAGE = results.language || DEFAULT_LANGUAGE;
-            TRIGGER_KEY = interaction.dblClick.key;
-        });
-    })();
+        LANGUAGE = results.language || DEFAULT_LANGUAGE;
+        TRIGGER_KEY = interaction.dblClick.key;
+    });
+})();
