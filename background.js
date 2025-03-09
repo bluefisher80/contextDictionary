@@ -1,7 +1,7 @@
 var dic_url = "https://dict-co.iciba.com/api/dictionary.php?key=9A801B3C3A8D0AB5A5059C2F4B71AC50&w=";
-var bank_url = "https://www.context-dictionary.com/add/?word=" ;
+var bank_url = "https://www.context-dictionary.com/add/?word=";
 
-let DICMode_Google  =  true;
+let DICMode_Google = true;
 
 const GOOGLE_SPEECH_URI = 'https://www.google.com/speech-api/v1/synthesize',
 
@@ -9,17 +9,17 @@ const GOOGLE_SPEECH_URI = 'https://www.google.com/speech-api/v1/synthesize',
         enabled: true
     };
 
-function extractMeaning (document, context) {
+function extractMeaning(document, context) {
     if (!document.querySelector("[data-dobid='hdw']")) { return null; }
-    
+
     var word = document.querySelector("[data-dobid='hdw']").textContent,
         definitionDiv = document.querySelector("div[data-dobid='dfn']"),
         meaning = "";
 
     if (definitionDiv) {
-        definitionDiv.querySelectorAll("span").forEach(function(span){
-            if(!span.querySelector("sup"))
-                 meaning = meaning + span.textContent;
+        definitionDiv.querySelectorAll("span").forEach(function (span) {
+            if (!span.querySelector("sup"))
+                meaning = meaning + span.textContent;
         });
     }
 
@@ -34,15 +34,15 @@ function extractMeaning (document, context) {
     }
     else if (audio) {
         let exactWord = word.replace(/·/g, ''), // We do not want syllable seperator to be present.
-            
-        queryString = new URLSearchParams({
-            text: exactWord, 
-            enc: 'mpeg', 
-            lang: context.lang, 
-            speed: '0.4', 
-            client: 'lr-language-tts', 
-            use_google_only_voices: 1
-        }).toString();
+
+            queryString = new URLSearchParams({
+                text: exactWord,
+                enc: 'mpeg',
+                lang: context.lang,
+                speed: '0.4',
+                client: 'lr-language-tts',
+                use_google_only_voices: 1
+            }).toString();
 
         audioSrc = `${GOOGLE_SPEECH_URI}?${queryString}`;
     }
@@ -53,134 +53,134 @@ function extractMeaning (document, context) {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
-    fetch(bank_url + request.word+ "&pageurl=" + request.theURL +
+    fetch(bank_url + request.word + "&pageurl=" + request.theURL +
         "&context=" + request.theContext);
 
-    if(request.lang == 'cn'){
+    if (request.lang == 'cn') {
         //Chinese dictioanry
         fetch(dic_url + request.word.toLowerCase()).
-                then(response => response.text())
-                .then((text) =>{
-                    const document = new DOMParser().parseFromString(text, 'application/xml'),
+            then(response => response.text())
+            .then((text) => {
+                const document = new DOMParser().parseFromString(text, 'application/xml'),
                     content = extractMeaningIciba(document, {});
-                    sendResponse({ content });
+                sendResponse({ content });
 
-                });
+            });
 
-    // return true from the event listener to indicate you wish to send a response asynchronously
-    // (this will keep the message channel open to the other end until sendResponse is called).
-    //
+        // return true from the event listener to indicate you wish to send a response asynchronously
+        // (this will keep the message channel open to the other end until sendResponse is called).
+        //
         return true;
-    }else{
-   const { word, lang } = request, 
-        url = `https://www.google.com/search?hl=${lang}&q=define+${word}&gl=US`;
+    } else {
+        const { word, lang } = request,
+            url = `https://www.google.com/search?hl=${lang}&q=define+${word}&gl=US`;
         //TODO doesn't understand how does the string interpolation work here
-    fetch(url, { 
+        fetch(url, {
             method: 'GET',
             credentials: 'omit'
         })
-        .then((response) => response.text())
-        .then((text) => {
-            const document = new DOMParser().parseFromString(text, 'text/html'),
-                content = extractMeaning(document, { word, lang });
+            .then((response) => response.text())
+            .then((text) => {
+                const document = new DOMParser().parseFromString(text, 'text/html'),
+                    content = extractMeaning(document, { word, lang });
 
-            sendResponse({ content });
+                sendResponse({ content });
 
-        });
+            });
 
-    return true;
+        return true;
 
     }
 });
 
 
 
-function escapeHTML(str){return str;}
+function escapeHTML(str) { return str; }
 
-function extractMeaningIciba(xml, context){
-            let key = "";
-            var shop = "null";
-                let audioSrc = "";
-                let meaning = "";
-            WrHtml = "";//clear it
-            var hhitshop = xml.getElementsByTagName("dict");
-            for (var i = 0; i< hhitshop.length; i++){
-                shop =  hhitshop[i]; 
+function extractMeaningIciba(xml, context) {
+    let key = "";
+    var shop = "null";
+    let audioSrc = "";
+    let meaning = "";
+    WrHtml = "";//clear it
+    var hhitshop = xml.getElementsByTagName("dict");
+    for (var i = 0; i < hhitshop.length; i++) {
+        shop = hhitshop[i];
 
-                key = shop.getElementsByTagName("key")[0].firstChild.nodeValue;
-                key = escapeHTML(key);
+        key = shop.getElementsByTagName("key")[0].firstChild.nodeValue;
+        key = escapeHTML(key);
 
-                if(shop.getElementsByTagName("ps").length > 0 || shop.getElementsByTagName("pos").length > 0){
-                   // WrHtml += "<div id=key><strong>" + key + "</strong></div>";
-                }else{
-                   //WrHtml += "<div id=key><strong>Sorry, no definition found for the word.</strong></div>";
-                }
-
-
-                for(var c = 0; c< shop.getElementsByTagName("ps").length; c++){
-                    if(shop.getElementsByTagName("ps")[c].firstChild){
-                        WrHtml += '<div class=ps><strong>[' + escapeHTML(shop.getElementsByTagName("ps")[c].firstChild.nodeValue) + ']</strong></div>';
-                        WrHtml += '<audio controls><source src=' + escapeHTML(shop.getElementsByTagName("pron")[c].firstChild.nodeValue) +'></audio>';
-                        //TODO two audio here , but takes only one now
-                        audioSrc = shop.getElementsByTagName("pron")[c].firstChild.nodeValue; 
-
-                    }
-                }
+        if (shop.getElementsByTagName("ps").length > 0 || shop.getElementsByTagName("pos").length > 0) {
+            // WrHtml += "<div id=key><strong>" + key + "</strong></div>";
+        } else {
+            //WrHtml += "<div id=key><strong>Sorry, no definition found for the word.</strong></div>";
+        }
 
 
+        for (var c = 0; c < shop.getElementsByTagName("ps").length; c++) {
+            if (shop.getElementsByTagName("ps")[c].firstChild) {
+                WrHtml += '<div class=ps><strong>[' + escapeHTML(shop.getElementsByTagName("ps")[c].firstChild.nodeValue) + ']</strong></div>';
+                WrHtml += '<audio controls><source src=' + escapeHTML(shop.getElementsByTagName("pron")[c].firstChild.nodeValue) + '></audio>';
+                //TODO two audio here , but takes only one now
+                audioSrc = shop.getElementsByTagName("pron")[c].firstChild.nodeValue;
 
-                for (var e = 0; e< shop.getElementsByTagName("pos").length; e++){
-                    if(shop.getElementsByTagName("pos")[e].firstChild){
-                        meaning += shop.getElementsByTagName("pos")[e].firstChild.nodeValue;
-                    }
-                    meaning += shop.getElementsByTagName("acceptation")[e].firstChild.nodeValue;
-                 }
             }
+        }
+
+
+
+        for (var e = 0; e < shop.getElementsByTagName("pos").length; e++) {
+            if (shop.getElementsByTagName("pos")[e].firstChild) {
+                meaning += shop.getElementsByTagName("pos")[e].firstChild.nodeValue;
+            }
+            meaning += shop.getElementsByTagName("acceptation")[e].firstChild.nodeValue;
+        }
+    }
 
     return { word: key, meaning: meaning, audioSrc: audioSrc };
 }
 
-function aborted__parseDicData(data){
-            var parser = new DOMParser();
-            var xml = parser.parseFromString(data, "application/xml");
-            var shop = "null";
-            WrHtml = "";//clear it
-            var hhitshop = xml.getElementsByTagName("dict");
-            for (var i = 0; i< hhitshop.length; i++){
-                shop =  hhitshop[i]; 
+function aborted__parseDicData(data) {
+    var parser = new DOMParser();
+    var xml = parser.parseFromString(data, "application/xml");
+    var shop = "null";
+    WrHtml = "";//clear it
+    var hhitshop = xml.getElementsByTagName("dict");
+    for (var i = 0; i < hhitshop.length; i++) {
+        shop = hhitshop[i];
 
-                var key = shop.getElementsByTagName("key")[0].firstChild.nodeValue;
-                key = escapeHTML(key);
+        var key = shop.getElementsByTagName("key")[0].firstChild.nodeValue;
+        key = escapeHTML(key);
 
-                if(shop.getElementsByTagName("ps").length > 0 || shop.getElementsByTagName("pos").length > 0){
-                   // WrHtml += "<div id=key><strong>" + key + "</strong></div>";
-                }else{
-                   //WrHtml += "<div id=key><strong>Sorry, no definition found for the word.</strong></div>";
-                }
+        if (shop.getElementsByTagName("ps").length > 0 || shop.getElementsByTagName("pos").length > 0) {
+            // WrHtml += "<div id=key><strong>" + key + "</strong></div>";
+        } else {
+            //WrHtml += "<div id=key><strong>Sorry, no definition found for the word.</strong></div>";
+        }
 
 
-                WrHtml += '<div class="phonetic">';
+        WrHtml += '<div class="phonetic">';
 
-                for(var c = 0; c< shop.getElementsByTagName("ps").length; c++){
-                    if(shop.getElementsByTagName("ps")[c].firstChild){
-                        WrHtml += '<div class=ps><strong>[' + escapeHTML(shop.getElementsByTagName("ps")[c].firstChild.nodeValue) + ']</strong></div>';
-                        WrHtml += '<audio controls><source src=' + escapeHTML(shop.getElementsByTagName("pron")[c].firstChild.nodeValue) +'></audio>';
+        for (var c = 0; c < shop.getElementsByTagName("ps").length; c++) {
+            if (shop.getElementsByTagName("ps")[c].firstChild) {
+                WrHtml += '<div class=ps><strong>[' + escapeHTML(shop.getElementsByTagName("ps")[c].firstChild.nodeValue) + ']</strong></div>';
+                WrHtml += '<audio controls><source src=' + escapeHTML(shop.getElementsByTagName("pron")[c].firstChild.nodeValue) + '></audio>';
 
-                    }
-                }
-
-                WrHtml += '</div>';
-
-                for (var e = 0; e< shop.getElementsByTagName("pos").length; e++){
-                    WrHtml += "<p>";
-                    if(shop.getElementsByTagName("pos")[e].firstChild){
-                        WrHtml += "<strong>" + escapeHTML(shop.getElementsByTagName("pos")[e].firstChild.nodeValue) + "</strong>";
-                        WrHtml += "&nbsp;&nbsp;&nbsp;";
-                    }
-                    WrHtml += escapeHTML(shop.getElementsByTagName("acceptation")[e].firstChild.nodeValue);
-                    WrHtml += "</p>";
-                 }
             }
+        }
+
+        WrHtml += '</div>';
+
+        for (var e = 0; e < shop.getElementsByTagName("pos").length; e++) {
+            WrHtml += "<p>";
+            if (shop.getElementsByTagName("pos")[e].firstChild) {
+                WrHtml += "<strong>" + escapeHTML(shop.getElementsByTagName("pos")[e].firstChild.nodeValue) + "</strong>";
+                WrHtml += "&nbsp;&nbsp;&nbsp;";
+            }
+            WrHtml += escapeHTML(shop.getElementsByTagName("acceptation")[e].firstChild.nodeValue);
+            WrHtml += "</p>";
+        }
+    }
 
     return WrHtml;
 }
