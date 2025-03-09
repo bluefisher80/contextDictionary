@@ -39,7 +39,7 @@ var onMouseUp = function(e) {
     if (longPressTimer) {
         isLongPressing = false;
         cancelLongPress();
-        customDispatchEvent('failed', 'short');
+        customDispatchEvent("failed", "short");
     }
     mouseDown = false;
     //initEvent = null;
@@ -53,7 +53,7 @@ var onMouseMove = function(e) {
     if (longPressTimer) {
         isLongPressing = false;
         cancelLongPress();
-        customDispatchEvent('failed', 'move');
+        customDispatchEvent("failed", "move");
     }
 }
 
@@ -61,7 +61,7 @@ var onScroll = function(e) {
     if (longPressTimer) {
         isLongPressing = false;
         cancelLongPress();
-        customDispatchEvent('failed', 'scroll');
+        customDispatchEvent("failed", "scroll");
     }
 }
 
@@ -106,10 +106,10 @@ function onMouseDown(e) {
     console.log("this is inside the mousedown check");
     // check if left click
     if (e.which != 1) return;
-    
+  
     // check if it's in an input
     if (/^(INPUT|TEXTAREA|SELECT|HTML)$/.exec(e.target.tagName)) return;
-    
+  
     // save infos
     isLongPressing = false;
     mouseDown = true;
@@ -137,10 +137,10 @@ function onMouseDown(e) {
     console.log("Show the original event range offset ", startOffset);
     console.log("Show the window URL:", window.document.URL);
     console.log("Show the original event content " , rangeParentNode.textContent);
-    
+  
     // launch a timer to detect "long press"
-    var isLink = e.target.tagName == 'A' || 
-        (e.target.parentNode && e.target.parentNode.tagName == 'A');
+    var isLink = e.target.tagName == "A" ||
+        (e.target.parentNode && e.target.parentNode.tagName == "A");
     longPressTimer = setTimeout(onLongPressThenShow, isLink ? 1500: 700);
 };
 
@@ -154,14 +154,14 @@ function findTargetWord(startOffset, parentNode){
 
     console.log("Enter finding target word logic");
     table = [];
-    
+  
     console.log("Enter finding target word logic 1");
     //disalbe this method for just right now
     console.log("Enter finding target word logic 1.1");
 
     offset = startOffset;
     console.log("Enter finding target word logic 1.2");
-    
+  
     console.log("Enter finding target word logic 2");
     console.log("Enter find target node "+  parentNode.textContent);
     var textarray = parentNode.textContent.split("");
@@ -198,20 +198,19 @@ function findTargetWord(startOffset, parentNode){
     }
 
     var word = table.join("");
-    console.log("Ready to print out the word: ", word);
-    
+    console.log("Ready to print out the word: ", word);  
     return word;
 
 }
 
 
   //the LongClick handler
-    window.addEventListener('mouseup', onMouseUp, true);
-    window.addEventListener('click', urlLongClick, true);
-    document.addEventListener('click', event_click,true);
-    window.addEventListener('mousedown', onMouseDown, true);
-    window.addEventListener('mousemove', onMouseMove, true);
-    window.addEventListener('scroll', onScroll, true);
+    window.addEventListener("mouseup", onMouseUp, true);
+    window.addEventListener("click", urlLongClick, true);
+    document.addEventListener("click", event_click,true);
+    window.addEventListener("mousedown", onMouseDown, true);
+    window.addEventListener("mousemove", onMouseMove, true);
+    window.addEventListener("scroll", onScroll, true);
 
 
 
@@ -229,7 +228,7 @@ function showMeaning (event){
     if (!info) { return; }
     retrieveMeaning(info)
         .then((response) => {                
-            if (!response.content) { return noMeaningFound(createdDiv); }
+            if (!response.content) { return noMeaningFound(createdDiv);}
             appendToDiv(createdDiv, response.content);
         });
 
@@ -265,10 +264,10 @@ function getSelectionInfo(event) {
 }
 
 function retrieveMeaning(info){
-    return browser.runtime.sendMessage({ word: info.word, 
+    return browser.runtime.sendMessage({ word: info.word,
                                          theURL: info.theURL,
                                          theContext: info.theContext,
-                                         lang: LANGUAGE, 
+                                         lang: LANGUAGE,
                                          time: Date.now() });
 }
 
@@ -279,7 +278,7 @@ function createDiv(info) {
     hostDiv.style.left = info.left -10 + "px";
     hostDiv.style.position = "absolute";
     hostDiv.style.zIndex = "1000000"
-    hostDiv.attachShadow({mode: 'open'});
+    hostDiv.attachShadow({mode: "open"});
 
     var shadow = hostDiv.shadowRoot;
     var style = document.createElement("style");
@@ -357,9 +356,9 @@ function createDiv(info) {
     }
 
     return { 
-        heading, 
-        meaning, 
-        moreInfo, 
+        heading,
+        meaning,
+        moreInfo,
         audio 
     };
 
@@ -492,7 +491,7 @@ function NO_USE_handle_longpressing(event) {
                                     lang: LANGUAGE,
                                     theContext: theContext}, 
             (response) => {
-            console.log('received user data in promise action, prepare to parse for the data and show it' );
+            console.log("received user data in promise action, prepare to parse for the data and show it" );
             document.getElementById("haloword-content").innerHTML = parseDicData(response);
 
         });
@@ -502,7 +501,7 @@ function NO_USE_handle_longpressing(event) {
         setTimeout(function() {
             haloword_opened = true;
         }, 100);
-    
+
 }
 
 
