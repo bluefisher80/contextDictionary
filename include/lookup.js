@@ -2,7 +2,7 @@ var DEFAULT_LANGUAGE = "cn" , DEFAULT_TRIGGER_KEY = "none" , LANGUAGE , TRIGGER_
 
 
 
-var longPressTimer, isLoading, isLongPressing, mouseDown, 
+var longPressTimer, isLoading, isLongPressing, mouseDown,
         initEvent, startOffset, rangeParentNode, theSelection,
          theURL,theContext, targetWord;
 
@@ -14,8 +14,9 @@ var cancelLongPress = function() {
 
 
 var onKikinGesture = function(event){
+    return;
 //    console.log("bypassing the customDispatchEvent " + event.detail.status + " " + event.detail.reason );
-}
+};
 
 window.addEventListener("mychromeGesture", onKikinGesture, true);
 
@@ -81,7 +82,7 @@ var startLoading = function(clbk) {
 
 function urlLongClick(e){
 
-    var isLink = e.target.tagName == "A" || 
+    var isLink = e.target.tagName == "A" ||
         (e.target.parentNode && e.target.parentNode.tagName == "A");
 
     if(isLink && isLongPressing){
@@ -100,22 +101,20 @@ function onMouseDown(e) {
 
     console.log("this is inside the mousedown check");
     // check if left click
-    if (e.which != 1) return;
-  
+    if (e.which != 1) {return;}
     // check if it's in an input
-    if (/^(INPUT|TEXTAREA|SELECT|HTML)$/.exec(e.target.tagName)) return;
-  
+    if (/^(INPUT|TEXTAREA|SELECT|HTML)$/.exec(e.target.tagName)){return;}
     // save infos
     isLongPressing = false;
     mouseDown = true;
-    //There is no window object in the this script TODO 
+    //There is no window object in the this script TODO
     //selection = window.getSelection().toString();
     initEvent= e;
 
     if(document.caretRangeFromPoint){
         range = document.caretRangeFromPoint(initEvent.clientX, initEvent.clientY);
         rangeParentNode = range.startContainer;
-        startOffset = range.startOffset; 
+        startOffset = range.startOffset;
         //TODO startContainer will return whole body node when shadow node clicked.
     }
 
@@ -132,7 +131,6 @@ function onMouseDown(e) {
     console.log("Show the original event range offset ", startOffset);
     console.log("Show the window URL:", window.document.URL);
     console.log("Show the original event content " , rangeParentNode.textContent);
-  
     // launch a timer to detect "long press"
     var isLink = e.target.tagName == "A" ||
         (e.target.parentNode && e.target.parentNode.tagName == "A");
@@ -193,7 +191,7 @@ function findTargetWord(startOffset, parentNode){
     }
 
     var word = table.join("");
-    console.log("Ready to print out the word: ", word);  
+    console.log("Ready to print out the word: ", word);
     return word;
 
 }
@@ -484,7 +482,7 @@ function NO_USE_handle_longpressing(event) {
         browser.runtime.sendMessage({selection: theSelection,
                                     theURL: theURL,
                                     lang: LANGUAGE,
-                                    theContext: theContext}, 
+                                    theContext: theContext},
             (response) => {
             console.log("received user data in promise action, prepare to parse for the data and show it" );
             document.getElementById("haloword-content").innerHTML = parseDicData(response);
