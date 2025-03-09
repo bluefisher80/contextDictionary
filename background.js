@@ -1,5 +1,4 @@
 var dic_url = "https://dict-co.iciba.com/api/dictionary.php?key=9A801B3C3A8D0AB5A5059C2F4B71AC50&w=";
-var bank_url = "https://www.context-dictionary.com/add/?word=";
 
 let DICMode_Google = true;
 
@@ -52,9 +51,24 @@ function extractMeaning(document, context) {
 
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    // Store the word data in browser storage
+    const wordData = {
+        word: request.word,
+        pageUrl: request.theURL,
+        context: request.theContext,
+        timestamp: new Date().toISOString()
+    };
 
-    fetch(bank_url + request.word + "&pageurl=" + request.theURL +
-        "&context=" + request.theContext);
+    // Get existing words array from storage and add new word
+    browser.storage.local.get('savedWords').then(result => {
+        const savedWords = result.savedWords || [];
+        console.log('Saved words:', savedWords);
+
+
+        savedWords.push(wordData);
+        return browser.storage.local.set({ savedWords });
+    });
+
 
     if (request.lang == 'cn') {
         //Chinese dictioanry
