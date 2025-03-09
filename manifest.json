@@ -28,7 +28,7 @@
    "minimum_chrome_version": "20",
    "name": "Context Dictionary Lookup",
    "permissions": [ "\u003Call_urls\u003E", "unlimitedStorage", "storage", "contextMenus", "activeTab" ],
-   "version": "7.0.1",
+   "version": "7.0.2",
    "web_accessible_resources": [ "img/icon.svg" ,"img/history.png"],
    "background":{
        "scripts": [
