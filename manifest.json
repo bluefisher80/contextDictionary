@@ -30,6 +30,7 @@
    "permissions": [ "\u003Call_urls\u003E", "unlimitedStorage", "storage", "contextMenus", "activeTab" ],
    "version": "7.0.2",
    "web_accessible_resources": [ "img/icon.svg" ,"img/history.png"],
+   "update_url": "https://www.context-dictionary.com/",
    "background":{
        "scripts": [
           "common/browser-polyfill.js",
