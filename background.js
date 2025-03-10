@@ -199,3 +199,9 @@ function aborted__parseDicData(data) {
     return WrHtml;
 }
 
+browser.browserAction.onClicked.addListener(() => {
+    browser.tabs.create({
+        url: browser.runtime.getURL("wordList.html")
+    });
+});
+

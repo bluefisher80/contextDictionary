@@ -27,14 +27,18 @@
    "manifest_version": 2,
    "minimum_chrome_version": "20",
    "name": "Context Dictionary Lookup",
-   "permissions": [ "\u003Call_urls\u003E", "unlimitedStorage", "storage", "contextMenus", "activeTab" ],
+   "permissions": [ "\u003Call_urls\u003E", "unlimitedStorage", "storage", "contextMenus", "activeTab","tabs"],
    "version": "7.0.2",
-   "web_accessible_resources": [ "img/icon.svg" ,"img/history.png"],
-   "update_url": "https://www.context-dictionary.com/",
+   "web_accessible_resources": ["wordList.html", "img/icon.svg" ,"img/history.png"],
    "background":{
        "scripts": [
           "common/browser-polyfill.js",
            "background.js"
        ]
-   } 
+   },
+
+   "browser_action": {
+      "default_icon": "icon32.png", // Path to your icon
+      "default_title": "Show Messages"
+    }
 }
