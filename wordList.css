@@ -1,19 +1,21 @@
 body {
-    width: 400px;
-    padding: 10px;
-    font-family: Arial, sans-serif;
-  }
-  
-  #messages-container {
-    margin-top: 15px;
-  }
-  
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  li {
-    padding: 8px;
-    border-bottom: 1px solid #eee;
-  }
+  max-width: 800px;
+  width: 90%;
+  margin: 0 auto;
+  padding: 10px;
+  font-family: Arial, sans-serif;
+}
+
+#messages-container {
+  margin-top: 15px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+}
