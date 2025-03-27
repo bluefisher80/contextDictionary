@@ -51,6 +51,14 @@ function extractMeaning(document, context) {
 
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+
+    if (request.action === "openWordList") {
+        chrome.tabs.create({
+            url: chrome.runtime.getURL("wordList.html")
+        });
+        return
+    }
+
     // Store the word data in browser storage
     const wordData = {
         word: request.word,
@@ -63,11 +71,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     browser.storage.local.get('savedWords').then(result => {
         const savedWords = result.savedWords || [];
         console.log('Saved words:', savedWords);
-
-
-        savedWords.push(wordData);
-        return browser.storage.local.set({ savedWords });
-    });
+        if (request.action === "openWordList") {
+            chrome.tabs.create({
+                url: chrome.runtime.getURL("wordList.html")
+            });
+        }
+    
 
 
     if (request.lang == 'cn') {
@@ -204,4 +213,3 @@ browser.browserAction.onClicked.addListener(() => {
         url: browser.runtime.getURL("wordList.html")
     });
 });
-

@@ -318,7 +318,12 @@ function createDiv(info) {
 
 
     var reviewLink = document.createElement("a");
-    reviewLink.href = "https://www.context-dictionary.com/list";
+    reviewLink.addEventListener("click", function(e) {
+        e.preventDefault();
+        browser.runtime.sendMessage({
+            action: "openWordList"
+        });
+    });
     reviewLink.style = "float: left; text-decoration:none;";
     reviewLink.target = "_blank";
     reviewLink.textContent = "« Review";
