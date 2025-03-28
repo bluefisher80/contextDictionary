@@ -71,14 +71,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     browser.storage.local.get('savedWords').then(result => {
         const savedWords = result.savedWords || [];
         console.log('Saved words:', savedWords);
-        if (request.action === "openWordList") {
-            chrome.tabs.create({
-                url: chrome.runtime.getURL("wordList.html")
-            });
-        }
+        savedWords.push(wordData);
+        return browser.storage.local.set({ savedWords });
+    });
     
-
-
     if (request.lang == 'cn') {
         //Chinese dictioanry
         fetch(dic_url + request.word.toLowerCase()).
