@@ -11,7 +11,26 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const list = document.createElement("ul");
   savedWords.forEach(({ word, pageUrl, context, timestamp }) => {
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = '❌';
+    deleteButton.style.marginLeft = '5px';
+    deleteButton.onclick = async () => {
+      const updatedWords = savedWords.filter(w => 
+      w.word !== word || 
+      w.pageUrl !== pageUrl || 
+      w.timestamp !== timestamp
+      );
+      await browser.storage.local.set({ savedWords: updatedWords });
+      container.innerHTML = '';
+      const newList = document.createElement('ul');
+      if (updatedWords.length === 0) {
+      container.innerHTML = "<p>No messages found.</p>";
+      return;
+      }
+      window.location.reload();
+    };
     const li = document.createElement("li");
+    li.appendChild(deleteButton); // Add this line to display the delete button
 
     const wordSpan = document.createElement('strong');
     wordSpan.textContent = word + ': ';
