@@ -15,17 +15,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     deleteButton.textContent = '❌';
     deleteButton.style.marginLeft = '5px';
     deleteButton.onclick = async () => {
-      const updatedWords = savedWords.filter(w => 
-      w.word !== word || 
-      w.pageUrl !== pageUrl || 
-      w.timestamp !== timestamp
+      const updatedWords = savedWords.filter(w =>
+        w.word !== word ||
+        w.pageUrl !== pageUrl ||
+        w.timestamp !== timestamp
       );
       await browser.storage.local.set({ savedWords: updatedWords });
       container.innerHTML = '';
       const newList = document.createElement('ul');
       if (updatedWords.length === 0) {
-      container.innerHTML = "<p>No messages found.</p>";
-      return;
+        container.innerHTML = "<p>No messages found.</p>";
+        return;
       }
       window.location.reload();
     };
@@ -59,4 +59,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
   container.appendChild(list);
 
+});
+
+document.getElementById('story-button').addEventListener('click', function () {
+  chrome.storage.local.get("savedWords", function (result) {
+    const savedWords = result.savedWords || [];
+    const prompt = `Write a short story for the sake of memorize these words: ${savedWords.map(item => item.word).join(', ')}, with a link to www.context-dictionary.com`;
+    document.getElementById('story_prompt').textContent = prompt;
+  });
 });
