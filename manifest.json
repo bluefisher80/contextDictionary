@@ -29,8 +29,7 @@
       "extension_pages": "script-src 'self'; object-src 'self'"
    },
    "options_ui": {
-      "page": "options/options.html",
-      "browser_style": true
+      "page": "options/options.html"
    },
    "permissions": [
       "https://*/*",
@@ -56,7 +55,7 @@
    "background": {
       "scripts": [
          "background.js",
-         "common/polyfill.js"
+         "common/browser-polyfill.js"
       ]
    },
    "action": {
