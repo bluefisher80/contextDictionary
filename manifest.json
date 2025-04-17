@@ -32,13 +32,15 @@
       "page": "options/options.html"
    },
    "permissions": [
-      "https://*/*",
-      "http://*/*",
       "unlimitedStorage",
       "storage",
       "contextMenus",
       "activeTab",
       "tabs"
+   ],
+   "host_permissions": [
+      "https://*/*",
+      "http://*/*"
    ],
    "web_accessible_resources": [
       {
