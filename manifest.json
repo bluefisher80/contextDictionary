@@ -1,22 +1,8 @@
 {
-   "content_scripts": [ {
-      "all_frames": true,
-      "css": [ "style/lookup.css" ],
-      "js": [ 
-          "common/browser-polyfill.js",
-          "include/lookup.js"
-      ],
-      "matches": [ "\u003Call_urls\u003E" ]
-   } ],
-   "content_security_policy": "script-src 'self'; object-src 'self'",
+   "manifest_version": 3,
+   "name": "Context Dictionary Lookup",
+   "version": "7.0.4",
    "description": "Web dictionary with context information.",
-
-  "options_ui": {
-    "page": "options/options.html",
-    "browser_style": true,
-    "chrome_style": true
-  },
-
    "icons": {
       "128": "icon128.png",
       "16": "icon16.png",
@@ -24,21 +10,57 @@
       "32": "icon32.png",
       "48": "icon48.png"
    },
-   "manifest_version": 2,
-   "minimum_chrome_version": "20",
-   "name": "Context Dictionary Lookup",
-   "permissions": [ "\u003Call_urls\u003E", "unlimitedStorage", "storage", "contextMenus", "activeTab","tabs"],
-   "version": "7.0.2",
-   "web_accessible_resources": ["wordList.html", "img/icon.svg" ,"img/history.png"],
-   "background":{
-       "scripts": [
-          "common/browser-polyfill.js",
-           "background.js"
-       ]
+   "content_scripts": [
+      {
+         "all_frames": true,
+         "css": [
+            "style/lookup.css"
+         ],
+         "js": [
+            "common/browser-polyfill.js",
+            "include/lookup.js"
+         ],
+         "matches": [
+            "<all_urls>"
+         ]
+      }
+   ],
+   "content_security_policy": {
+      "extension_pages": "script-src 'self'; object-src 'self'"
    },
-
-   "browser_action": {
-      "default_icon": "icon32.png", // Path to your icon
+   "options_ui": {
+      "page": "options/options.html",
+      "browser_style": true
+   },
+   "permissions": [
+      "https://*/*",
+      "http://*/*",
+      "unlimitedStorage",
+      "storage",
+      "contextMenus",
+      "activeTab",
+      "tabs"
+   ],
+   "web_accessible_resources": [
+      {
+         "resources": [
+            "wordList.html",
+            "img/icon.svg",
+            "img/history.png"
+         ],
+         "matches": [
+            "<all_urls>"
+         ]
+      }
+   ],
+   "background": {
+      "scripts": [
+         "background.js",
+         "common/polyfill.js"
+      ]
+   },
+   "action": {
+      "default_icon": "icon32.png",
       "default_title": "Show Messages"
-    }
+   }
 }
