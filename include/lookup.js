@@ -1,7 +1,8 @@
 var DEFAULT_LANGUAGE = "cn" , DEFAULT_TRIGGER_KEY = "none" , LANGUAGE , TRIGGER_KEY;
 
-const browserAPI = browser || window.chrome;
+const browserAPI = typeof browser !== 'undefined' ? browser : chrome;
 console.log("without polyfill browserAPI is " , browserAPI);
+
 
 //Copilot tell me browser is default in firefox but not window.browser
 //polyfill is for chrome to use browser.
@@ -287,7 +288,7 @@ function getSelectionInfo(event) {
 
 function retrieveMeaning(info) {
     
-    return browser.runtime.sendMessage({
+    return browserAPI.runtime.sendMessage({
         word: info.word,
         theURL: info.theURL,
         theContext: info.theContext,
@@ -355,7 +356,7 @@ function createDiv(info) {
     var reviewLink = document.createElement("a");
     reviewLink.addEventListener("click", function(e) {
         e.preventDefault();
-        browser.runtime.sendMessage({
+        browserAPI.runtime.sendMessage({
             action: "openWordList"
         });
     });
@@ -516,7 +517,7 @@ function NO_USE_handle_longpressing(event) {
 
     var result;
 
-    browser.runtime.sendMessage({
+    browserAPI.runtime.sendMessage({
         selection: theSelection,
         theURL: theURL,
         lang: LANGUAGE,
@@ -540,7 +541,7 @@ function NO_USE_handle_longpressing(event) {
 
 
 (function () {
-    let storageItem = browser.storage.local.get();
+    let storageItem = browserAPI.storage.local.get();
 
     storageItem.then((results) => {
         let interaction = results.interaction || { dblClick: { key: DEFAULT_TRIGGER_KEY } };
