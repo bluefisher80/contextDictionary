@@ -55,10 +55,11 @@
    ],
    "background": {
       "scripts": [
-         "common/browser-polyfill.js",
+         
          "background.js"
       ],
-      "service-worker": "background.js"
+      "service_worker": "background.js"
+      
    },
    "action": {
       "default_icon": "icon32.png",
