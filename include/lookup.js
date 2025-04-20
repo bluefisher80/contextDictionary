@@ -1,8 +1,6 @@
 var DEFAULT_LANGUAGE = "cn" , DEFAULT_TRIGGER_KEY = "none" , LANGUAGE , TRIGGER_KEY;
 
 const browserAPI = typeof browser !== 'undefined' ? browser : chrome;
-console.log("without polyfill browserAPI is " , browserAPI);
-
 
 //Copilot tell me browser is default in firefox but not window.browser
 //polyfill is for chrome to use browser.

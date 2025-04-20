@@ -2,7 +2,8 @@
 //self.importScripts('common/browser-polyfill.js');
 
 
-const browserAPI = window.browser || window.chrome;
+const browserAPI = typeof browser !== 'undefined' ? browser : chrome;
+console.log("From background service-worker , without polyfill browserAPI is " , browserAPI);
 
 console.log("This is some logs" + browserAPI);
 
