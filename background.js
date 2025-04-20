@@ -213,8 +213,11 @@ function aborted__parseDicData(data) {
     return WrHtml;
 }
 
+/**
 browserAPI.browserAction.onClicked.addListener(() => {
     browserAPI.tabs.create({
         url: browserAPI.runtime.getURL("wordList.html")
     });
 });
+
+*/
