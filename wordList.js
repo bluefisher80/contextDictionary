@@ -1,8 +1,10 @@
+const browserAPI = typeof browser !== 'undefined' ? browser : chrome;
+
 document.addEventListener("DOMContentLoaded", async () => {
   const container = document.getElementById("messages-container");
 
   // Fetch messages from storage
-  const result = await browser.storage.local.get("savedWords");
+  const result = await browserAPI.storage.local.get("savedWords");
   const savedWords = result.savedWords || [];
   if (savedWords.length === 0) {
     container.innerHTML = "<p>No messages found.</p>";
@@ -20,7 +22,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         w.pageUrl !== pageUrl ||
         w.timestamp !== timestamp
       );
-      await browser.storage.local.set({ savedWords: updatedWords });
+      await browserAPI.storage.local.set({ savedWords: updatedWords });
       container.innerHTML = '';
       const newList = document.createElement('ul');
       if (updatedWords.length === 0) {
