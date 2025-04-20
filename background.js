@@ -1,3 +1,11 @@
+// Import the browser polyfill
+//self.importScripts('common/browser-polyfill.js');
+
+
+const browserAPI = window.browser || window.chrome;
+
+console.log("This is some logs" + browserAPI);
+
 var dic_url = "https://dict-co.iciba.com/api/dictionary.php?key=9A801B3C3A8D0AB5A5059C2F4B71AC50&w=";
 
 let DICMode_Google = true;
@@ -68,11 +76,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     };
 
     // Get existing words array from storage and add new word
-    browser.storage.local.get('savedWords').then(result => {
+    browserAPI.storage.local.get('savedWords').then(result => {
         const savedWords = result.savedWords || [];
         console.log('Saved words:', savedWords);
         savedWords.push(wordData);
-        return browser.storage.local.set({ savedWords });
+        return browserAPI.storage.local.set({ savedWords });
     });
     
     if (request.lang == 'cn') {
@@ -204,8 +212,8 @@ function aborted__parseDicData(data) {
     return WrHtml;
 }
 
-browser.browserAction.onClicked.addListener(() => {
-    browser.tabs.create({
-        url: browser.runtime.getURL("wordList.html")
+browserAPI.browserAction.onClicked.addListener(() => {
+    browserAPI.tabs.create({
+        url: browserAPI.runtime.getURL("wordList.html")
     });
 });

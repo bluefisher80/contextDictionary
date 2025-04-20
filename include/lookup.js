@@ -1,5 +1,11 @@
 var DEFAULT_LANGUAGE = "cn" , DEFAULT_TRIGGER_KEY = "none" , LANGUAGE , TRIGGER_KEY;
 
+const browserAPI = browser || window.chrome;
+console.log("without polyfill browserAPI is " , browserAPI);
+
+//Copilot tell me browser is default in firefox but not window.browser
+//polyfill is for chrome to use browser.
+//so if no polyfill, browserAPI how to make it cross-browser
 
 
 var longPressTimer, isLoading, isLongPressing, mouseDown,
@@ -124,6 +130,34 @@ function onMouseDown(e) {
         rangeParentNode = initEvent.rangeParent;
     }
 
+
+    if (document.caretPositionFromPoint) {
+        // Standard API supported in modern browsers (including Chrome and Firefox)
+        const caretPosition = document.caretPositionFromPoint(initEvent.clientX, initEvent.clientY);
+        rangeParentNode = caretPosition.offsetNode;
+        startOffset = caretPosition.offset;
+    
+        // Ensure the rangeParentNode is a text node
+        if (rangeParentNode.nodeType !== Node.TEXT_NODE) {
+            console.log("Clicked on a non-text node, skipping logic.");
+            return;
+        }
+    } else if (document.caretRangeFromPoint) {
+        // Fallback for older browsers
+        const range = document.caretRangeFromPoint(initEvent.clientX, initEvent.clientY);
+        rangeParentNode = range.startContainer;
+        startOffset = range.startOffset;
+    
+        // Ensure the rangeParentNode is a text node
+        if (rangeParentNode.nodeType !== Node.TEXT_NODE) {
+            console.log("Clicked on a non-text node, skipping logic.");
+            return;
+        }
+    } else {
+        console.log("Neither caretPositionFromPoint nor caretRangeFromPoint is supported.");
+        return;
+    }
+    
     targetWord = findTargetWord(startOffset, rangeParentNode);
 
     theURL = window.document.URL;
@@ -252,6 +286,7 @@ function getSelectionInfo(event) {
 }
 
 function retrieveMeaning(info) {
+    
     return browser.runtime.sendMessage({
         word: info.word,
         theURL: info.theURL,
