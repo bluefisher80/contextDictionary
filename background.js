@@ -89,15 +89,21 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         fetch(dic_url + request.word.toLowerCase()).
             then(response => response.text())
             .then((text) => {
-                const document = new DOMParser().parseFromString(text, 'application/xml'),
-                    content = extractMeaningIciba(document, {});
-                sendResponse({ content });
+                // Send the raw text to the content script for parsing
+                chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                    chrome.tabs.sendMessage(tabs[0].id, { action: "parseXML", text }, (response) => {
+                        sendResponse(response); // Send the parsed result back to the original sender
+                    });
+                });
 
+            })
+            .catch((error) => {
+                console.error("Error fetching dictionary data:", error);
+                sendResponse({ error: "Failed to fetch dictionary data" });
             });
-
         // return true from the event listener to indicate you wish to send a response asynchronously
         // (this will keep the message channel open to the other end until sendResponse is called).
-        //
+        //TODO does it need to return true here since code is now SendMessage? is it async?
         return true;
     } else {
         const { word, lang } = request,
@@ -109,11 +115,16 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         })
             .then((response) => response.text())
             .then((text) => {
-                const document = new DOMParser().parseFromString(text, 'text/html'),
-                    content = extractMeaning(document, { word, lang });
+                // Send the raw text to the content script for parsing
+                chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                    chrome.tabs.sendMessage(tabs[0].id, { action: "parseHTML", text, word, lang }, (response) => {
+                        sendResponse(response); // Send the parsed result back to the original sender
+                    });
+                });
 
-                sendResponse({ content });
-
+            }).catch((error) => {
+                console.error("Error fetching Google definition data:", error);
+                sendResponse({ error: "Failed to fetch Google definition data" });
             });
 
         return true;

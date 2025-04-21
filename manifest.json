@@ -59,7 +59,6 @@
          "background.js"
       ],
       "service_worker": "background.js"
-      
    },
    "action": {
       "default_icon": "icon32.png",

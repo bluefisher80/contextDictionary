@@ -237,10 +237,12 @@ document.addEventListener("click", event_click, true);
 window.addEventListener("mousedown", onMouseDown, true);
 window.addEventListener("mousemove", onMouseMove, true);
 window.addEventListener("scroll", onScroll, true);
+ // Declare createdDiv globally
+let createdDiv;
 
 function showMeaning(event) {
-    var createdDiv,
-        info = getSelectionInfo(event);
+    
+    info = getSelectionInfo(event);
 
     info.word = targetWord;
     info.theURL = theURL;
@@ -248,10 +250,6 @@ function showMeaning(event) {
 
     if (!info) { return; }
     retrieveMeaning(info)
-        .then((response) => {
-            if (!response.content) { return noMeaningFound(createdDiv); }
-            appendToDiv(createdDiv, response.content);
-        });
 
     // Creating this div while we are fetching meaning to make extension more fast.
     createdDiv = createDiv(info);
@@ -413,12 +411,15 @@ function getSelectionCoords(event) {
 }
 
 function appendToDiv(createdDiv, content){
+    console.log("First show log in the appendToDiv" + content);
     var hostDiv = createdDiv.heading.getRootNode().host;
+    console.log("Second show log in the appendToDiv" + content);
     var popupDiv = createdDiv.heading.getRootNode().querySelectorAll("div")[1];
 
     var heightBefore = popupDiv.clientHeight;
     createdDiv.heading.textContent = content.word;
     createdDiv.meaning.textContent = content.meaning;
+    console.log("show log in the appendToDiv" + content);
     createdDiv.moreInfo.textContent = "More »";
 
     var heightAfter = popupDiv.clientHeight;
@@ -550,16 +551,28 @@ function NO_USE_handle_longpressing(event) {
 })();
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    console.log("Received message in content script:", message);
     if (message.action === "parseXML") {
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(message.text, 'application/xml');
         const content = extractMeaningIciba(xmlDoc, {});
-        sendResponse({ content }); // Send the parsed content back to the service worker
+        if (!content || !content.word) {
+            return noMeaningFound(createdDiv); // Use the global createdDiv
+        }
+        console.log("Parsed content in listener method:", content);
+        appendToDiv(createdDiv, content); // Use the global createdDiv
     } else if (message.action === "parseHTML") {
         const parser = new DOMParser();
         const htmlDoc = parser.parseFromString(message.text, 'text/html');
         const content = extractMeaning(htmlDoc, { word: message.word, lang: message.lang });
-        sendResponse({ content }); // Send the parsed content back to the service worker
+        if (!content || !content.word) {
+            return noMeaningFound(createdDiv); // Use the global createdDiv
+        }
+        appendToDiv(createdDiv, content); // Use the global createdDiv
+    } else if (message.action === "displayError") {
+        console.error(message.error);
+        const createdDiv = createDiv({ word: "Error" });
+        noMeaningFound(createdDiv);
     }
 });
 
