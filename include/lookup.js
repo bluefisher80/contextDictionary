@@ -548,3 +548,86 @@ function NO_USE_handle_longpressing(event) {
         TRIGGER_KEY = interaction.dblClick.key;
     });
 })();
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === "parseXML") {
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(message.text, 'application/xml');
+        const content = extractMeaningIciba(xmlDoc, {});
+        sendResponse({ content }); // Send the parsed content back to the service worker
+    } else if (message.action === "parseHTML") {
+        const parser = new DOMParser();
+        const htmlDoc = parser.parseFromString(message.text, 'text/html');
+        const content = extractMeaning(htmlDoc, { word: message.word, lang: message.lang });
+        sendResponse({ content }); // Send the parsed content back to the service worker
+    }
+});
+
+// Reuse the existing extractMeaningIciba function
+function extractMeaningIciba(xml, context) {
+    let key = "";
+    let audioSrc = "";
+    let meaning = "";
+    const hhitshop = xml.getElementsByTagName("dict");
+
+    for (let i = 0; i < hhitshop.length; i++) {
+        const shop = hhitshop[i];
+        key = shop.getElementsByTagName("key")[0].firstChild.nodeValue;
+
+        for (let c = 0; c < shop.getElementsByTagName("ps").length; c++) {
+            if (shop.getElementsByTagName("ps")[c].firstChild) {
+                audioSrc = shop.getElementsByTagName("pron")[c].firstChild.nodeValue;
+            }
+        }
+
+        for (let e = 0; e < shop.getElementsByTagName("pos").length; e++) {
+            if (shop.getElementsByTagName("pos")[e].firstChild) {
+                meaning += shop.getElementsByTagName("pos")[e].firstChild.nodeValue;
+            }
+            meaning += shop.getElementsByTagName("acceptation")[e].firstChild.nodeValue;
+        }
+    }
+
+    return { word: key, meaning, audioSrc };
+}
+
+// Reuse the existing extractMeaning function
+function extractMeaning(document, context) {
+    if (!document.querySelector("[data-dobid='hdw']")) return null;
+
+    const word = document.querySelector("[data-dobid='hdw']").textContent;
+    const definitionDiv = document.querySelector("div[data-dobid='dfn']");
+    let meaning = "";
+
+    if (definitionDiv) {
+        definitionDiv.querySelectorAll("span").forEach((span) => {
+            if (!span.querySelector("sup")) meaning += span.textContent;
+        });
+    }
+
+    meaning = meaning[0].toUpperCase() + meaning.substring(1);
+
+    const audio = document.querySelector("audio[jsname='QInZvb']");
+    const source = document.querySelector("audio[jsname='QInZvb'] source");
+    let audioSrc = source && source.getAttribute('src');
+
+    if (audioSrc) {
+        if (!audioSrc.includes("http")) {
+            audioSrc = audioSrc.replace("//", "https://");
+        }
+    } else if (audio) {
+        const exactWord = word.replace(/·/g, '');
+        const queryString = new URLSearchParams({
+            text: exactWord,
+            enc: 'mpeg',
+            lang: context.lang,
+            speed: '0.4',
+            client: 'lr-language-tts',
+            use_google_only_voices: 1
+        }).toString();
+
+        audioSrc = `${GOOGLE_SPEECH_URI}?${queryString}`;
+    }
+
+    return { word, meaning, audioSrc };
+}
