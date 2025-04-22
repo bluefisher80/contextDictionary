@@ -43,21 +43,24 @@ li {
 
 /* Style the delete button */
 button {
-  background-color: #ff4d4d;
-  color: white;
-  border: none;
+  background-color: #e0e0e0; /* Light gray background */
+  color: #333; /* Dark gray text */
+  border: 1px solid #ccc; /* Subtle border */
   border-radius: 3px;
-  padding: 5px 10px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
 }
 
 button:hover {
-  background-color: #ff1a1a;
+  background-color: #d6d6d6; /* Slightly darker gray on hover */
+  color: #000; /* Darker text on hover */
+  border-color: #bbb; /* Darker border on hover */
 }
 
 button:active {
-  background-color: #cc0000;
+  background-color: #c8c8c8; /* Even darker gray when clicked */
+  color: #000;
+  border-color: #aaa;
 }
 
 /* Style the link */
@@ -98,4 +101,30 @@ a:hover {
 .context-tooltip:hover .tooltip-text {
   visibility: visible;
   opacity: 1;
+}
+
+.word-highlight {
+  background-color: #ffeb3b; /* Yellow highlight */
+  font-weight: 700; /* Bolder text */
+  display: inline-block;
+  padding: 0 2px;
+  line-height: 1.2;
+  position: relative;
+  margin-top: 5px;
+  width: 100%;
+}
+.word-highlight:hover {
+  background-color: #fdd835; /* Darker yellow on hover */
+  cursor: pointer;
+}
+.word-highlight:active {
+  background-color: #fbc02d; /* Even darker yellow when clicked */
+  cursor: pointer;
+}
+.word-highlight:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(255, 235, 59, 0.5); /* Yellow glow */
+}
+.word-highlight:focus-visible {
+  outline: 2px solid #ffeb3b; /* Yellow outline */
 }

@@ -44,8 +44,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     li.appendChild(deleteButton);
 
-    const wordSpan = document.createElement('strong');
-    wordSpan.textContent = word + ': ';
+    const wordSpan = document.createElement('span');
+    wordSpan.textContent = word ;
+    wordSpan.className = 'word-highlight';
 
     const contextSpan = document.createElement('span');
     const regex = new RegExp(`(${word})`, 'gi');
