@@ -11,6 +11,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
+  // Display word count
+  const wordCount = document.createElement("p");
+  wordCount.textContent = `Total Words: ${savedWords.length}`;
+  wordCount.style.fontWeight = "bold";
+  container.appendChild(wordCount);
+
   const list = document.createElement("ul");
   savedWords.forEach(({ word, pageUrl, context, timestamp }) => {
     const deleteButton = document.createElement('button');
@@ -31,8 +37,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
       window.location.reload();
     };
+
     const li = document.createElement("li");
-    li.appendChild(deleteButton); // Add this line to display the delete button
+    li.style.opacity = 0; // Start with opacity 0 for fade-in effect
+    setTimeout(() => (li.style.opacity = 1), 100); // Fade-in effect
+
+    li.appendChild(deleteButton);
 
     const wordSpan = document.createElement('strong');
     wordSpan.textContent = word + ': ';
@@ -43,6 +53,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     contextSpan.innerHTML = highlightedContext + ' ';
     contextSpan.textContent = context + ' ';
 
+    // Add tooltip for context
+    const tooltipWrapper = document.createElement('span');
+    tooltipWrapper.className = 'context-tooltip';
+    tooltipWrapper.textContent = 'ℹ️';
+    const tooltipText = document.createElement('span');
+    tooltipText.className = 'tooltip-text';
+    tooltipText.textContent = context;
+    tooltipWrapper.appendChild(tooltipText);
+
     const link = document.createElement('a');
     link.href = pageUrl;
     link.textContent = '🔗';
@@ -52,15 +71,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const timeSpan = document.createElement('span');
     timeSpan.textContent = ` (${new Date(timestamp).toLocaleDateString()})`;
+
     li.appendChild(wordSpan);
     li.appendChild(contextSpan);
+    li.appendChild(tooltipWrapper); // Add tooltip
     li.appendChild(link);
     li.appendChild(timeSpan);
 
     list.appendChild(li);
   });
   container.appendChild(list);
-
 });
 
 document.getElementById('story-button').addEventListener('click', function () {
