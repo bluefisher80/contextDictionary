@@ -232,3 +232,7 @@ browserAPI.browserAction.onClicked.addListener(() => {
 });
 
 */
+
+browserAPI.action.onClicked.addListener(() => {
+    browserAPI.tabs.create({ url: chrome.runtime.getURL("wordList.html") });
+});

@@ -62,7 +62,6 @@
    },
    "action": {
       "default_icon": "icon32.png",
-      "default_title": "Show Messages",
-      "default_popup": "wordList.html"
+      "default_title": "Show Messages"
    }
 }
