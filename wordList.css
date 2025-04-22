@@ -104,27 +104,32 @@ a:hover {
 }
 
 .word-highlight {
-  background-color: #ffeb3b; /* Yellow highlight */
-  font-weight: 700; /* Bolder text */
+  background-color: #f5f5f5; /* Light gray background for subtle highlight */
+  font-weight: 700; /* Medium font weight */
   display: inline-block;
   padding: 0 2px;
   line-height: 1.2;
   position: relative;
   margin-top: 5px;
   width: 100%;
+  color: #333; /* Dark gray text for readability */
 }
+
 .word-highlight:hover {
-  background-color: #fdd835; /* Darker yellow on hover */
+  background-color: #eaeaea; /* Slightly darker gray on hover */
   cursor: pointer;
 }
+
 .word-highlight:active {
-  background-color: #fbc02d; /* Even darker yellow when clicked */
+  background-color: #dcdcdc; /* Even darker gray when clicked */
   cursor: pointer;
 }
+
 .word-highlight:focus {
   outline: none;
-  box-shadow: 0 0 5px rgba(255, 235, 59, 0.5); /* Yellow glow */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* Subtle gray glow */
 }
+
 .word-highlight:focus-visible {
-  outline: 2px solid #ffeb3b; /* Yellow outline */
+  outline: 1px solid #ccc; /* Subtle gray outline */
 }
