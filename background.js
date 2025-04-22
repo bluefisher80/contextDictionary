@@ -224,14 +224,7 @@ function aborted__parseDicData(data) {
     return WrHtml;
 }
 
-/**
-browserAPI.browserAction.onClicked.addListener(() => {
-    browserAPI.tabs.create({
-        url: browserAPI.runtime.getURL("wordList.html")
-    });
-});
 
-*/
 
 browserAPI.action.onClicked.addListener(() => {
     browserAPI.tabs.create({ url: chrome.runtime.getURL("wordList.html") });
