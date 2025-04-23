@@ -1,7 +1,3 @@
-// Import the browser polyfill
-//self.importScripts('common/browser-polyfill.js');
-
-
 const browserAPI = typeof browser !== 'undefined' ? browser : chrome;
 console.log("From background service-worker , without polyfill browserAPI is " , browserAPI);
 
@@ -13,12 +9,9 @@ let DICMode_Google = true;
 
 const GOOGLE_SPEECH_URI = 'https://www.google.com/speech-api/v1/synthesize',
 
-    DEFAULT_HISTORY_SETTING = {
+DEFAULT_HISTORY_SETTING = {
         enabled: true
     };
-
-
-
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
@@ -50,10 +43,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         fetch(dic_url + request.word.toLowerCase()).
             then(response => response.text())
             .then((text) => {
-                // Send the raw text to the content script for parsing
                 chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                     chrome.tabs.sendMessage(tabs[0].id, { action: "parseXML", text }, (response) => {
-                        sendResponse(response); // Send the parsed result back to the original sender
+                        sendResponse(response); 
                     });
                 });
 
@@ -75,13 +67,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         })
             .then((response) => response.text())
             .then((text) => {
-                // Send the raw text to the content script for parsing
                 chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                     chrome.tabs.sendMessage(tabs[0].id, { action: "parseHTML", text, word, lang }, (response) => {
                         sendResponse(response); // Send the parsed result back to the original sender
                     });
                 });
-
             }).catch((error) => {
                 console.error("Error fetching Google definition data:", error);
                 sendResponse({ error: "Failed to fetch Google definition data" });
@@ -93,10 +83,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 
-
 function escapeHTML(str) { return str; }
-
-
 
 function aborted__parseDicData(data) {
     var parser = new DOMParser();
@@ -142,8 +129,6 @@ function aborted__parseDicData(data) {
 
     return WrHtml;
 }
-
-
 
 browserAPI.action.onClicked.addListener(() => {
     browserAPI.tabs.create({ url: chrome.runtime.getURL("wordList.html") });
