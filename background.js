@@ -17,46 +17,7 @@ const GOOGLE_SPEECH_URI = 'https://www.google.com/speech-api/v1/synthesize',
         enabled: true
     };
 
-function extractMeaning(document, context) {
-    if (!document.querySelector("[data-dobid='hdw']")) { return null; }
 
-    var word = document.querySelector("[data-dobid='hdw']").textContent,
-        definitionDiv = document.querySelector("div[data-dobid='dfn']"),
-        meaning = "";
-
-    if (definitionDiv) {
-        definitionDiv.querySelectorAll("span").forEach(function (span) {
-            if (!span.querySelector("sup"))
-                meaning = meaning + span.textContent;
-        });
-    }
-
-    meaning = meaning[0].toUpperCase() + meaning.substring(1);
-
-    var audio = document.querySelector("audio[jsname='QInZvb']"),
-        source = document.querySelector("audio[jsname='QInZvb'] source"),
-        audioSrc = source && source.getAttribute('src');
-
-    if (audioSrc) {
-        !audioSrc.includes("http") && (audioSrc = audioSrc.replace("//", "https://"));
-    }
-    else if (audio) {
-        let exactWord = word.replace(/·/g, ''), // We do not want syllable seperator to be present.
-
-            queryString = new URLSearchParams({
-                text: exactWord,
-                enc: 'mpeg',
-                lang: context.lang,
-                speed: '0.4',
-                client: 'lr-language-tts',
-                use_google_only_voices: 1
-            }).toString();
-
-        audioSrc = `${GOOGLE_SPEECH_URI}?${queryString}`;
-    }
-
-    return { word: word, meaning: meaning, audioSrc: audioSrc };
-};
 
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -108,7 +69,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     } else {
         const { word, lang } = request,
             url = `https://www.google.com/search?hl=${lang}&q=define+${word}&gl=US`;
-        //TODO doesn't understand how does the string interpolation work here
         fetch(url, {
             method: 'GET',
             credentials: 'omit'
@@ -136,48 +96,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 function escapeHTML(str) { return str; }
 
-function extractMeaningIciba(xml, context) {
-    let key = "";
-    var shop = "null";
-    let audioSrc = "";
-    let meaning = "";
-    WrHtml = "";//clear it
-    var hhitshop = xml.getElementsByTagName("dict");
-    for (var i = 0; i < hhitshop.length; i++) {
-        shop = hhitshop[i];
 
-        key = shop.getElementsByTagName("key")[0].firstChild.nodeValue;
-        key = escapeHTML(key);
-
-        if (shop.getElementsByTagName("ps").length > 0 || shop.getElementsByTagName("pos").length > 0) {
-            // WrHtml += "<div id=key><strong>" + key + "</strong></div>";
-        } else {
-            //WrHtml += "<div id=key><strong>Sorry, no definition found for the word.</strong></div>";
-        }
-
-
-        for (var c = 0; c < shop.getElementsByTagName("ps").length; c++) {
-            if (shop.getElementsByTagName("ps")[c].firstChild) {
-                WrHtml += '<div class=ps><strong>[' + escapeHTML(shop.getElementsByTagName("ps")[c].firstChild.nodeValue) + ']</strong></div>';
-                WrHtml += '<audio controls><source src=' + escapeHTML(shop.getElementsByTagName("pron")[c].firstChild.nodeValue) + '></audio>';
-                //TODO two audio here , but takes only one now
-                audioSrc = shop.getElementsByTagName("pron")[c].firstChild.nodeValue;
-
-            }
-        }
-
-
-
-        for (var e = 0; e < shop.getElementsByTagName("pos").length; e++) {
-            if (shop.getElementsByTagName("pos")[e].firstChild) {
-                meaning += shop.getElementsByTagName("pos")[e].firstChild.nodeValue;
-            }
-            meaning += shop.getElementsByTagName("acceptation")[e].firstChild.nodeValue;
-        }
-    }
-
-    return { word: key, meaning: meaning, audioSrc: audioSrc };
-}
 
 function aborted__parseDicData(data) {
     var parser = new DOMParser();
