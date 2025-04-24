@@ -87,7 +87,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 document.getElementById('story-button').addEventListener('click', function () {
   chrome.storage.local.get("savedWords", function (result) {
     const savedWords = result.savedWords || [];
-    const prompt = `Write a short story for the sake of memorize these word(first read date) pairs: ${savedWords.map(item => `${item.word} (${new Date(item.timestamp).toLocaleDateString()})`).join(', ')}, with a link to www.context-dictionary.com`;
+    const prompt = `Write a short story for the sake of memorize these word(first read date) pairs: ${savedWords.map(item => `${item.word} (${new Date(item.timestamp).toLocaleDateString()})`).join(', ')}, with a link to https://www.context-dictionary.com`;
     document.getElementById('story_prompt').textContent = prompt;
   });
 });

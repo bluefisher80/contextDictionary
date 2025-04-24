@@ -1,13 +1,12 @@
 {
    "manifest_version": 3,
-   "name": "Context Dictionary Lookup",
+   "name": "Context Dictionary",
    "version": "7.0.5",
    "description": "Web dictionary with context information.",
 
    "browser_specific_settings": {
    "gecko": {
-      "id": "addon@context-dictionary.com",
-      "update_url": "https://context-dictionary.com/updates.json"
+      "id": "addon@context-dictionary.com"
       }
    },
 
@@ -65,8 +64,7 @@
       "scripts": [
          
          "background.js"
-      ],
-      "service_worker": "background.js"
+      ]
    },
    "action": {
       "default_icon": "icon32.png",
