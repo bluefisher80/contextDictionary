@@ -38,6 +38,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         return browserAPI.storage.local.set({ savedWords });
     });
     
+
     if (request.lang == 'cn') {
         //Chinese dictioanry
         fetch(dic_url + request.word.toLowerCase()).
@@ -59,14 +60,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         //TODO does it need to return true here since code is now SendMessage? is it async?
         return true;
     } else {
-        const { word, lang } = request,
-            url = `https://www.google.com/search?hl=${lang}&q=define+${word}&gl=US`;
+        word = request.word;
+        lang = request.lang;
+        const url = `https://www.google.com/search?hl=${lang}&q=define+${word}&gl=US`;
+        console.log("The lang is " + lang);
         fetch(url, {
             method: 'GET',
             credentials: 'omit'
         })
             .then((response) => response.text())
             .then((text) => {
+                console.log("The text is " + text);
                 chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                     chrome.tabs.sendMessage(tabs[0].id, { action: "parseHTML", text, word, lang }, (response) => {
                         sendResponse(response); // Send the parsed result back to the original sender
