@@ -536,9 +536,6 @@ function NO_USE_handle_longpressing(event) {
 
 }
 
-
-
-
 (function () {
     let storageItem = browserAPI.storage.local.get();
 
