@@ -40,9 +40,7 @@
    "permissions": [
       "unlimitedStorage",
       "storage",
-      "contextMenus",
-      "activeTab",
-      "tabs"
+      "activeTab"
    ],
    "host_permissions": [
       "https://*/*",
@@ -60,12 +58,14 @@
          ]
       }
    ],
+
    "background": {
       "scripts": [
          
          "background.js"
-      ]
-   },
+      ],
+         "service_worker": "background.js"
+      },
    "action": {
       "default_icon": "icon32.png",
       "default_title": "Show Messages"
