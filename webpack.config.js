@@ -1,9 +1,11 @@
 const path = require('path');
 const ExtensionManifestPlugin = require('webpack-extension-manifest-plugin');
 const webpack = require('webpack'); // Required for ProvidePlugin
+const JavaScriptObfuscator = require('webpack-obfuscator'); // Import the obfuscator
+
 
 module.exports = {
-  mode: 'development',
+  mode: 'production',
   entry: {
     background: './background.js',
     wordList: './wordList.js',
@@ -42,6 +44,12 @@ module.exports = {
         base: path.resolve(__dirname, 'manifest.json'),
       },
     }),
+    new JavaScriptObfuscator({  // Add the obfuscator plugin
+      rotateStringArray: true,
+      stringArray: true,
+      stringArrayThreshold: 0.75,
+      disableConsoleOutput: true,
+    }, ['**/test.js']) //exclude test.js
   ],
   devtool: 'source-map',
 };
