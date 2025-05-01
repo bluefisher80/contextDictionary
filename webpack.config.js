@@ -1,5 +1,6 @@
 const path = require('path');
 const ExtensionManifestPlugin = require('webpack-extension-manifest-plugin');
+const webpack = require('webpack'); // Required for ProvidePlugin
 
 module.exports = {
   mode: 'development',
@@ -26,7 +27,16 @@ module.exports = {
       },
     ],
   },
+  resolve: {
+    fallback: {
+    },
+  },
   plugins: [
+
+    new webpack.ProvidePlugin({
+      Buffer: ['buffer', 'Buffer'], // Automatically provide Buffer
+      process: 'process/browser',   // Automatically provide process
+    }),
     new ExtensionManifestPlugin({
       config: {
         base: path.resolve(__dirname, 'manifest.json'),
@@ -35,3 +45,5 @@ module.exports = {
   ],
   devtool: 'source-map',
 };
+
+

@@ -39,7 +39,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     });
     
 
-    if (request.lang == 'cn') {
+    if (request.lang !== 'cn') {
         //Chinese dictioanry
         fetch(dic_url + request.word.toLowerCase()).
             then(response => response.text())
@@ -62,24 +62,25 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     } else {
         word = request.word;
         lang = request.lang;
-        const url = `https://www.google.com/search?hl=${lang}&q=define+${word}&gl=US`;
-        console.log("The lang is " + lang);
+
+        const url = 'https://translation.googleapis.com/language/translate/v2?key=AIzaSyBPDdJIGHNxR1ZkmWNC2wElOroWF4En62A';
+        const headers = {
+        'Content-Type': 'application/json; charset=utf-8',
+        };
+
         fetch(url, {
-            method: 'GET',
-            credentials: 'omit'
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify({
+            "q": [`${word}`],
+            "target": "zh-CN",
+        }),
         })
-            .then((response) => response.text())
-            .then((text) => {
-                console.log("The text is " + text);
-                chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-                    chrome.tabs.sendMessage(tabs[0].id, { action: "parseHTML", text, word, lang }, (response) => {
-                        sendResponse(response); // Send the parsed result back to the original sender
-                    });
-                });
-            }).catch((error) => {
-                console.error("Error fetching Google definition data:", error);
-                sendResponse({ error: "Failed to fetch Google definition data" });
-            });
+        .then((response) => response.json())
+        .then((data) => console.log(data))
+        .catch((error) => console.error(error));
+
+
 
         return true;
 
