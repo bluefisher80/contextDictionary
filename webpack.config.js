@@ -45,10 +45,7 @@ module.exports = {
       },
     }),
     new JavaScriptObfuscator({  // Add the obfuscator plugin
-      rotateStringArray: true,
-      stringArray: true,
-      stringArrayThreshold: 0.75,
-      disableConsoleOutput: true,
+      rotateStringArray: true
     }, ['**/test.js']) //exclude test.js
   ],
   devtool: 'source-map',
