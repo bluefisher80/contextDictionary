@@ -77,7 +77,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         }),
         })
         .then((response) => response.json())
-        .then((data) => console.log(data))
+        .then((data) => {
+            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                chrome.tabs.sendMessage(tabs[0].id, { action: "parseJSON", data }, (response) => {
+                    sendResponse(response); 
+                });
+            });
+
+        })
         .catch((error) => console.error(error));
 
 

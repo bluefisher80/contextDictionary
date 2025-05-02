@@ -1,4 +1,4 @@
-var DEFAULT_LANGUAGE = "cn" , DEFAULT_TRIGGER_KEY = "none" , LANGUAGE , TRIGGER_KEY;
+var DEFAULT_LANGUAGE = "cn", DEFAULT_TRIGGER_KEY = "none", LANGUAGE, TRIGGER_KEY;
 
 const browserAPI = typeof browser !== 'undefined' ? browser : chrome;
 
@@ -8,19 +8,19 @@ const browserAPI = typeof browser !== 'undefined' ? browser : chrome;
 
 
 var longPressTimer, isLoading, isLongPressing, mouseDown,
-        initEvent, startOffset, rangeParentNode, theSelection,
-         theURL,theContext, targetWord;
+    initEvent, startOffset, rangeParentNode, theSelection,
+    theURL, theContext, targetWord;
 
 
-var cancelLongPress = function() {
+var cancelLongPress = function () {
     clearTimeout(longPressTimer);
     longPressTimer = null;
 }
 
 
-var onKikinGesture = function(event){
+var onKikinGesture = function (event) {
     return;
-//    console.log("bypassing the customDispatchEvent " + event.detail.status + " " + event.detail.reason );
+    //    console.log("bypassing the customDispatchEvent " + event.detail.status + " " + event.detail.reason );
 };
 
 window.addEventListener("mychromeGesture", onKikinGesture, true);
@@ -51,7 +51,7 @@ var onMouseUp = function (e) {
     console.log("onMouseUp registered handler is called");
 };
 
-var onMouseMove = function(e) {
+var onMouseMove = function (e) {
     if (longPressTimer) {
         isLongPressing = false;
         cancelLongPress();
@@ -59,7 +59,7 @@ var onMouseMove = function(e) {
     }
 }
 
-var onScroll = function(e) {
+var onScroll = function (e) {
     if (longPressTimer) {
         isLongPressing = false;
         cancelLongPress();
@@ -67,7 +67,7 @@ var onScroll = function(e) {
     }
 }
 
-var onLongPressThenShow = function(e) {
+var onLongPressThenShow = function (e) {
     console.log("Enter Long Pressing Detecting Mode");
     // update status
     isLongPressing = true;
@@ -77,9 +77,9 @@ var onLongPressThenShow = function(e) {
 };
 
 
-var startLoading = function(clbk) {
+var startLoading = function (clbk) {
     // only load the thing once
-    if (isLoading) {return;}
+    if (isLoading) { return; }
     isLoading = true;
     console.log("loading here");
 }
@@ -99,31 +99,31 @@ function urlLongClick(e) {
 
 
 function onMouseDown(e) {
-    document.querySelectorAll(".VDXfz").forEach(function(Node){
+    document.querySelectorAll(".VDXfz").forEach(function (Node) {
         Node.remove();
-   });
+    });
 
 
     console.log("this is inside the mousedown check");
     // check if left click
-    if (e.which != 1) {return;}
+    if (e.which != 1) { return; }
     // check if it's in an input
-    if (/^(INPUT|TEXTAREA|SELECT|HTML)$/.exec(e.target.tagName)){return;}
+    if (/^(INPUT|TEXTAREA|SELECT|HTML)$/.exec(e.target.tagName)) { return; }
     // save infos
     isLongPressing = false;
     mouseDown = true;
     //There is no window object in the this script TODO
     //selection = window.getSelection().toString();
-    initEvent= e;
+    initEvent = e;
 
-    if(document.caretRangeFromPoint){
+    if (document.caretRangeFromPoint) {
         range = document.caretRangeFromPoint(initEvent.clientX, initEvent.clientY);
         rangeParentNode = range.startContainer;
         startOffset = range.startOffset;
         //TODO startContainer will return whole body node when shadow node clicked.
     }
 
-    if(document.caretPositionFromPoint){
+    if (document.caretPositionFromPoint) {
         console.log("mouse download, carent position for FF");
         startOffset = initEvent.rangeOffset;
         rangeParentNode = initEvent.rangeParent;
@@ -135,7 +135,7 @@ function onMouseDown(e) {
         const caretPosition = document.caretPositionFromPoint(initEvent.clientX, initEvent.clientY);
         rangeParentNode = caretPosition.offsetNode;
         startOffset = caretPosition.offset;
-    
+
         // Ensure the rangeParentNode is a text node
         if (rangeParentNode.nodeType !== Node.TEXT_NODE) {
             console.log("Clicked on a non-text node, skipping logic.");
@@ -146,7 +146,7 @@ function onMouseDown(e) {
         const range = document.caretRangeFromPoint(initEvent.clientX, initEvent.clientY);
         rangeParentNode = range.startContainer;
         startOffset = range.startOffset;
-    
+
         // Ensure the rangeParentNode is a text node
         if (rangeParentNode.nodeType !== Node.TEXT_NODE) {
             console.log("Clicked on a non-text node, skipping logic.");
@@ -156,71 +156,71 @@ function onMouseDown(e) {
         console.log("Neither caretPositionFromPoint nor caretRangeFromPoint is supported.");
         return;
     }
-    
+
     targetWord = findTargetWord(startOffset, rangeParentNode);
 
     theURL = window.document.URL;
     theContext = rangeParentNode.textContent;
     console.log("Show the original event range offset ", startOffset);
     console.log("Show the window URL:", window.document.URL);
-    console.log("Show the original event content " , rangeParentNode.textContent);
+    console.log("Show the original event content ", rangeParentNode.textContent);
     // launch a timer to detect "long press"
     var isLink = e.target.tagName == "A" ||
         (e.target.parentNode && e.target.parentNode.tagName == "A");
-    longPressTimer = setTimeout(onLongPressThenShow, isLink ? 1500: 700);
+    longPressTimer = setTimeout(onLongPressThenShow, isLink ? 1500 : 700);
 };
 
 
-function lookupWord(){
-    console.log("window.navigator.language is " , window.navigator.language);
+function lookupWord() {
+    console.log("window.navigator.language is ", window.navigator.language);
     NO_USE_handle_longpressing(initEvent);
 }
 
-function findTargetWord(startOffset, parentNode){
+function findTargetWord(startOffset, parentNode) {
 
     console.log("Enter finding target word logic");
     table = [];
-  
+
     console.log("Enter finding target word logic 1");
     //disalbe this method for just right now
     console.log("Enter finding target word logic 1.1");
 
     offset = startOffset;
     console.log("Enter finding target word logic 1.2");
-  
+
     console.log("Enter finding target word logic 2");
-    console.log("Enter find target node "+  parentNode.textContent);
+    console.log("Enter find target node " + parentNode.textContent);
     var textarray = parentNode.textContent.split("");
     var textlen = parentNode.textContent.length;
 
 
     var forward = offset + 1;
-    var backword = offset- 1;
+    var backword = offset - 1;
 
-    if(! /[a-zA-Z]/.test(textarray[offset])){
-        forward = textlen+1;
+    if (! /[a-zA-Z]/.test(textarray[offset])) {
+        forward = textlen + 1;
         //the clicked char is not a normal char, so there is no need to continue forward-way.
-    }else{
+    } else {
         //A letter belongs to [a-zA-Z]
-        table.splice(0,0,textarray[offset]);
+        table.splice(0, 0, textarray[offset]);
     }
 
     console.log("Enter finding target word logic 3");
-    while(backword>=0){
-        if(! /[a-zA-Z]/.test(textarray[backword])){break;}
-        else{
-            table.splice(0,0,textarray[backword]);
+    while (backword >= 0) {
+        if (! /[a-zA-Z]/.test(textarray[backword])) { break; }
+        else {
+            table.splice(0, 0, textarray[backword]);
         }
-        backword -=1;
+        backword -= 1;
     }
 
     console.log("Enter finding target word logic 4");
-    while(forward <= textlen){
-        if(! /[a-zA-Z]/.test(textarray[forward])){break;}
-        else{
+    while (forward <= textlen) {
+        if (! /[a-zA-Z]/.test(textarray[forward])) { break; }
+        else {
             table.push(textarray[forward]);
         }
-        forward +=1;
+        forward += 1;
     }
 
     var word = table.join("");
@@ -237,11 +237,11 @@ document.addEventListener("click", event_click, true);
 window.addEventListener("mousedown", onMouseDown, true);
 window.addEventListener("mousemove", onMouseMove, true);
 window.addEventListener("scroll", onScroll, true);
- // Declare createdDiv globally
+// Declare createdDiv globally
 let createdDiv;
 
 function showMeaning(event) {
-    
+
     info = getSelectionInfo(event);
 
     info.word = targetWord;
@@ -283,7 +283,7 @@ function getSelectionInfo(event) {
 }
 
 function retrieveMeaning(info) {
-    
+
     return browserAPI.runtime.sendMessage({
         word: info.word,
         theURL: info.theURL,
@@ -297,10 +297,10 @@ function createDiv(info) {
     var hostDiv = document.createElement("div");
 
     hostDiv.className = "dictionaryDiv";
-    hostDiv.style.left = info.left -10 + "px";
+    hostDiv.style.left = info.left - 10 + "px";
     hostDiv.style.position = "absolute";
     hostDiv.style.zIndex = "1000000"
-    hostDiv.attachShadow({mode: "open"});
+    hostDiv.attachShadow({ mode: "open" });
 
     var shadow = hostDiv.shadowRoot;
     var style = document.createElement("style");
@@ -343,14 +343,14 @@ function createDiv(info) {
     audio.innerHTML = "&nbsp;";
     audio.style.display = "none";
 
-    var moreInfo =document.createElement("a");
+    var moreInfo = document.createElement("a");
     moreInfo.href = `https://www.google.com/search?hl=${LANGUAGE}&q=define+${info.word}`;
     moreInfo.style = "float: right; text-decoration: none;";
     moreInfo.target = "_blank";
 
 
     var reviewLink = document.createElement("a");
-    reviewLink.addEventListener("click", function(e) {
+    reviewLink.addEventListener("click", function (e) {
         e.preventDefault();
         browserAPI.runtime.sendMessage({
             action: "openWordList"
@@ -367,17 +367,17 @@ function createDiv(info) {
     content.appendChild(moreInfo);
     document.body.appendChild(hostDiv);
 
-    if(info.clientY < window.innerHeight/2){
+    if (info.clientY < window.innerHeight / 2) {
         popupDiv.className = "mwe-popups mwe-popups-no-image-tri mwe-popups-is-not-tall";
         hostDiv.style.top = info.bottom + 10 + "px";
-        if(info.height == 0){
+        if (info.height == 0) {
             hostDiv.style.top = parseInt(hostDiv.style.top) + 8 + "px";
         }
     } else {
         popupDiv.className = "mwe-popups flipped_y mwe-popups-is-not-tall";
         hostDiv.style.top = info.top - 10 - popupDiv.clientHeight + "px";
 
-        if(info.height == 0){
+        if (info.height == 0) {
             hostDiv.style.top = parseInt(hostDiv.style.top) - 8 + "px";
         }
     }
@@ -386,31 +386,31 @@ function createDiv(info) {
         heading,
         meaning,
         moreInfo,
-        audio 
+        audio
     };
 
 }
 
 function getSelectionCoords(event) {
 
-   let  rangeForCoord;
+    let rangeForCoord;
 
-   let oRect;
+    let oRect;
 
-  if(document.caretRangeFromPoint){
-    rangeForCoord  = document.caretRangeFromPoint(event.clientX, event.clientY);
-    oRect = rangeForCoord.getBoundingClientRect();
-  }
+    if (document.caretRangeFromPoint) {
+        rangeForCoord = document.caretRangeFromPoint(event.clientX, event.clientY);
+        oRect = rangeForCoord.getBoundingClientRect();
+    }
 
-  if(document.caretPositionFromPoint){
-    rangeForCoord = document.caretPositionFromPoint(event.clientX, event.clientY);
-    oRect = rangeForCoord.getClientRect();
+    if (document.caretPositionFromPoint) {
+        rangeForCoord = document.caretPositionFromPoint(event.clientX, event.clientY);
+        oRect = rangeForCoord.getClientRect();
     }
 
     return oRect;
 }
 
-function appendToDiv(createdDiv, content){
+function appendToDiv(createdDiv, content) {
     console.log("First show log in the appendToDiv" + content);
     var hostDiv = createdDiv.heading.getRootNode().host;
     console.log("Second show log in the appendToDiv" + content);
@@ -426,33 +426,33 @@ function appendToDiv(createdDiv, content){
     var difference = heightAfter - heightBefore;
 
 
-    if(popupDiv.classList.contains("flipped_y")){
+    if (popupDiv.classList.contains("flipped_y")) {
         hostDiv.style.top = parseInt(hostDiv.style.top) - difference + 1 + "px";
     }
 
-    if(content.audioSrc){
-      var sound = document.createElement("audio");
-      sound.src = content.audioSrc;
-      createdDiv.audio.style.display  = "inline-block";
-      createdDiv.audio.addEventListener("click", function(){
-        sound.play();
-      });
+    if (content.audioSrc) {
+        var sound = document.createElement("audio");
+        sound.src = content.audioSrc;
+        createdDiv.audio.style.display = "inline-block";
+        createdDiv.audio.addEventListener("click", function () {
+            sound.play();
+        });
     }
 }
 
-function noMeaningFound (createdDiv){
-  createdDiv.heading.textContent = "Sorry";
-  createdDiv.meaning.textContent = "No definition found.";
+function noMeaningFound(createdDiv) {
+    createdDiv.heading.textContent = "Sorry";
+    createdDiv.meaning.textContent = "No definition found.";
 }
 
-function removeMeaning(event){
+function removeMeaning(event) {
     var element = event.target;
-    if(!element.classList.contains("dictionaryDiv")){
-        document.querySelectorAll(".dictionaryDiv").forEach(function(Node){
+    if (!element.classList.contains("dictionaryDiv")) {
+        document.querySelectorAll(".dictionaryDiv").forEach(function (Node) {
             Node.remove();
         });
 
-    haloword_opened = false;
+        haloword_opened = false;
     }
 }
 
@@ -502,7 +502,7 @@ document.addEventListener("DOMNodeInserted", function(event) {
 function event_click(event) {
     console.log("this method was triggered in the event_click method");
     if (haloword_opened && !isLongPressing) {
-            removeMeaning(event);
+        removeMeaning(event);
     }
 }
 
@@ -570,8 +570,36 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         console.error(message.error);
         const createdDiv = createDiv({ word: "Error" });
         noMeaningFound(createdDiv);
+    } else if (message.action === "parseJSON") {
+        // Handle JSON parsing if needed
+        console.log("Received JSON parsing request", message);
+        const content = extractMeaningJSON(message.data);
+        if (!content || !content.word) {
+            return noMeaningFound(createdDiv); // Use the global createdDiv
+        }
+        appendToDiv(createdDiv, content); // Use the global createdDiv    
     }
-});
+}
+);
+
+function extractMeaningJSON(jsonData) {
+    console.log("Extracting meaning from JSON data:", jsonData);
+
+    if (!jsonData || !jsonData.data || !jsonData.data.translations || jsonData.data.translations.length === 0) {
+        console.log("Invalid or empty JSON data");
+        return null;
+    }
+
+    const translatedText = jsonData.data.translations[0].translatedText;
+    console.log("Translated text:", translatedText);
+
+    const word = "Translation"; // Or get the original word from somewhere if available
+    const meaning = translatedText;
+    const audioSrc = null; // No audio available
+
+    console.log("Returning result:", { word, meaning, audioSrc });
+    return { word: word, meaning: meaning, audioSrc: audioSrc };
+}
 
 // Reuse the existing extractMeaningIciba function
 function extractMeaningIciba(xml, context) {
