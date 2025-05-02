@@ -37,17 +37,13 @@ var customDispatchEvent = function (s, r) {
 }
 
 var onMouseUp = function (e) {
-    if (longPressTimer) {
-        isLongPressing = false;
-        cancelLongPress();
-        customDispatchEvent("failed", "short");
-    }
     mouseDown = false;
-    //initEvent = null;
 
-    startOffset = 0;
-    rangeParentNode = null;
-    console.log("onMouseUp registered handler is called");
+    // Clear any existing timer
+    if (longPressTimer) {
+        clearTimeout(longPressTimer);
+        longPressTimer = null;
+    }
 
     // Get selected text using window.getSelection
     const selection = window.getSelection().toString();
@@ -58,11 +54,19 @@ var onMouseUp = function (e) {
         theURL = window.document.URL;
         theContext = document.body.textContent; // Or a more specific context if needed
         console.log("Selected text:", targetWord);
-        showMeaning(e); // Pass the event to showMeaning
+        initEvent = e; // Store the event for later use in showMeaning
+        // launch a timer to detect "long press"
+        var isLink = e.target.tagName == "A" ||
+            (e.target.parentNode && e.target.parentNode.tagName == "A");
+        longPressTimer = setTimeout(onLongPressThenShow, isLink ? 3500 : 1700);
         return; // Exit early since we have the selection
     }
 
-    //initEvent = null;
+    // Clear any existing timer
+    if (longPressTimer) {
+        clearTimeout(longPressTimer);
+        longPressTimer = null;
+    }
 
     startOffset = 0;
     rangeParentNode = null;
