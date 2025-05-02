@@ -1,3 +1,33 @@
+/**
+ * @file lookup.js - Handles word lookup functionality for browser extension
+ * @description This script provides word lookup and translation functionality through browser events.
+ * It handles mouse interactions (clicks, long press) to show word definitions in a popup.
+ * 
+ * Key components:
+ * - Mouse event handlers (mousedown, mouseup, mousemove)
+ * - Word selection and target word finding
+ * - Popup creation and positioning
+ * - Message passing with background script for translations
+ * - Cross-browser compatibility (Chrome/Firefox)
+ * 
+ * @requires browser/chrome API
+ * 
+ * When is this called?
+ * - This script is injected as a content script into web pages
+ * - It activates when the extension is enabled
+ * - Event handlers are initialized on page load
+ * - Core functionality triggers on user mouse interactions with text
+ * 
+ * @listens mousedown - Initiates word selection process
+ * @listens mouseup - Finalizes selection and triggers lookup
+ * @listens mousemove - Cancels long press detection
+ * @listens scroll - Cancels long press detection
+ * @listens click - Handles URL clicks and popup removal
+ * 
+ * @global {string} DEFAULT_LANGUAGE="cn" - Default language setting
+ * @global {string} DEFAULT_TRIGGER_KEY="none" - Default trigger key
+ * @global {Object} browserAPI - Unified browser API object
+ */
 var DEFAULT_LANGUAGE = "cn", DEFAULT_TRIGGER_KEY = "none", LANGUAGE, TRIGGER_KEY;
 
 const browserAPI = typeof browser !== 'undefined' ? browser : chrome;
@@ -36,7 +66,6 @@ var customDispatchEvent = function (s, r) {
     }));
 }
 
-
 var onMouseUp = function (e) {
     if (longPressTimer) {
         isLongPressing = false;
@@ -44,6 +73,25 @@ var onMouseUp = function (e) {
         customDispatchEvent("failed", "short");
     }
     mouseDown = false;
+    //initEvent = null;
+
+    startOffset = 0;
+    rangeParentNode = null;
+    console.log("onMouseUp registered handler is called");
+
+    // Get selected text using window.getSelection
+    const selection = window.getSelection().toString();
+
+    // If there's a selection, use it; otherwise, use caret position logic
+    if (selection) {
+        targetWord = selection;
+        theURL = window.document.URL;
+        theContext = document.body.textContent; // Or a more specific context if needed
+        console.log("Selected text:", targetWord);
+        showMeaning(e); // Pass the event to showMeaning
+        return; // Exit early since we have the selection
+    }
+
     //initEvent = null;
 
     startOffset = 0;

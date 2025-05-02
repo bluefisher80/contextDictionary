@@ -34,7 +34,7 @@
    "content_security_policy": {
       "extension_pages": "script-src 'self'; object-src 'self'"
    },
-   "disabled_options_ui": {
+   "options_ui": {
       "page": "options/options.html"
    },
    "permissions": [
