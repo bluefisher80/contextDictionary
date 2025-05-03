@@ -5,8 +5,6 @@ console.log("This is some logs" + browserAPI);
 
 var dic_url = "https://dict-co.iciba.com/api/dictionary.php?key=9A801B3C3A8D0AB5A5059C2F4B71AC50&w=";
 
-let DICMode_Google = true;
-
 const GOOGLE_SPEECH_URI = 'https://www.google.com/speech-api/v1/synthesize',
 
 DEFAULT_HISTORY_SETTING = {
@@ -39,7 +37,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     });
     
 
-    if (request.lang == 'cn') {
+    if (request.lang == 'zh-CN') {
         //Chinese dictioanry
         fetch(dic_url + request.word.toLowerCase()).
             then(response => response.text())

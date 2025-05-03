@@ -1,4 +1,4 @@
-var DEFAULT_LANGUAGE = "cn", DEFAULT_TRIGGER_KEY = "none", LANGUAGE, TRIGGER_KEY;
+var DEFAULT_LANGUAGE = "zh-CN", DEFAULT_TRIGGER_KEY = "none", LANGUAGE, TRIGGER_KEY;
 
 const browserAPI = typeof browser !== 'undefined' ? browser : chrome;
 
