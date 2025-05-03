@@ -46,7 +46,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             .then((text) => {
                 chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                     chrome.tabs.sendMessage(tabs[0].id, { action: "parseXML", text }, (response) => {
-                        sendResponse(response); 
+                        sendResponse(response);
                     });
                 });
 
@@ -63,33 +63,51 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         word = request.word;
         lang = request.lang;
 
-        const url = 'https://translation.googleapis.com/language/translate/v2?key=AIzaSyBPDdJIGHNxR1ZkmWNC2wElOroWF4En62A';
-        const headers = {
-        'Content-Type': 'application/json; charset=utf-8',
-        };
+        // Free Google Translate API
+        let urlFree = `https://clients5.google.com/translate_a/single?dj=1&dt=t&dt=sp&dt=ld&dt=bd&client=dict-chrome-ex&sl=auto&tl=${lang}&q=${word}`;
 
-        fetch(url, {
-        method: 'POST',
-        headers: headers,
-        body: JSON.stringify({
-            "q": [`${word}`],
-            "target": `${lang}`,
-        }),
-        })
-        .then((response) => response.json())
-        .then((data) => {
-            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-                chrome.tabs.sendMessage(tabs[0].id, { action: "parseJSON", data }, (response) => {
-                    sendResponse(response); 
+        fetch(urlFree)
+            .then((response) => response.json())
+            .then((data) => {
+                chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                    chrome.tabs.sendMessage(tabs[0].id, { action: "parseJSON5", data }, (response) => {
+                        sendResponse(response);
+                    });
                 });
+            })
+            .catch((error) => {
+                console.error("Error fetching free translation data:", error);
+                sendResponse({ error: "Failed to fetch free translation data" });
             });
 
-        })
-        .catch((error) => console.error(error));
-
-
-
         return true;
+
+        /**  Official Google Translate API (requires key)
+         *  APIs & Services > Credentials > Create credentials > API key
+const gTranslateURL = 'https://translation.googleapis.com/language/translate/v2?key=Key see above line';
+const headers = {
+    'Content-Type': 'application/json; charset=utf-8',
+};
+
+fetch(gTranslateURL, {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify({
+        "q": [`${word}`],
+        "target": `${lang}`,
+}),
+})
+.then((response) => response.json())
+.then((data) => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        chrome.tabs.sendMessage(tabs[0].id, { action: "parseJSON", data }, (response) => {
+            sendResponse(response); 
+        });
+    });
+
+})
+.catch((error) => console.error(error));
+return true;*/
 
     }
 });

@@ -606,6 +606,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             return noMeaningFound(createdDiv); // Use the global createdDiv
         }
         appendToDiv(createdDiv, content); // Use the global createdDiv    
+    } else if (message.action === "parseJSON5") {
+        // Handle JSON parsing if needed
+        console.log("Received JSON from google client5  parsing request", message);
+        const content = extractMeaningJSON5(message.data);
+        if (!content || !content.word) {
+            return noMeaningFound(createdDiv); // Use the global createdDiv
+        }
+        appendToDiv(createdDiv, content); // Use the global createdDiv    
     }
 }
 );
@@ -623,6 +631,39 @@ function extractMeaningJSON(jsonData) {
 
     const word = "Translation"; // Or get the original word from somewhere if available
     const meaning = translatedText;
+    const audioSrc = null; // No audio available
+
+    console.log("Returning result:", { word, meaning, audioSrc });
+    return { word: word, meaning: meaning, audioSrc: audioSrc };
+}
+
+/**
+ * Parse the JSON data received from the Google client5 and extract the meaning.
+ * @param {*} jsonData 
+ * @returns 
+ */
+function extractMeaningJSON5(jsonData) {
+    console.log("Extracting meaning from JSON data:", jsonData);
+
+    if (!jsonData || !jsonData.dict || !jsonData.dict.length === 0) {
+        console.log("Invalid or empty JSON data");
+        return null;
+    }
+
+    let meaning = "";
+    jsonData.dict.forEach(dictEntry => {
+        if (dictEntry.pos) {
+            meaning += `${dictEntry.pos}: `;
+        }
+        if (dictEntry.terms) {
+            meaning += dictEntry.terms.join(', ');
+        }
+        meaning += "<br>"; // Add a line break between dictionary entries
+    });
+    // Remove the last <br> from the meaning string
+    meaning = meaning.replace(/<br>$/, '');
+
+    const word = "Translation"; // Or get the original word from somewhere if available
     const audioSrc = null; // No audio available
 
     console.log("Returning result:", { word, meaning, audioSrc });
