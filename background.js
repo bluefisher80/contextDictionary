@@ -39,7 +39,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     });
     
 
-    if (request.lang !== 'cn') {
+    if (request.lang == 'cn') {
         //Chinese dictioanry
         fetch(dic_url + request.word.toLowerCase()).
             then(response => response.text())
@@ -73,7 +73,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         headers: headers,
         body: JSON.stringify({
             "q": [`${word}`],
-            "target": "zh-CN",
+            "target": `${lang}`,
         }),
         })
         .then((response) => response.json())
