@@ -52,7 +52,7 @@ var onMouseUp = function (e) {
     if (selection) {
         targetWord = selection;
         theURL = window.document.URL;
-        theContext = document.body.textContent; // Or a more specific context if needed
+        theContext = selection.length > 50 ? selection : window.getSelection().anchorNode.textContent;
         console.log("Selected text:", targetWord);
         initEvent = e; // Store the event for later use in showMeaning
         // launch a timer to detect "long press"
