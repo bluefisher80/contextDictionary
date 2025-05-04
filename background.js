@@ -37,8 +37,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     });
     
 
-    if (request.lang == 'zh-CN') {
-        //Chinese dictioanry
+    if (request.lang == 'zh-CN' && /^[a-zA-Z]+$/.test(request.word)) {
+        //Only English to Chinese Single word dictioanry
         fetch(dic_url + request.word.toLowerCase()).
             then(response => response.text())
             .then((text) => {
