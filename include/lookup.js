@@ -189,7 +189,7 @@ function onMouseDown(e) {
     // launch a timer to detect "long press"
     var isLink = e.target.tagName == "A" ||
         (e.target.parentNode && e.target.parentNode.tagName == "A");
-    longPressTimer = setTimeout(onLongPressThenShow, isLink ? 1500 : 700);
+    longPressTimer = setTimeout(onLongPressThenShow, isLink ? 701 : 700);
 };
 
 
@@ -637,6 +637,7 @@ function extractMeaningJSON(jsonData) {
     return { word: word, meaning: meaning, audioSrc: audioSrc };
 }
 
+
 /**
  * Parse the JSON data received from the Google client5 and extract the meaning.
  * @param {*} jsonData 
@@ -645,23 +646,27 @@ function extractMeaningJSON(jsonData) {
 function extractMeaningJSON5(jsonData) {
     console.log("Extracting meaning from JSON data:", jsonData);
 
-    if (!jsonData || !jsonData.dict || !jsonData.dict.length === 0) {
+    let meaning = "";
+
+    if (jsonData && jsonData.dict && jsonData.dict.length > 0) {
+        jsonData.dict.forEach(dictEntry => {
+            if (dictEntry.pos) {
+                meaning += `${dictEntry.pos}: `;
+            }
+            if (dictEntry.terms) {
+                meaning += dictEntry.terms.join(', ');
+            }
+            meaning += ";"; // Add a line break between dictionary entries
+        });
+        // Remove the last <br> from the meaning string
+        meaning = meaning.replace(/<br>$/, '');
+    } else if (jsonData && jsonData.sentences && jsonData.sentences[0] && jsonData.sentences[0].trans) {
+        // Use sentences[0].trans as meaning if jsonData.dict is missing(some language pairs does not return dict element)
+        meaning = jsonData.sentences[0].trans;
+    } else {
         console.log("Invalid or empty JSON data");
         return null;
     }
-
-    let meaning = "";
-    jsonData.dict.forEach(dictEntry => {
-        if (dictEntry.pos) {
-            meaning += `${dictEntry.pos}: `;
-        }
-        if (dictEntry.terms) {
-            meaning += dictEntry.terms.join(', ');
-        }
-        meaning += "<br>"; // Add a line break between dictionary entries
-    });
-    // Remove the last <br> from the meaning string
-    meaning = meaning.replace(/<br>$/, '');
 
     const word = "Translation"; // Or get the original word from somewhere if available
     const audioSrc = null; // No audio available
@@ -699,7 +704,7 @@ function extractMeaningIciba(xml, context) {
     return { word: key, meaning, audioSrc };
 }
 
-// Reuse the existing extractMeaning function
+// Reuse the existing extractMeaning function,used for google search engine , abondoned?
 function extractMeaning(document, context) {
     if (!document.querySelector("[data-dobid='hdw']")) return null;
 
