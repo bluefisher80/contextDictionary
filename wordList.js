@@ -51,22 +51,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (word === context) {
       wordSpan.textContent = null;
     } else {
-      wordSpan.textContent = word;
+      wordSpan.textContent = null; //hide anyway, since we are highlighting the context
     }
     const contextSpan = document.createElement('span');
     const regex = new RegExp(`(${word})`, 'gi');
     const highlightedContext = context.replace(regex, '<mark>$1</mark>');
     contextSpan.innerHTML = highlightedContext + ' ';
-    contextSpan.textContent = context + ' ';
+    
 
-    // Add tooltip for context
-    const tooltipWrapper = document.createElement('span');
-    tooltipWrapper.className = 'context-tooltip';
-    tooltipWrapper.textContent = 'ℹ️';
-    const tooltipText = document.createElement('span');
-    tooltipText.className = 'tooltip-text';
-    tooltipText.textContent = context;
-    tooltipWrapper.appendChild(tooltipText);
+ 
 
     const link = document.createElement('a');
     link.href = pageUrl;
@@ -80,7 +73,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     li.appendChild(wordSpan);
     li.appendChild(contextSpan);
-    li.appendChild(tooltipWrapper); // Add tooltip
     li.appendChild(link);
     li.appendChild(timeSpan);
 
