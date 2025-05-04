@@ -683,7 +683,8 @@ function extractMeaningIciba(xml, context) {
 
         for (let c = 0; c < shop.getElementsByTagName("ps").length; c++) {
             if (shop.getElementsByTagName("ps")[c].firstChild) {
-                audioSrc = shop.getElementsByTagName("pron")[c].firstChild.nodeValue;
+                audioSrc = shop.getElementsByTagName("pron")[c].firstChild.nodeValue.replace('http://', 'https://');
+                
             }
         }
 
