@@ -43,7 +43,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     setTimeout(() => (li.style.opacity = 1), 100); // Fade-in effect
 
     li.appendChild(deleteButton);
-
+    if (word === context) {
+      wordSpan.textContent = null;
+    } else {
+      wordSpan.textContent = word;
+    }
     const wordSpan = document.createElement('span');
     wordSpan.textContent = word ;
     wordSpan.className = 'word-highlight';
