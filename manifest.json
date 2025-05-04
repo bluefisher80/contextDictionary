@@ -24,7 +24,7 @@
             "style/lookup.css"
          ],
          "js": [
-               "dist/lookup.js"
+               "lookup.js"
          ],
          "matches": [
             "<all_urls>"
@@ -35,7 +35,7 @@
       "extension_pages": "script-src 'self'; object-src 'self'"
    },
    "options_ui": {
-      "page": "options/options.html"
+      "page": "options.html"
    },
    "permissions": [
       "unlimitedStorage",
@@ -62,9 +62,9 @@
    "background": {
       "scripts": [
          
-         "dist/background.js"
+         "background.js"
       ],
-         "service_worker": "dist/background.js"
+         "service_worker": "background.js"
       },
    "action": {
       "default_icon": "icon32.png",
