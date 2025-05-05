@@ -94,7 +94,7 @@ var onLongPressThenShow = function (e) {
     // update status
     isLongPressing = true;
     longPressTimer = null;
-    haloword_opened = true;// This is a flag to indicate that the popup would be opened.
+    popup_opened = true;// This is a flag to indicate that the popup would be opened.
     showMeaning(initEvent);
 };
 
@@ -474,7 +474,7 @@ function removeMeaning(event) {
             Node.remove();
         });
 
-        haloword_opened = false;
+        popup_opened = false;
     }
 }
 
@@ -498,7 +498,7 @@ function valid_word(word) {
     return "Mixed";
 }
 
-var haloword_opened = false;
+var popup_opened = false;
 
 console.log("How many bodies in the page loading");
 
@@ -529,7 +529,7 @@ document.addEventListener("DOMNodeInserted", function(event) {
  */
 function event_click(event) {
     console.log("this method was triggered in the event_click method");
-    if (haloword_opened && !isLongPressing) {
+    if (popup_opened && !isLongPressing) {
         removeMeaning(event);
     }
 }
@@ -552,14 +552,13 @@ function NO_USE_handle_longpressing(event) {
     },
         (response) => {
             console.log("received user data in promise action, prepare to parse for the data and show it");
-            document.getElementById("haloword-content").innerHTML = parseDicData(response);
-
+            //I think here no use code, should be handled by registerred Listener method.
         });
 
-    // HACK: fix dict window not openable
+    // HACK: fix dict window not openable TODO not sure about it now.
 
     setTimeout(function () {
-        haloword_opened = true;
+        popup_opened = true;
     }, 100);
 
 }
