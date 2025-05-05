@@ -1,8 +1,8 @@
 const path = require('path');
 const ExtensionManifestPlugin = require('webpack-extension-manifest-plugin');
 const webpack = require('webpack'); // Required for ProvidePlugin
-const JavaScriptObfuscator = require('webpack-obfuscator'); // Import the obfuscator
 const CopyWebpackPlugin = require('copy-webpack-plugin'); // Import the plugin
+const TerserPlugin = require('terser-webpack-plugin');
 
 
 module.exports = {
@@ -16,6 +16,8 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',
+    clean:true,
+    hashFunction: 'xxhash64', // Use xxhash64 for better performance
   },
   module: {
     rules: [
@@ -31,9 +33,25 @@ module.exports = {
       },
     ],
   },
-  resolve: {
-    fallback: {
-    },
+
+  
+optimization: {
+    moduleIds: 'deterministic', // Use deterministic module IDs for better caching
+    chunkIds: 'deterministic', // Use deterministic chunk IDs for better caching
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          compress: {
+            drop_console: true, // Remove console logs in production
+          },
+          format: {
+            comments: false, // Remove comments in production
+          },
+        },
+        extractComments: false, // Do not extract comments to a separate file
+      }),
+    ],
   },
   plugins: [
     
@@ -47,10 +65,6 @@ module.exports = {
         base: path.resolve(__dirname, 'manifest.json'),
       },
     }),
-
-//    new JavaScriptObfuscator({  // Add the obfuscator plugin
-  //    rotateStringArray: true
-  //  }, ['**/test.js']),//exclude test.js
 
     new CopyWebpackPlugin({ // Configure the plugin
       patterns: [
