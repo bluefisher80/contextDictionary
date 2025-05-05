@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 document.getElementById('story-button').addEventListener('click', function () {
   chrome.storage.local.get("savedWords", function (result) {
     const savedWords = result.savedWords || [];
-    const prompt = `Write a story to attractive to memorize these words:
+    const prompt = `Write a story attractive to memorize these words:
      ${savedWords.map(item => `${item.word} (${new Date(item.timestamp).toLocaleDateString()})`).join(', ')}, 
      and make a new, unique URL path specifically representing the story with boilerplate https://www.context-dictionary.com/[unique-path-based-on-story]. Date is when the word was saved,
       you can create story based on user memory line, 
