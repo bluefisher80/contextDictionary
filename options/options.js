@@ -12,10 +12,10 @@ const DEFAULT_LANGUAGE = 'cn',
     KEY_COMMAND = 'Command',
     KEY_META = 'meta';
 
-
+const browserAPI = typeof browser !== 'undefined' ? browser : chrome;
 
 function saveOptions(e) {
-    browser.storage.local.set({
+    browserAPI.storage.local.set({
         language: document.querySelector("#language-selector").value,
         interaction: {
             dblClick: {
@@ -28,7 +28,7 @@ function saveOptions(e) {
   }
   
   function restoreOptions() {
-    let storageItem = browser.storage.local.get();
+    let storageItem = browserAPI.storage.local.get();
 
     storageItem.then((results) => {
         let language = results.language,
@@ -49,7 +49,7 @@ function saveOptions(e) {
   }
   
   function resetOptions (e) {
-    browser.storage.local.set({
+    browserAPI.storage.local.set({
         language: DEFAULT_LANGUAGE,
         interaction: {
             dblClick: {
