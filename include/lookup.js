@@ -569,8 +569,8 @@ function NO_USE_handle_longpressing(event) {
 
     storageItem.then((results) => {
         let interaction = results.interaction || { dblClick: { key: DEFAULT_TRIGGER_KEY } };
-
-        LANGUAGE = results.language || (window.navigator.language !== 'en' ? window.navigator.language : DEFAULT_LANGUAGE);
+        console.log("Print out the window.navigator.language here: ", window.navigator.language);
+        LANGUAGE = results.language || (window.navigator.language !== 'en-US' ? window.navigator.language : DEFAULT_LANGUAGE);
         TRIGGER_KEY = interaction.dblClick.key;
     });
 })();
