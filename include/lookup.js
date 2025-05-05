@@ -570,7 +570,7 @@ function NO_USE_handle_longpressing(event) {
     storageItem.then((results) => {
         let interaction = results.interaction || { dblClick: { key: DEFAULT_TRIGGER_KEY } };
 
-        LANGUAGE = results.language || DEFAULT_LANGUAGE;
+        LANGUAGE = results.language || (window.navigator.language !== 'en' ? window.navigator.language : DEFAULT_LANGUAGE);
         TRIGGER_KEY = interaction.dblClick.key;
     });
 })();
