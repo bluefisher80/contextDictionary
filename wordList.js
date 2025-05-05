@@ -84,10 +84,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 document.getElementById('story-button').addEventListener('click', function () {
   chrome.storage.local.get("savedWords", function (result) {
     const savedWords = result.savedWords || [];
-    const prompt = `Write a story to memorize these word,and try to guess the interests of the user based on the words:
+    const prompt = `Write a story to attractive to memorize these words:
      ${savedWords.map(item => `${item.word} (${new Date(item.timestamp).toLocaleDateString()})`).join(', ')}, 
-     and make a new url for the story like https://www.context-dictionary.com/story-subject-to-update-by-AI. Date is when the word was saved,
-      you can create story based on user memory line, Language of the story could be based on the words .`;
+     and make a new, unique URL path specifically representing the story with boilerplate https://www.context-dictionary.com/[unique-path-based-on-story]. Date is when the word was saved,
+      you can create story based on user memory line, 
+      Language of the story could be based on the words .
+      Output should be clean, URL embedded in the story, 
+      and no sign of memorization of words,just a natural pure story.`;
     document.getElementById('story_prompt').textContent = prompt;
   });
 });
