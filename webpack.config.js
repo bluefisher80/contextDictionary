@@ -77,7 +77,6 @@ optimization: {
         { from: 'options/options.css', to: 'options.css' }, // Copy options css
         { from: 'wordList.html', to: 'wordList.html' }, // Copy wordList page
         { from: 'wordList.css', to: 'wordList.css' }, // Copy wordList css\
-        { from: 'style/*.*', to: '' }, // Copy any other files you need
         { from: 'img/*.*', to: '' } // Copy any other files you need
         
       ],
