@@ -4,7 +4,9 @@
     "description": "A browser extension for context dictionary lookup.",
     "main": "dist/background.js",
     "scripts": {
-        "build": "webpack --mode production",
+        "build:chrome": "webpack --mode production --env browser=chrome",
+        "build:firefox": "webpack --mode production --env browser=firefox",
+        "build:edge": "webpack --mode production --env browser=edge",
         "dev": "webpack --mode development",
         "watch": "webpack --watch",
         "clean": "rm -rf dist .webpack-cache"

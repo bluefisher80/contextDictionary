@@ -5,7 +5,19 @@ const CopyWebpackPlugin = require('copy-webpack-plugin'); // Import the plugin
 const TerserPlugin = require('terser-webpack-plugin');
 
 
-module.exports = {
+module.exports = (env, argv) => {
+
+  const browser = env.browser || 'firefox'; // Default to Chrome
+
+  const manifestExtra = {};
+
+  if (browser === 'chrome') {
+    // Apply Chrome-specific manifest modifications
+    manifestExtra.background = {service_worker: "background.js"};
+  } else {
+    manifestExtra.background = {scripts: ["background.js"]};
+  };
+  return {
   mode: 'development',
   entry: {
     background: './background.js',
@@ -63,6 +75,7 @@ optimization: {
     new ExtensionManifestPlugin({
       config: {
         base: path.resolve(__dirname, 'manifest.json'),
+        extend: manifestExtra
       },
     }),
 
@@ -85,5 +98,5 @@ optimization: {
 
   //devtool: 'source-map',
 };
-
+}
 
