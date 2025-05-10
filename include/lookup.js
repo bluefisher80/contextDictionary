@@ -8,9 +8,23 @@ const browserAPI = typeof browser !== 'undefined' ? browser : chrome;
 //so if no polyfill, browserAPI how to make it cross-browser
 
 
-var longPressTimer, isLoading, isLongPressing, mouseDown,
+var longPressTimer, isLoading, mouseDown,
     initEvent, startOffset, rangeParentNode, theSelection,
     theURL, theContext, targetWord;
+
+    const LongPressState = (function() {
+        let isLongPressing = false;
+        return {
+            get: () => isLongPressing,
+            set: (value) => {
+                if (typeof value !== 'boolean') {
+                    throw new Error('isLongPressing must be a boolean');
+                }
+                console.log('Setting isLongPressing to:', value);
+                isLongPressing = value;
+            }
+        };
+    })();
 
 
 var cancelLongPress = function () {
@@ -58,7 +72,7 @@ var onMouseUp = function (e) {
         console.log("Selected text:", targetWord);
         initEvent = e; // Store the event for later use in ShowMeaning
         // launch a timer to detect "long press"
-        longPressTimer = setTimeout(prepareToShow, DefaultDelay);
+        longPressTimer = setTimeout(prepareToShowGetSelectionMode, DefaultDelay);
         return; // Exit early since we have the selection
     }
 
@@ -75,7 +89,7 @@ var onMouseUp = function (e) {
 
 var onMouseMove = function (e) {
     if (longPressTimer) {
-        isLongPressing = false;
+        LongPressState.set(false);
         cancelLongPress();
         customDispatchEvent("failed", "move");
     }
@@ -83,7 +97,7 @@ var onMouseMove = function (e) {
 
 var onScroll = function (e) {
     if (longPressTimer) {
-        isLongPressing = false;
+        LongPressState.set(false);
         cancelLongPress();
         customDispatchEvent("failed", "scroll");
     }
@@ -95,10 +109,25 @@ var onScroll = function (e) {
  * In Window.getSelection mode, it will be called when the user select a word.
  * @param {*} e 
  */
-var prepareToShow = function (e) {
-    console.log("Prepare to show, while which mode is it?");
+var prepareToShowCaretMode = function (e) {
+    console.log("Prepare to show, caret mode");
     // update status
-    isLongPressing = true;
+    LongPressState.set(true);
+    longPressTimer = null;
+    popup_opened = true;// This is a flag to indicate that the popup would be opened.
+    showMeaning(initEvent);
+};
+
+/**
+ * Function name is not correct, now is a switch to show the meaning.
+ * In Caret mode, it will be called when long press is detected.
+ * In Window.getSelection mode, it will be called when the user select a word.
+ * @param {*} e 
+ */
+var prepareToShowGetSelectionMode = function (e) {
+    console.log("Prepare to show, Windows.getSelection mode");
+    // update status
+    LongPressState.set(false);
     longPressTimer = null;
     popup_opened = true;// This is a flag to indicate that the popup would be opened.
     showMeaning(initEvent);
@@ -118,7 +147,7 @@ function urlLongClick(e) {
     var isLink = e.target.tagName == "A" ||
         (e.target.parentNode && e.target.parentNode.tagName == "A");
 
-    if (isLink && isLongPressing) {
+    if (isLink && LongPressState.get()) {
         e.preventDefault();
     }
 
@@ -142,9 +171,12 @@ function onMouseDown(e) {
     // check if left click
     if (e.which != 1) { return; }
     // check if it's in an input
-    if (/^(INPUT|TEXTAREA|SELECT|HTML)$/.exec(e.target.tagName)) { return; }
+    if (/^(INPUT|TEXTAREA|SELECT)$/.exec(e.target.tagName)) {
+        console.log("this is inside mouse down check, maybe page is too small, so the event is not triggered, e.target.tagName is " + e.target.tagName); 
+        return; 
+    }
     // save infos
-    isLongPressing = false;
+    LongPressState.set(false);
     mouseDown = true;
     //There is no window object in the this script TODO
     //selection = window.getSelection().toString();
@@ -188,7 +220,7 @@ function onMouseDown(e) {
     // launch a timer to detect "long press"
     var isLink = e.target.tagName == "A" ||
         (e.target.parentNode && e.target.parentNode.tagName == "A");
-    longPressTimer = setTimeout(prepareToShow, isLink ? URLCaretModeDelay : DefaultDelay);
+    longPressTimer = setTimeout(prepareToShowCaretMode, isLink ? URLCaretModeDelay : DefaultDelay);
 };
 
 
@@ -499,6 +531,7 @@ function noMeaningFound(createdDiv) {
  */
 function removeMeaning(event) {
     var element = event.target;
+    console.log(element);
     if (!element.classList.contains("dictionaryDiv")) {
         document.querySelectorAll(".dictionaryDiv").forEach(function (Node) {
             Node.remove();
@@ -569,7 +602,9 @@ document.addEventListener("DOMNodeInserted", function(event) {
  */
 function event_click(event) {
     console.log("this method was triggered in the event_click method");
-    if (popup_opened && !isLongPressing) {
+    console.log("is the popup opened? " + popup_opened);
+    console.log("is the long pressing? " + LongPressState.get());
+    if (popup_opened && !LongPressState.get()) {
         removeMeaning(event);
     }
 }
