@@ -516,6 +516,16 @@ function removeMeaning(event) {
     }
 }
 
+/**
+ * Remove all divs with the class "dictionaryDiv" 
+ */
+function removePopup() {
+    document.querySelectorAll(".dictionaryDiv").forEach(function (Node) {
+        Node.remove();
+    });
+    popup_opened = false;
+}
+
 function is_chinese(word) {
     return (/^[\u4e00-\u9fa5]+$/g).test(word);
 }
@@ -623,6 +633,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         if (!content || !content.word) {
             
             return noMeaningFound(createdDiv); 
+        }else if (content.word === GOOGLE_GIVES_SAME_TRANSLATION_AS_SOUCE) {   
+            removePopup();
         }
         appendToDiv(createdDiv, content);  
     }
@@ -653,6 +665,7 @@ function extractMeaningJSON(jsonData) {
     return { word: word, meaning: meaning, audioSrc: audioSrc };
 }
 
+const GOOGLE_GIVES_SAME_TRANSLATION_AS_SOUCE = "qwertyuiopasdfghjklzxcvbnmnbvcxzlkjhgfds"; // Placeholder for the translation key
 
 /**
  * Parse the JSON data received from the Google client5 and extract the meaning.
@@ -663,6 +676,8 @@ function extractMeaningJSON5(jsonData) {
     console.log("Extracting meaning from JSON data:", jsonData);
 
     let meaning = "";
+    let word = "Translation"; // Or get the original word from somewhere if available
+
 
     if (jsonData && jsonData.dict && jsonData.dict.length > 0) {
         jsonData.dict.forEach(dictEntry => {
@@ -682,14 +697,14 @@ function extractMeaningJSON5(jsonData) {
         if(jsonData.sentences[0].trans === jsonData.sentences[0].orig){
             //There is no translation, maybe the user just seleted contents at random, and the engine did not find any 
             //translation.
-            return null;
+            word = GOOGLE_GIVES_SAME_TRANSLATION_AS_SOUCE;
+
         }
     } else {
         console.log("Invalid or empty JSON data");
         return null;
     }
 
-    const word = "Translation"; // Or get the original word from somewhere if available
     const audioSrc = null; // No audio available
 
     console.log("Returning result:", { word, meaning, audioSrc });
