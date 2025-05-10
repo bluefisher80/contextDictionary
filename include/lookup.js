@@ -61,9 +61,7 @@ var onMouseUp = function (e) {
         console.log("Selected text:", targetWord);
         initEvent = e; // Store the event for later use in showMeaning
         // launch a timer to detect "long press"
-        var isLink = e.target.tagName == "A" ||
-            (e.target.parentNode && e.target.parentNode.tagName == "A");
-        longPressTimer = setTimeout(prepareToShow, isLink ? DefaultDelay : DefaultDelay);
+        longPressTimer = setTimeout(prepareToShow, DefaultDelay);
         return; // Exit early since we have the selection
     }
 
@@ -96,6 +94,8 @@ var onScroll = function (e) {
 
 /**
  * Function name is not correct, now is a switch to show the meaning.
+ * In Caret mode, it will be called when long press is detected.
+ * In Window.getSelection mode, it will be called when the user select a word.
  * @param {*} e 
  */
 var prepareToShow = function (e) {
@@ -271,9 +271,14 @@ document.addEventListener("click", event_click, true);
 window.addEventListener("mousedown", onMouseDown, true);
 window.addEventListener("mousemove", onMouseMove, true);
 window.addEventListener("scroll", onScroll, true);
-// Declare createdDiv globally
+//this is a collection of the html elements of the Popup.
 let createdDiv;
 
+/**
+ * 
+ * @param {*} event 
+ * @returns 
+ */
 function showMeaning(event) {
 
     info = getSelectionInfo(event);
@@ -329,6 +334,11 @@ function retrieveMeaning(info) {
     });
 }
 
+/**
+ * Returned an object collection of the popup div elements.
+ * @param {*} info 
+ * @returns 
+ */
 function createDiv(info) {
     var hostDiv = document.createElement("div");
 
@@ -446,6 +456,12 @@ function getSelectionCoords(event) {
     return oRect;
 }
 
+
+/**
+ * Update the content of the popup div with the new meaning.
+ * @param {*} createdDiv 
+ * @param {*} content 
+ */
 function appendToDiv(createdDiv, content) {
     console.log("First show log in the appendToDiv" + content);
     var hostDiv = createdDiv.heading.getRootNode().host;
@@ -476,11 +492,19 @@ function appendToDiv(createdDiv, content) {
     }
 }
 
+/**
+ * Change the heading and meaning text when no meaning is found.
+ * @param {*} createdDiv 
+ */
 function noMeaningFound(createdDiv) {
     createdDiv.heading.textContent = "Sorry";
     createdDiv.meaning.textContent = "No definition found.";
 }
 
+/**
+ * Remove all popups when the user clicks outside of the popup.
+ * @param {*} event 
+ */
 function removeMeaning(event) {
     var element = event.target;
     if (!element.classList.contains("dictionaryDiv")) {
@@ -597,13 +621,19 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         console.log("Received JSON from google client5  parsing request", message);
         const content = extractMeaningJSON5(message.data);
         if (!content || !content.word) {
-            return noMeaningFound(createdDiv); // Use the global createdDiv
+            
+            return noMeaningFound(createdDiv); 
         }
-        appendToDiv(createdDiv, content); // Use the global createdDiv    
+        appendToDiv(createdDiv, content);  
     }
 }
 );
 
+/**
+ * This one is for google tranlate API v2
+ * @param {*} jsonData 
+ * @returns 
+ */
 function extractMeaningJSON(jsonData) {
     console.log("Extracting meaning from JSON data:", jsonData);
 
@@ -649,6 +679,11 @@ function extractMeaningJSON5(jsonData) {
     } else if (jsonData && jsonData.sentences && jsonData.sentences[0] && jsonData.sentences[0].trans) {
         // Use sentences[0].trans as meaning if jsonData.dict is missing(some language pairs does not return dict element)
         meaning = jsonData.sentences[0].trans;
+        if(jsonData.sentences[0].trans === jsonData.sentences[0].orig){
+            //There is no translation, maybe the user just seleted contents at random, and the engine did not find any 
+            //translation.
+            return null;
+        }
     } else {
         console.log("Invalid or empty JSON data");
         return null;
