@@ -89,6 +89,10 @@ var onScroll = function (e) {
     }
 }
 
+/**
+ * Function name is not correct, now is a switch to show the meaning.
+ * @param {*} e 
+ */
 var onLongPressThenShow = function (e) {
     console.log("Enter Long Pressing Detecting Mode");
     // update status
@@ -119,7 +123,12 @@ function urlLongClick(e) {
 
 }
 
-
+/**
+ * Try to detect if the user is in the long pressing state, if so, then select the word
+ * and show the meaning.
+ * @param {*} e 
+ * @returns 
+ */
 function onMouseDown(e) {
     document.querySelectorAll(".VDXfz").forEach(function (Node) {
         Node.remove();
@@ -193,10 +202,7 @@ function onMouseDown(e) {
 };
 
 
-function lookupWord() {
-    console.log("window.navigator.language is ", window.navigator.language);
-    NO_USE_handle_longpressing(initEvent);
-}
+
 
 function findTargetWord(startOffset, parentNode) {
 
@@ -534,34 +540,7 @@ function event_click(event) {
     }
 }
 
-function NO_USE_handle_longpressing(event) {
 
-    var lang2 = valid_word(theSelection);
-    if (!lang2) {
-        console.log("word detection");
-        return;
-    }
-
-    var result;
-
-    browserAPI.runtime.sendMessage({
-        selection: theSelection,
-        theURL: theURL,
-        lang: LANGUAGE,
-        theContext: theContext
-    },
-        (response) => {
-            console.log("received user data in promise action, prepare to parse for the data and show it");
-            //I think here no use code, should be handled by registerred Listener method.
-        });
-
-    // HACK: fix dict window not openable TODO not sure about it now.
-
-    setTimeout(function () {
-        popup_opened = true;
-    }, 100);
-
-}
 
 (function () {
     let storageItem = browserAPI.storage.local.get();
