@@ -289,7 +289,7 @@ function showMeaning(event) {
     info.originalPageLang = document.documentElement.lang || document.querySelector("html").getAttribute("lang") || "en";
     console.log("Show the page html lang element", info.originalPageLang);
 
-    if (!info){ return; }
+    if (!info) { return; }
     retrieveMeaning(info)
 
     // Creating this div while we are fetching meaning to make extension more fast.
@@ -341,6 +341,7 @@ function retrieveMeaning(info) {
  */
 function createDiv(info) {
     var hostDiv = document.createElement("div");
+    hostDiv.style.display = "none"; // Hide the div initially
 
     hostDiv.className = "dictionaryDiv";
     hostDiv.style.left = info.left - 10 + "px";
@@ -463,6 +464,12 @@ function getSelectionCoords(event) {
  * @param {*} content 
  */
 function appendToDiv(createdDiv, content) {
+
+    document.querySelectorAll(".dictionaryDiv").forEach(function (Node) {
+        if (Node.style.display === "none") {
+            Node.style.display = "block";
+        }
+    });
     console.log("First show log in the appendToDiv" + content);
     var hostDiv = createdDiv.heading.getRootNode().host;
     console.log("Second show log in the appendToDiv" + content);
@@ -631,12 +638,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         console.log("Received JSON from google client5  parsing request", message);
         const content = extractMeaningJSON5(message.data);
         if (!content || !content.word) {
-            
-            return noMeaningFound(createdDiv); 
-        }else if (content.word === GOOGLE_GIVES_SAME_TRANSLATION_AS_SOUCE) {   
+
+            return noMeaningFound(createdDiv);
+        } else if (content.word === GOOGLE_GIVES_SAME_TRANSLATION_AS_SOUCE) {
             removePopup();
         }
-        appendToDiv(createdDiv, content);  
+        appendToDiv(createdDiv, content);
     }
 }
 );
@@ -694,7 +701,7 @@ function extractMeaningJSON5(jsonData) {
     } else if (jsonData && jsonData.sentences && jsonData.sentences[0] && jsonData.sentences[0].trans) {
         // Use sentences[0].trans as meaning if jsonData.dict is missing(some language pairs does not return dict element)
         meaning = jsonData.sentences[0].trans;
-        if(jsonData.sentences[0].trans === jsonData.sentences[0].orig){
+        if (jsonData.sentences[0].trans === jsonData.sentences[0].orig) {
             //There is no translation, maybe the user just seleted contents at random, and the engine did not find any 
             //translation.
             word = GOOGLE_GIVES_SAME_TRANSLATION_AS_SOUCE;
@@ -725,7 +732,7 @@ function extractMeaningIciba(xml, context) {
         for (let c = 0; c < shop.getElementsByTagName("ps").length; c++) {
             if (shop.getElementsByTagName("ps")[c].firstChild) {
                 audioSrc = shop.getElementsByTagName("pron")[c].firstChild.nodeValue.replace('http://', 'https://');
-                
+
             }
         }
 
