@@ -36,6 +36,7 @@ var customDispatchEvent = function (s, r) {
     }));
 }
 
+const DefaultDelay = 700;
 var onMouseUp = function (e) {
     mouseDown = false;
 
@@ -51,6 +52,10 @@ var onMouseUp = function (e) {
     // If there's a selection, use it; otherwise, use caret position logic
     if (selection) {
         targetWord = selection;
+        // Check if word contains only whitespace or is empty
+        if (!targetWord || !targetWord.trim()) {
+            return;
+        }
         theURL = window.document.URL;
         theContext = selection.length > 50 ? selection : window.getSelection().anchorNode.textContent;
         console.log("Selected text:", targetWord);
@@ -58,7 +63,7 @@ var onMouseUp = function (e) {
         // launch a timer to detect "long press"
         var isLink = e.target.tagName == "A" ||
             (e.target.parentNode && e.target.parentNode.tagName == "A");
-        longPressTimer = setTimeout(onLongPressThenShow, isLink ? 3500 : 1700);
+        longPressTimer = setTimeout(prepareToShow, isLink ? DefaultDelay : DefaultDelay);
         return; // Exit early since we have the selection
     }
 
@@ -93,7 +98,7 @@ var onScroll = function (e) {
  * Function name is not correct, now is a switch to show the meaning.
  * @param {*} e 
  */
-var onLongPressThenShow = function (e) {
+var prepareToShow = function (e) {
     console.log("Enter Long Pressing Detecting Mode");
     // update status
     isLongPressing = true;
@@ -123,6 +128,7 @@ function urlLongClick(e) {
 
 }
 
+const URLCaretModeDelay = 1500;
 /**
  * Try to detect if the user is in the long pressing state, if so, then select the word
  * and show the meaning.
@@ -198,7 +204,7 @@ function onMouseDown(e) {
     // launch a timer to detect "long press"
     var isLink = e.target.tagName == "A" ||
         (e.target.parentNode && e.target.parentNode.tagName == "A");
-    longPressTimer = setTimeout(onLongPressThenShow, isLink ? 701 : 700);
+    longPressTimer = setTimeout(prepareToShow, isLink ? URLCaretModeDelay : DefaultDelay);
 };
 
 
