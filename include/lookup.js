@@ -281,8 +281,10 @@ function showMeaning(event) {
     info.word = targetWord;
     info.theURL = theURL;
     info.theContext = theContext;
+    info.originalPageLang = document.documentElement.lang || document.querySelector("html").getAttribute("lang") || "en";
+    console.log("Show the page html lang element", info.originalPageLang);
 
-    if (!info) { return; }
+    if (!info){ return; }
     retrieveMeaning(info)
 
     // Creating this div while we are fetching meaning to make extension more fast.
