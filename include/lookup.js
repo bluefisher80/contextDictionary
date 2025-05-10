@@ -1,4 +1,5 @@
-var DEFAULT_LANGUAGE = "zh-CN", DEFAULT_TRIGGER_KEY = "none", LANGUAGE, TRIGGER_KEY;
+const DEFAULT_LANGUAGE = "zh-CN";
+var DEFAULT_TRIGGER_KEY = "none", LANGUAGE, TRIGGER_KEY;
 
 const browserAPI = typeof browser !== 'undefined' ? browser : chrome;
 
@@ -330,7 +331,8 @@ function retrieveMeaning(info) {
         theURL: info.theURL,
         theContext: info.theContext,
         lang: LANGUAGE,
-        time: Date.now()
+        time: Date.now(),
+        originalPageLang: info.originalPageLang    
     });
 }
 
