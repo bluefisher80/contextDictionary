@@ -51,16 +51,12 @@ var onMouseUp = function (e) {
     const selection = window.getSelection().toString();
 
     // If there's a selection, use it; otherwise, use caret position logic
-    if (selection) {
+    if (selection && selection.trim()) {
         targetWord = selection;
-        // Check if word contains only whitespace or is empty
-        if (!targetWord || !targetWord.trim()) {
-            return;
-        }
         theURL = window.document.URL;
         theContext = selection.length > 50 ? selection : window.getSelection().anchorNode.textContent;
         console.log("Selected text:", targetWord);
-        initEvent = e; // Store the event for later use in showMeaning
+        initEvent = e; // Store the event for later use in ShowMeaning
         // launch a timer to detect "long press"
         longPressTimer = setTimeout(prepareToShow, DefaultDelay);
         return; // Exit early since we have the selection
@@ -100,7 +96,7 @@ var onScroll = function (e) {
  * @param {*} e 
  */
 var prepareToShow = function (e) {
-    console.log("Enter Long Pressing Detecting Mode");
+    console.log("Prepare to show, while which mode is it?");
     // update status
     isLongPressing = true;
     longPressTimer = null;
@@ -153,19 +149,6 @@ function onMouseDown(e) {
     //There is no window object in the this script TODO
     //selection = window.getSelection().toString();
     initEvent = e;
-
-    if (document.caretRangeFromPoint) {
-        range = document.caretRangeFromPoint(initEvent.clientX, initEvent.clientY);
-        rangeParentNode = range.startContainer;
-        startOffset = range.startOffset;
-        //TODO startContainer will return whole body node when shadow node clicked.
-    }
-
-    if (document.caretPositionFromPoint) {
-        console.log("mouse download, carent position for FF");
-        startOffset = initEvent.rangeOffset;
-        rangeParentNode = initEvent.rangeParent;
-    }
 
 
     if (document.caretPositionFromPoint) {
