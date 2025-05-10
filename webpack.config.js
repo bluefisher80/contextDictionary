@@ -28,7 +28,7 @@ module.exports = (env, argv) => {
     output: {
       path: path.resolve(__dirname, 'dist'),
       filename: '[name].js',
-      clean: true,
+      //clean: true,
       hashFunction: 'xxhash64', // Use xxhash64 for better performance
     },
     module: {
@@ -55,7 +55,7 @@ module.exports = (env, argv) => {
         new TerserPlugin({
           terserOptions: {
             compress: {
-              drop_console: true, // Remove console logs in production
+              drop_console: false, // Remove console logs in production
             },
             format: {
               comments: false, // Remove comments in production
