@@ -87,6 +87,13 @@ var onMouseUp = function (e) {
     console.log("onMouseUp registered handler is called");
 };
 
+/**
+ * This was coded for only caret mode, but now it is used for both caret mode and window.getSelection mode.
+ * For Caret mode, this is called when the user moves the mouse,that action indicates that the user is not long pressing, so 
+ * need to cancel the long press.
+ * But for Window.getSelection mode, this could be triggered and scheduled work would be canceled if the user moves the mouse.
+ * @param {*} e 
+ */
 var onMouseMove = function (e) {
     if (longPressTimer) {
         LongPressState.set(false);
