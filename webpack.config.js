@@ -1,24 +1,51 @@
 const path = require('path');
 const ExtensionManifestPlugin = require('webpack-extension-manifest-plugin');
-const webpack = require('webpack'); // Required for ProvidePlugin
-const CopyWebpackPlugin = require('copy-webpack-plugin'); // Import the plugin
+const webpack = require('webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 
-
 module.exports = (env, argv) => {
-
-  const browser = env.browser || 'firefox'; // Default to Chrome
+  const browser = env.browser || 'chrome';
+  const isProduction = argv.mode === 'production';
 
   const manifestExtra = {};
 
   if (browser === 'chrome') {
-    // Apply Chrome-specific manifest modifications
     manifestExtra.background = { service_worker: "background.js" };
   } else {
     manifestExtra.background = { scripts: ["background.js"] };
+  }
+
+  const optimizationConfig = {
+    moduleIds: 'deterministic',
+    chunkIds: 'deterministic',
+    minimize: isProduction, // Only minimize in production mode
+    minimizer: [],
   };
+
+  if (isProduction) {
+    optimizationConfig.minimizer.push(
+      new TerserPlugin({
+        terserOptions: {
+          compress: {
+            drop_console: true,
+          },
+          format: {
+            comments: false,
+          },
+        },
+        extractComments: false,
+      })
+    );
+  }else {
+    optimizationConfig.minimize = false; // Disable minimization in development mode
+  }
+
+  const devtool = isProduction ? false : 'source-map'; // Use source maps in development mode
+
   return {
-    mode: 'development',
+    mode: isProduction ? 'production' : 'development', // Set mode based on isProduction
+    devtool: devtool,
     entry: {
       background: './background.js',
       wordList: './wordList.js',
@@ -28,8 +55,8 @@ module.exports = (env, argv) => {
     output: {
       path: path.resolve(__dirname, 'dist'),
       filename: '[name].js',
-      //clean: true,
-      hashFunction: 'xxhash64', // Use xxhash64 for better performance
+      clean:true,
+      hashFunction: 'xxhash64',
     },
     module: {
       rules: [
@@ -45,55 +72,32 @@ module.exports = (env, argv) => {
         },
       ],
     },
-
-
-    optimization: {
-      moduleIds: 'deterministic', // Use deterministic module IDs for better caching
-      chunkIds: 'deterministic', // Use deterministic chunk IDs for better caching
-      minimize: true,
-      minimizer: [
-        new TerserPlugin({
-          terserOptions: {
-            compress: {
-              drop_console: false, // Remove console logs in production
-            },
-            format: {
-              comments: false, // Remove comments in production
-            },
-          },
-          extractComments: false, // Do not extract comments to a separate file
-        }),
-      ],
-    },
+    optimization: optimizationConfig,
     plugins: [
-
-
-
+      new webpack.ProvidePlugin({
+        Buffer: ['buffer', 'Buffer'],
+        process: 'process/browser',
+      }),
       new ExtensionManifestPlugin({
         config: {
           base: path.resolve(__dirname, 'manifest.json'),
-          extend: manifestExtra
+          extend: manifestExtra,
         },
       }),
-
-      new CopyWebpackPlugin({ // Configure the plugin
+      new CopyWebpackPlugin({
         patterns: [
-          { from: 'icon16.png', to: '' }, // Copy icons to root of dist\
-          { from: 'icon32.png', to: '' }, // Copy icons to root of dist\
-          { from: 'icon48.png', to: '' }, // Copy icons to root of dist\
-          { from: 'icon128.png', to: '' }, // Copy icons to root of dist\
-          { from: 'icon256.png', to: '' }, // Copy popup page
-          { from: 'options/options.html', to: 'options.html' }, // Copy options page
-          { from: 'options/options.css', to: 'options.css' }, // Copy options css
-          { from: 'wordList.html', to: 'wordList.html' }, // Copy wordList page
-          { from: 'wordList.css', to: 'wordList.css' }, // Copy wordList css\
-          { from: 'img/*.*', to: '' } // Copy any other files you need
-
+          { from: 'icon16.png', to: '' },
+          { from: 'icon32.png', to: '' },
+          { from: 'icon48.png', to: '' },
+          { from: 'icon128.png', to: '' },
+          { from: 'icon256.png', to: '' },
+          { from: 'options/options.html', to: 'options.html' },
+          { from: 'options/options.css', to: 'options.css' },
+          { from: 'wordList.html', to: 'wordList.html' },
+          { from: 'wordList.css', to: '' },
+          { from: 'img/*.*', to: '' },
         ],
-      })
+      }),
     ],
-
-    //devtool: 'source-map',
   };
-}
-
+};

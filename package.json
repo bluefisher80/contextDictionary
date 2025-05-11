@@ -7,7 +7,9 @@
         "build:chrome": "webpack --mode production --env browser=chrome",
         "build:firefox": "webpack --mode production --env browser=firefox",
         "build:edge": "webpack --mode production --env browser=edge",
-        "dev": "webpack --mode development",
+        "dev:chrome": "webpack --mode development --env browser=chrome",
+        "dev:firefox": "webpack --mode development --env browser=firefox",
+        "dev:edge": "webpack --mode development --env browser=edge",
         "watch": "webpack --watch",
         "clean": "rm -rf dist .webpack-cache"
     },
