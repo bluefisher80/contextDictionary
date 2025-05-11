@@ -89,12 +89,24 @@ var onMouseUp = function (e) {
 
 /**
  * This was coded for only caret mode, but now it is used for both caret mode and window.getSelection mode.
- * For Caret mode, this is called when the user moves the mouse,that action indicates that the user is not long pressing, so 
+ * For Caret mode, this is called when the user moves the mouse,that original design logic indicates that the user is not long pressing, so 
  * need to cancel the long press.
- * But for Window.getSelection mode, this could be triggered and scheduled work would be canceled if the user moves the mouse.
+ * But for Window.getSelection mode, this could be triggered and scheduled work would be canceled if the user moves the mouse, so need to check that case and 
+ * stop executing the next(dirty work) logic.
  * @param {*} e 
  */
 var onMouseMove = function (e) {
+
+    // Get selected text using window.getSelection
+    const selection = window.getSelection().toString();
+
+    //Fow winddow.getSelection() mode, If there's a selection selected, need to stop executing the long press.
+    if (selection && selection.trim()) {
+        console.log(selection);
+        return; // Exit early since we have the selection
+    }
+
+
     if (longPressTimer) {
         LongPressState.set(false);
         cancelLongPress();
@@ -126,9 +138,8 @@ var prepareToShowCaretMode = function (e) {
 };
 
 /**
- * Function name is not correct, now is a switch to show the meaning.
- * In Caret mode, it will be called when long press is detected.
- * In Window.getSelection mode, it will be called when the user select a word.
+ * In Window.getSelection mode, it will be called when the user select a word,
+ * Triggered with a timer.
  * @param {*} e 
  */
 var prepareToShowGetSelectionMode = function (e) {
