@@ -67,10 +67,7 @@ module.exports = (env, argv) => {
     },
     plugins: [
 
-      new webpack.ProvidePlugin({
-        Buffer: ['buffer', 'Buffer'], // Automatically provide Buffer
-        process: 'process/browser',   // Automatically provide process
-      }),
+
 
       new ExtensionManifestPlugin({
         config: {
