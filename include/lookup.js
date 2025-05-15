@@ -265,17 +265,17 @@ function findTargetWord(startOffset, parentNode) {
     var forward = offset + 1;
     var backword = offset - 1;
 
-    if (! /[a-zA-Z]/.test(textarray[offset])) {
+    if (! /[\p{L}]/u.test(textarray[offset])) {
         forward = textlen + 1;
         //the clicked char is not a normal char, so there is no need to continue forward-way.
     } else {
-        //A letter belongs to [a-zA-Z]
+        //A letter belongs to Unicode letter.
         table.splice(0, 0, textarray[offset]);
     }
 
     console.log("Enter finding target word logic 3");
     while (backword >= 0) {
-        if (! /[a-zA-Z]/.test(textarray[backword])) { break; }
+        if (! /[\p{L}]/u.test(textarray[backword])) { break; }
         else {
             table.splice(0, 0, textarray[backword]);
         }
@@ -284,7 +284,7 @@ function findTargetWord(startOffset, parentNode) {
 
     console.log("Enter finding target word logic 4");
     while (forward <= textlen) {
-        if (! /[a-zA-Z]/.test(textarray[forward])) { break; }
+        if (! /[\p{L}]/u.test(textarray[forward])) { break; }
         else {
             table.push(textarray[forward]);
         }
