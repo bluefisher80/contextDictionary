@@ -12,19 +12,19 @@ var longPressTimer, isLoading, mouseDown,
     initEvent, startOffset, rangeParentNode, theSelection,
     theURL, theContext, targetWord;
 
-    const LongPressState = (function() {
-        let isLongPressing = false;
-        return {
-            get: () => isLongPressing,
-            set: (value) => {
-                if (typeof value !== 'boolean') {
-                    throw new Error('isLongPressing must be a boolean');
-                }
-                console.log('Setting isLongPressing to:', value);
-                isLongPressing = value;
+const LongPressState = (function () {
+    let isLongPressing = false;
+    return {
+        get: () => isLongPressing,
+        set: (value) => {
+            if (typeof value !== 'boolean') {
+                throw new Error('isLongPressing must be a boolean');
             }
-        };
-    })();
+            console.log('Setting isLongPressing to:', value);
+            isLongPressing = value;
+        }
+    };
+})();
 
 
 var cancelLongPress = function () {
@@ -192,8 +192,8 @@ function onMouseDown(e) {
     if (e.which != 1) { return; }
     // check if it's in an input
     if (/^(INPUT|TEXTAREA|SELECT)$/.exec(e.target.tagName)) {
-        console.log("this is inside mouse down check, maybe page is too small, so the event is not triggered, e.target.tagName is " + e.target.tagName); 
-        return; 
+        console.log("this is inside mouse down check, maybe page is too small, so the event is not triggered, e.target.tagName is " + e.target.tagName);
+        return;
     }
     // save infos
     LongPressState.set(false);
@@ -328,8 +328,8 @@ function showMeaning(event) {
 
     if (!info) {
         //seems un-reachable code, since info is always returned from getSelectionInfo()
-         return; 
-        }
+        return;
+    }
     retrieveMeaning(info)
 
     // Creating this div while we are fetching meaning to make extension more fast.
@@ -365,7 +365,7 @@ function getSelectionInfo(event) {
 
 function retrieveMeaning(info) {
 
-    return browserAPI.runtime.sendMessage({
+    browserAPI.runtime.sendMessage({
         word: info.word,
         theURL: info.theURL,
         theContext: info.theContext,
