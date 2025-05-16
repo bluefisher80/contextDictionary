@@ -28,13 +28,16 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         timestamp: new Date().toISOString()
     };
 
-    // Get existing words array from storage and add new word
-    browserAPI.storage.local.get('savedWords').then(result => {
-        const savedWords = result.savedWords || [];
-        console.log('Saved words:', savedWords);
-        savedWords.push(wordData);
-        return browserAPI.storage.local.set({ savedWords });
-    });
+    // Get existing words array from storage and add new word.
+    // only handle for caret mode, since 'selection' mode could trigger fake selection a lot.
+    if (request.triggerMode == 'caret') {
+        browserAPI.storage.local.get('savedWords').then(result => {
+            const savedWords = result.savedWords || [];
+            console.log('Saved words:', savedWords);
+            savedWords.push(wordData);
+            return browserAPI.storage.local.set({ savedWords });
+        });
+    }
     
 
     if (request.lang == 'zh-CN' && /^[a-zA-Z]+$/.test(request.word) && request.originalPageLang == 'en') {

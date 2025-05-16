@@ -134,6 +134,7 @@ var prepareToShowCaretMode = function (e) {
     LongPressState.set(true);
     longPressTimer = null;
     popup_opened = true;// This is a flag to indicate that the popup would be opened.
+    initEvent.triggerMode = 'caret';
     showMeaning(initEvent);
 };
 
@@ -148,6 +149,7 @@ var prepareToShowGetSelectionMode = function (e) {
     LongPressState.set(false);
     longPressTimer = null;
     popup_opened = true;// This is a flag to indicate that the popup would be opened.
+    initEvent.triggerMode = 'selection';
     showMeaning(initEvent);
 };
 
@@ -321,9 +323,13 @@ function showMeaning(event) {
     info.theURL = theURL;
     info.theContext = theContext;
     info.originalPageLang = document.documentElement.lang || document.querySelector("html").getAttribute("lang") || "en";
+    info.triggerMode = event.triggerMode;
     console.log("Show the page html lang element", info.originalPageLang);
 
-    if (!info) { return; }
+    if (!info) {
+        //seems un-reachable code, since info is always returned from getSelectionInfo()
+         return; 
+        }
     retrieveMeaning(info)
 
     // Creating this div while we are fetching meaning to make extension more fast.
@@ -365,7 +371,8 @@ function retrieveMeaning(info) {
         theContext: info.theContext,
         lang: LANGUAGE,
         time: Date.now(),
-        originalPageLang: info.originalPageLang    
+        originalPageLang: info.originalPageLang,
+        triggerMode: info.triggerMode
     });
 }
 
