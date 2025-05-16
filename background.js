@@ -47,9 +47,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             then(response => response.text())
             .then((text) => {
                 chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-                    chrome.tabs.sendMessage(tabs[0].id, { action: "parseXML", text }, (response) => {
-                        sendResponse(response);
-                    });
+                    chrome.tabs.sendMessage(tabs[0].id, { action: "parseXML", text });
                 });
 
             })
@@ -72,9 +70,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             .then((response) => response.json())
             .then((data) => {
                 chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-                    chrome.tabs.sendMessage(tabs[0].id, { action: "parseJSON5", data }, (response) => {
-                        sendResponse(response);
-                    });
+                    chrome.tabs.sendMessage(tabs[0].id, { action: "parseJSON5", data });
                 });
             })
             .catch((error) => {
