@@ -35,7 +35,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             const savedWords = result.savedWords || [];
             console.log('Saved words:', savedWords);
             savedWords.push(wordData);
-            return browserAPI.storage.local.set({ savedWords });
+            browserAPI.storage.local.set({ savedWords });
         });
     }
     
