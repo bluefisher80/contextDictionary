@@ -266,8 +266,9 @@ function findTargetWord(startOffset, parentNode) {
 
     var forward = offset + 1;
     var backword = offset - 1;
-
-    if (! /[\p{L}]/u.test(textarray[offset])) {
+    //Match the unicode letter, but not match the Chinese characters.
+    const regexP = /[\p{L}](?![\p{sc=Han}\p{sc=Hiragana}\p{sc=Katakana}\p{sc=Hangul}])/u;//Lookahead Pattern in Regex
+    if (! regexP.test(textarray[offset])) {
         forward = textlen + 1;
         //the clicked char is not a normal char, so there is no need to continue forward-way.
     } else {
@@ -277,7 +278,7 @@ function findTargetWord(startOffset, parentNode) {
 
     console.log("Enter finding target word logic 3");
     while (backword >= 0) {
-        if (! /[\p{L}]/u.test(textarray[backword])) { break; }
+        if (! regexP.test(textarray[backword])) { break; }
         else {
             table.splice(0, 0, textarray[backword]);
         }
@@ -286,7 +287,7 @@ function findTargetWord(startOffset, parentNode) {
 
     console.log("Enter finding target word logic 4");
     while (forward <= textlen) {
-        if (! /[\p{L}]/u.test(textarray[forward])) { break; }
+        if (! regexP.test(textarray[forward])) { break; }
         else {
             table.push(textarray[forward]);
         }
