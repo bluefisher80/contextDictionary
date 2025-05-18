@@ -130,7 +130,7 @@ var onScroll = function (e) {
  */
 var prepareToShowCaretMode = function (e) {
     console.log("Prepare to show, caret mode");
-    // update status
+    // update status, the only case setting long  press mode.
     LongPressState.set(true);
     longPressTimer = null;
     popup_opened = true;// This is a flag to indicate that the popup would be opened.
@@ -231,6 +231,9 @@ function onMouseDown(e) {
     }
 
     targetWord = findTargetWord(startOffset, rangeParentNode);
+
+
+    if(targetWord.length == 0) return;
 
     theURL = window.document.URL;
     theContext = rangeParentNode.textContent;
