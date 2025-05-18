@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple HTML with JavaScript</title>
+</head>
+<body>
+    <h1>Hello World</h1>
+    <button onclick="showMessage()">Click Me</button>
+
+    <script>
+
+const isSingleNonCJKLetter = (str) => 
+    /^[\p{L}]$/u.test(str) && 
+    !/^[\p{sc=Han}\p{sc=Hiragana}\p{sc=Katakana}\p{sc=Hangul}]$/u.test(str);
+
+
+        function showMessage() {
+
+            const NON_CJK_LETTER_REGEX2 = /[\p{L}](?!(?:[\p{sc=Han}\p{sc=Hiragana}\p{sc=Katakana}\p{sc=Hangul}]|$))/u;
+            const NON_CJK_LETTER_REGEX  = /[\p{L}](?!(?:[\p{sc=Han}\p{sc=Hiragana}\p{sc=Katakana}\p{sc=Hangul}]|$))/u; //look ahead regex pattern, but also exclude last char otherwise it will be matched.
+            const IS_SINGLE_NON_CJK_LETTER = /^[\p{L}]$/u && !/^[\p{sc=Han}\p{sc=Hiragana}\p{sc=Katakana}\p{sc=Hangul}]$/u;
+            const testString = ['a','b'];
+            const test2String = 'i';
+
+
+            if(isSingleNonCJKLetter(test2String)) {
+                alert("Matched Non-CJK Letter");
+            } else {
+                alert("No Match");
+            }
+
+        }
+    </script>
+</body>
+</html>
