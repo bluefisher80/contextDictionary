@@ -243,8 +243,12 @@ function onMouseDown(e) {
     longPressTimer = setTimeout(prepareToShowCaretMode, isLink ? URLCaretModeDelay : DefaultDelay);
 };
 
+const NON_CJK_LETTER_REGEX = /[\p{L}](?!(?:[\p{sc=Han}\p{sc=Hiragana}\p{sc=Katakana}\p{sc=Hangul}]|$))/u; //look ahead regex pattern, but also exclude last char otherwise it will be matched.
 
 
+const isSingleNonCJKLetter = (str) => 
+    /^[\p{L}]$/u.test(str) && 
+    !/^[\p{sc=Han}\p{sc=Hiragana}\p{sc=Katakana}\p{sc=Hangul}]$/u.test(str);
 
 function findTargetWord(startOffset, parentNode) {
 
@@ -267,8 +271,8 @@ function findTargetWord(startOffset, parentNode) {
     var forward = offset + 1;
     var backword = offset - 1;
     //Match the unicode letter, but not match the Chinese characters.
-    const regexP = /[\p{L}](?![\p{sc=Han}\p{sc=Hiragana}\p{sc=Katakana}\p{sc=Hangul}])/u;//Lookahead Pattern in Regex
-    if (! regexP.test(textarray[offset])) {
+    if (! isSingleNonCJKLetter(textarray[offset])) {
+        console.log(textarray[offset] + ' does not match the regex pattern ');
         forward = textlen + 1;
         //the clicked char is not a normal char, so there is no need to continue forward-way.
     } else {
@@ -278,7 +282,7 @@ function findTargetWord(startOffset, parentNode) {
 
     console.log("Enter finding target word logic 3");
     while (backword >= 0) {
-        if (! regexP.test(textarray[backword])) { break; }
+        if (! isSingleNonCJKLetter(textarray[backword])) { break; }
         else {
             table.splice(0, 0, textarray[backword]);
         }
@@ -287,7 +291,7 @@ function findTargetWord(startOffset, parentNode) {
 
     console.log("Enter finding target word logic 4");
     while (forward <= textlen) {
-        if (! regexP.test(textarray[forward])) { break; }
+        if (! isSingleNonCJKLetter(textarray[forward])) { break; }
         else {
             table.push(textarray[forward]);
         }
