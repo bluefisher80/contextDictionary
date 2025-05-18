@@ -1,11 +1,5 @@
-功能说明:
-
- 在当前网面快速查询英语单词的释义，只需选中单词同时按下左键....
+# Build 
 
  npm run build:chrome
-
- or 
-
  npm run build:firefox
  
-//TODO test with push remote
