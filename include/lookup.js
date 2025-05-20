@@ -275,7 +275,7 @@ function findTargetWord(startOffset, parentNode) {
     var backword = offset - 1;
     //Match the unicode letter, but not match the Chinese characters.
     if (! isSingleNonCJKLetter(textarray[offset])) {
-        console.log(textarray[offset] + ' does not match the regex pattern ');
+        console.log(textarray[offset] + 'in caret mode, possiblly a CJK letter, should alert user to user selection mode ?');
         forward = textlen + 1;
         //the clicked char is not a normal char, so there is no need to continue forward-way.
     } else {
