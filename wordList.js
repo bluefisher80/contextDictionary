@@ -44,15 +44,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     li.appendChild(deleteButton);
 
-    const wordSpan = document.createElement('span');
-    wordSpan.textContent = word ;
-    wordSpan.className = 'word-highlight';
-
-    if (word === context) {
-      wordSpan.textContent = null;
-    } else {
-      wordSpan.textContent = null; //hide anyway, since we are highlighting the context
-    }
     const contextSpan = document.createElement('span');
     const regex = new RegExp(`(${word})`, 'gi');
     const highlightedContext = context.replace(regex, '<mark>$1</mark>');
@@ -71,7 +62,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const timeSpan = document.createElement('span');
     timeSpan.textContent = ` (${new Date(timestamp).toLocaleDateString()})`;
 
-    li.appendChild(wordSpan);
+    
     li.appendChild(contextSpan);
     li.appendChild(link);
     li.appendChild(timeSpan);
