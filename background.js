@@ -62,8 +62,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         //TODO does it need to return true here since code is now SendMessage? is it async?
         return true;
     } else {
-        word = request.word;
+        const word = encodeURIComponent(request.word);
         lang = request.lang;
+
+        console.log("word is " + word);
 
         // Free Google Translate API
         let urlFree = `https://clients5.google.com/translate_a/single?dj=1&dt=t&dt=sp&dt=ld&dt=bd&client=dict-chrome-ex&sl=auto&tl=${lang}&q=${word}`;
