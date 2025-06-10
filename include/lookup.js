@@ -67,19 +67,20 @@ var onMouseUp = function (e) {
     // If there's a selection, use it; otherwise, use caret position logic
     if (selection && selection.trim()) {
 
-            // Check if the configured trigger key is pressed
-    const triggerKeyPressed = (TRIGGER_KEY === 'ctrl' && e.ctrlKey) || 
-                            (TRIGGER_KEY === 'alt' && e.altKey) ||
-                            (TRIGGER_KEY === 'none');
-    if(triggerKeyPressed)    {                    
-        targetWord = selection;
-        theURL = window.document.URL;
-        theContext = selection.length > 50 ? selection : window.getSelection().anchorNode.textContent;
-        console.log("Selected text:", targetWord);
-        initEvent = e; // Store the event for later use in ShowMeaning
-        // launch a timer to detect "long press"
-        longPressTimer = setTimeout(prepareToShowGetSelectionMode, DefaultDelay);
-}
+        // Check if the configured trigger key is pressed
+        const triggerKeyPressed = (TRIGGER_KEY === 'ctrl' && e.ctrlKey) ||
+            (TRIGGER_KEY === 'alt' && e.altKey) ||
+            (TRIGGER_KEY === 'shift' && e.shiftKey) ||
+            (TRIGGER_KEY === 'none');
+        if (triggerKeyPressed) {
+            targetWord = selection;
+            theURL = window.document.URL;
+            theContext = selection.length > 50 ? selection : window.getSelection().anchorNode.textContent;
+            console.log("Selected text:", targetWord);
+            initEvent = e; // Store the event for later use in ShowMeaning
+            // launch a timer to detect "long press"
+            longPressTimer = setTimeout(prepareToShowGetSelectionMode, DefaultDelay);
+        }
         return; // Exit early since we have the selection
     }
 
@@ -240,7 +241,7 @@ function onMouseDown(e) {
     targetWord = findTargetWord(startOffset, rangeParentNode);
 
 
-    if(targetWord.length == 0) return;
+    if (targetWord.length == 0) return;
 
     theURL = window.document.URL;
     theContext = rangeParentNode.textContent;
@@ -256,8 +257,8 @@ function onMouseDown(e) {
 const NON_CJK_LETTER_REGEX = /[\p{L}](?!(?:[\p{sc=Han}\p{sc=Hiragana}\p{sc=Katakana}\p{sc=Hangul}]|$))/u; //look ahead regex pattern, but also exclude last char otherwise it will be matched.
 
 
-const isSingleNonCJKLetter = (str) => 
-    /^[\p{L}]$/u.test(str) && 
+const isSingleNonCJKLetter = (str) =>
+    /^[\p{L}]$/u.test(str) &&
     !/^[\p{sc=Han}\p{sc=Hiragana}\p{sc=Katakana}\p{sc=Hangul}]$/u.test(str);
 
 function findTargetWord(startOffset, parentNode) {
@@ -281,7 +282,7 @@ function findTargetWord(startOffset, parentNode) {
     var forward = offset + 1;
     var backword = offset - 1;
     //Match the unicode letter, but not match the Chinese characters.
-    if (! isSingleNonCJKLetter(textarray[offset])) {
+    if (!isSingleNonCJKLetter(textarray[offset])) {
         console.log(textarray[offset] + 'in caret mode, possiblly a CJK letter, should alert user to user selection mode ?');
         forward = textlen + 1;
         //the clicked char is not a normal char, so there is no need to continue forward-way.
@@ -292,7 +293,7 @@ function findTargetWord(startOffset, parentNode) {
 
     console.log("Enter finding target word logic 3");
     while (backword >= 0) {
-        if (! isSingleNonCJKLetter(textarray[backword])) { break; }
+        if (!isSingleNonCJKLetter(textarray[backword])) { break; }
         else {
             table.splice(0, 0, textarray[backword]);
         }
@@ -301,7 +302,7 @@ function findTargetWord(startOffset, parentNode) {
 
     console.log("Enter finding target word logic 4");
     while (forward <= textlen) {
-        if (! isSingleNonCJKLetter(textarray[forward])) { break; }
+        if (!isSingleNonCJKLetter(textarray[forward])) { break; }
         else {
             table.push(textarray[forward]);
         }
