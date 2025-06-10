@@ -1,5 +1,5 @@
 const DEFAULT_LANGUAGE = "zh-CN";
-var DEFAULT_TRIGGER_KEY = "none", LANGUAGE, TRIGGER_KEY;
+var DEFAULT_TRIGGER_KEY = "ctrl", LANGUAGE, TRIGGER_KEY;
 
 const browserAPI = typeof browser !== 'undefined' ? browser : chrome;
 
@@ -66,6 +66,12 @@ var onMouseUp = function (e) {
 
     // If there's a selection, use it; otherwise, use caret position logic
     if (selection && selection.trim()) {
+
+            // Check if the configured trigger key is pressed
+    const triggerKeyPressed = (TRIGGER_KEY === 'ctrl' && e.ctrlKey) || 
+                            (TRIGGER_KEY === 'alt' && e.altKey) ||
+                            (TRIGGER_KEY === 'none');
+    if(triggerKeyPressed)    {                    
         targetWord = selection;
         theURL = window.document.URL;
         theContext = selection.length > 50 ? selection : window.getSelection().anchorNode.textContent;
@@ -73,6 +79,7 @@ var onMouseUp = function (e) {
         initEvent = e; // Store the event for later use in ShowMeaning
         // launch a timer to detect "long press"
         longPressTimer = setTimeout(prepareToShowGetSelectionMode, DefaultDelay);
+}
         return; // Exit early since we have the selection
     }
 
