@@ -28,11 +28,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         timestamp: new Date().toISOString()
     };
 
-    // Get existing words array from storage and add new word.
-    // only handle for caret mode, since 'selection' mode could trigger fake selection a lot.
-    //But for CJK users(if any) , they may want to use selection mode and save the word, how to TODO?(add a meta key to trigger storage)
+//save the word for any mode, since the 'selection' mode now is companioned with keyboard action mode
 
-    if (request.triggerMode == 'caret') {
+    if (request.triggerMode == 'caret'  || request.triggerMode == 'selection') {
         browserAPI.storage.local.get('savedWords').then(result => {
             const savedWords = result.savedWords || [];
             console.log('Saved words:', savedWords);
