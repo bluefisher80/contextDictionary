@@ -22,20 +22,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     const deleteButton = document.createElement('button');
     deleteButton.textContent = '❌';
     deleteButton.style.marginLeft = '5px';
+    deleteButton.style.marginRight = '10px';
     deleteButton.onclick = async () => {
-      const updatedWords = savedWords.filter(w =>
+      const result = await browserAPI.storage.local.get("savedWords");
+      const currentWords = result.savedWords || [];
+      const updatedWords = currentWords.filter(w =>
         w.word !== word ||
         w.pageUrl !== pageUrl ||
         w.timestamp !== timestamp
       );
       await browserAPI.storage.local.set({ savedWords: updatedWords });
-      container.innerHTML = '';
-      const newList = document.createElement('ul');
+      
+      li.remove();
+      wordCount.textContent = `Total Words: ${updatedWords.length}`;
+
       if (updatedWords.length === 0) {
         container.innerHTML = "<p>No messages found.</p>";
-        return;
       }
-      window.location.reload();
     };
 
     const li = document.createElement("li");
