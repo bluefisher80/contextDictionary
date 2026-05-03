@@ -631,7 +631,7 @@ async function generateAIStory() {
     // Generate prompt
     const wordList = selectedWords.map(w => w.word).join(', ');
     
-    const lengthMap = { short: '150-200', medium: '250-350', long: '400-500' };
+    const lengthMap = { x: '80-100', short: '150-200', medium: '250-350', long: '400-500' };
     const wordCount = lengthMap[length] || '250-350';
     
     const prompt = `Write a ${style} short story (${wordCount} words) that naturally incorporates these vocabulary words: ${wordList}
@@ -793,18 +793,26 @@ function generateTrackingLink() {
   return `https://context-dictionary.com/r/${id}`;
 }
 
+function stripMarkdown(text) {
+  return text
+    .replace(/\*\*(.+?)\*\*/g, '$1')
+    .replace(/# (.+)/g, '$1')
+    .replace(/---/g, '')
+    .replace(/\n{2,}/g, '\n')
+    .trim();
+}
+
 function getShareText() {
   if (!currentStory) return null;
   const trackingLink = generateTrackingLink();
-  // Truncate story if too long for social media
-  let storyText = currentStory.content;
-  if (storyText.length > 800) {
-    storyText = storyText.substring(0, 797) + '...';
-  }
+  
+  // Clean text without markdown
+  const cleanText = stripMarkdown(currentStory.content);
+  
   return {
-    text: storyText,
+    text: cleanText,
     trackingLink: trackingLink,
-    fullText: `${storyText}\n\n---\nGenerated with Context Dictionary ${trackingLink}`
+    fullText: `${cleanText}\n\n---\nGenerated with Context Dictionary ${trackingLink}`
   };
 }
 
@@ -822,8 +830,8 @@ async function shareToSocial(platform) {
   
   switch (platform) {
     case 'x':
-      // X (Twitter) Web Intent
-      const xText = encodeURIComponent(shareData.fullText.substring(0, 280)); // X limit
+      // X (Twitter) Web Intent - no back reference link, clean text
+      const xText = encodeURIComponent(shareData.text.substring(0, 280));
       openShareWindow(`https://twitter.com/intent/tweet?text=${xText}`, 'Share on X');
       break;
       
