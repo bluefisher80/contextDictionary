@@ -66,24 +66,17 @@ class AIService {
 
   buildPrompt(words, language, difficulty, style) {
     const wordList = words.map(w => w.word).join(', ');
-    const wordDetails = words.map(w => 
-      `- ${w.word}: ${w.meaning || '(meaning not available)'}`
-    ).join('\n');
 
-    return `Write a short, ${style} story (200-300 words) in ${language} that naturally incorporates these vocabulary words:
-
-${wordDetails}
+    return `Write a short, ${style} story (200-300 words) in ${language} that naturally incorporates these vocabulary words: ${wordList}
 
 Requirements:
 1. The story should be ${difficulty} level
 2. Each target word should appear 1-2 times in natural context
-3. After the story, list the target words with brief definitions
-4. Make the story memorable and relatable
+3. Make the story memorable and relatable
 
 Format:
 - Story title
-- Story text with **bold** target words
-- Word list with definitions at the end`;
+- Story text with **bold** target words`;
   }
 
   async callGemini(prompt) {

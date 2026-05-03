@@ -384,21 +384,6 @@ a:hover {
   100% { transform: rotate(360deg); }
 }
 
-/* Story word highlighting */
-.story-word {
-  color: #2c5282;
-  background: #ebf8ff;
-  padding: 2px 6px;
-  border-radius: 4px;
-  cursor: pointer;
-  border-bottom: 2px solid #4299e1;
-  transition: all 0.2s;
-}
-
-.story-word:hover {
-  background: #bee3f8;
-}
-
 #story-settings label {
   margin-right: 15px;
 }
@@ -407,21 +392,6 @@ a:hover {
   padding: 5px 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
-}
-
-.word-tooltip {
-  animation: tooltipFadeIn 0.2s ease;
-}
-
-@keyframes tooltipFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-5px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 /* ============================================

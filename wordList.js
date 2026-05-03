@@ -630,33 +630,21 @@ async function generateAIStory() {
     
     // Generate prompt
     const wordList = selectedWords.map(w => w.word).join(', ');
-    const wordDetails = selectedWords.map(w => 
-      `- ${w.word}: ${w.meaning || '(meaning not available)'}`
-    ).join('\n');
     
     const lengthMap = { short: '150-200', medium: '250-350', long: '400-500' };
     const wordCount = lengthMap[length] || '250-350';
     
-    const prompt = `Write a ${style} short story (${wordCount} words) that naturally incorporates these vocabulary words:
-
-${wordDetails}
+    const prompt = `Write a ${style} short story (${wordCount} words) that naturally incorporates these vocabulary words: ${wordList}
 
 Requirements:
 1. Make the story ${style} and memorable
 2. Bold the target words like **word** when they appear
-3. After the story, add a "Word Review" section listing each word with its meaning
-4. Keep sentences natural - don't force words where they don't fit
+3. Keep sentences natural - don't force words where they don't fit
 
 Format:
 # [Story Title]
 
-[Story text with **bold** target words]
-
----
-
-**Word Review:**
-- **word**: definition
-- **word**: definition`;
+[Story text with **bold** target words]`;
 
     // Call AI API
     let story;
@@ -672,14 +660,13 @@ Format:
     
     // Format and display story
     storyContent.innerHTML = formatStory(story, selectedWords);
-    attachStoryWordListeners(storyContent);
     storyContent.style.display = 'block';
     
     // Save to cache
     await browserAPI.storage.local.set({ 
       cachedStory: { 
         content: story, 
-        words: selectedWords.map(w => ({ word: w.word, meaning: w.meaning || w.word })),
+        words: selectedWords.map(w => ({ word: w.word })),
         timestamp: Date.now() 
       } 
     });
@@ -781,89 +768,14 @@ async function callAnthropic(prompt, apiKey, model) {
 }
 
 function formatStory(story, selectedWords) {
-  // Build a map of word -> meaning for quick lookup
-  const wordMap = {};
-  selectedWords.forEach(w => {
-    wordMap[w.word.toLowerCase()] = w.meaning || w.word;
-  });
-  
-  // Convert markdown bold to clickable spans with tooltips
+  // Convert markdown to HTML
   let formatted = story
-    .replace(/\*\*(.+?)\*\*/g, (match, word) => {
-      const meaning = wordMap[word.toLowerCase()] || 'Definition not available';
-      return `<span class="story-word" data-word="${word}" data-meaning="${meaning.replace(/"/g, '&quot;')}">${word}</span>`;
-    })
+    .replace(/\*\*(.+?)\*\*/g, '<strong style="color: #2c5282; background: #ebf8ff; padding: 2px 6px; border-radius: 4px;">$1</strong>')
     .replace(/# (.+)/g, '<h3 style="color: #333; margin-top: 0;">$1</h3>')
     .replace(/---/g, '<hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">')
     .replace(/\n/g, '<br>');
   
   return formatted;
-}
-
-function attachStoryWordListeners(container) {
-  container.querySelectorAll('.story-word').forEach(wordEl => {
-    wordEl.addEventListener('click', (e) => {
-      e.stopPropagation();
-      showWordTooltip(wordEl);
-    });
-  });
-}
-
-function showWordTooltip(element) {
-  // Remove any existing tooltips
-  document.querySelectorAll('.word-tooltip').forEach(t => t.remove());
-  
-  const word = element.dataset.word;
-  const meaning = element.dataset.meaning;
-  
-  // Create tooltip
-  const tooltip = document.createElement('div');
-  tooltip.className = 'word-tooltip';
-  tooltip.innerHTML = `
-    <div style="font-weight: bold; color: #2c5282; margin-bottom: 5px;">${word}</div>
-    <div style="color: #555;">${meaning}</div>
-  `;
-  tooltip.style.cssText = `
-    position: absolute;
-    background: white;
-    border: 2px solid #4299e1;
-    border-radius: 8px;
-    padding: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    z-index: 10000;
-    max-width: 300px;
-    font-size: 0.95em;
-    animation: tooltipFadeIn 0.2s ease;
-  `;
-  
-  // Position tooltip near the word
-  const rect = element.getBoundingClientRect();
-  tooltip.style.left = rect.left + 'px';
-  tooltip.style.top = (rect.bottom + 8) + 'px';
-  
-  // Add close button
-  const closeBtn = document.createElement('button');
-  closeBtn.innerHTML = '✕';
-  closeBtn.style.cssText = 'position: absolute; top: 4px; right: 4px; background: none; border: none; cursor: pointer; color: #999; font-size: 12px;';
-  closeBtn.onclick = () => tooltip.remove();
-  tooltip.appendChild(closeBtn);
-  
-  document.body.appendChild(tooltip);
-  
-  // Auto-close after 5 seconds
-  setTimeout(() => {
-    if (tooltip.parentNode) tooltip.remove();
-  }, 5000);
-  
-  // Close when clicking outside
-  setTimeout(() => {
-    document.addEventListener('click', function closeTooltip(e) {
-      if (!tooltip.contains(e.target) && !element.contains(e.target)) {
-        tooltip.remove();
-        document.removeEventListener('click', closeTooltip);
-      }
-    });
-  }, 100);
 }
 
 // Story button event listeners
@@ -887,7 +799,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         result.cachedStory.content, 
         result.cachedStory.words
       );
-      attachStoryWordListeners(storyContent);
       storyContent.style.display = 'block';
     }
   }
