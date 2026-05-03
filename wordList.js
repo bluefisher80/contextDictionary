@@ -830,9 +830,11 @@ async function shareToSocial(platform) {
   
   switch (platform) {
     case 'x':
-      // X (Twitter) Web Intent - no back reference link, clean text
-      const xText = encodeURIComponent(shareData.text.substring(0, 280));
-      openShareWindow(`https://twitter.com/intent/tweet?text=${xText}`, 'Share on X');
+      // X (Twitter) Web Intent - tight back reference
+      const link = shareData.trackingLink;
+      const maxStoryLength = 280 - link.length - 2; // -2 for the newline
+      const xPost = shareData.text.substring(0, maxStoryLength).trim() + '\n' + link;
+      openShareWindow(`https://twitter.com/intent/tweet?text=${encodeURIComponent(xPost)}`, 'Share on X');
       break;
       
     case 'facebook':
