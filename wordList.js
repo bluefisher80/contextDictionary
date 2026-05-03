@@ -695,7 +695,8 @@ Format:
 
 async function callGemini(prompt, apiKey) {
   // Try multiple model names in case one isn't available
-  const models = ['gemini-1.5-flash-latest', 'gemini-1.5-flash', 'gemini-pro'];
+  // Google AI Studio may use different model names like gemini-3-flash-preview
+  const models = ['gemini-3-flash-preview', 'gemini-2.0-flash-exp', 'gemini-1.5-flash-latest', 'gemini-1.5-flash', 'gemini-pro'];
   let lastError;
   
   for (const model of models) {
