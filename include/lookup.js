@@ -439,6 +439,21 @@ function createDiv(info) {
     heading.style = "margin-block-end: 0px; display:inline-block;";
     heading.textContent = "Searching";
 
+    var ttsBtn = document.createElement("button");
+    ttsBtn.textContent = "🔊";
+    ttsBtn.style = "margin-left: 8px; background: transparent; border: none; cursor: pointer; font-size: 1.1em; padding: 2px 6px; border-radius: 4px;";
+    ttsBtn.title = "Play pronunciation";
+    ttsBtn.addEventListener("click", function(e) {
+        e.stopPropagation();
+        if (window.speechSynthesis) {
+            window.speechSynthesis.cancel();
+            var utterance = new SpeechSynthesisUtterance(info.word);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.9;
+            window.speechSynthesis.speak(utterance);
+        }
+    });
+
     var meaning = document.createElement("p");
     meaning.style = "margin-top: 10px";
     meaning.textContent = "Please Wait...";
@@ -491,7 +506,8 @@ function createDiv(info) {
         heading,
         meaning,
         moreInfo,
-        audio
+        audio,
+        ttsBtn
     };
 
 }

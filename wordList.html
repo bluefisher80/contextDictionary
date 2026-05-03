@@ -12,9 +12,81 @@
 
   <h3>Saved Messages</h3>
 
-  <div>
+  <div style="margin-bottom: 15px;">
+    <button id="study-mode-button">Study Mode</button>
+    <span id="due-count" style="margin-left: 10px; font-weight: bold; color: #d9534f;"></span>
     <button id="story-button">Make prompt for Story By AI </button>
     <div id="story_prompt"></div>
+  </div>
+
+  <div id="study-container" style="display: none;">
+    <div id="flashcard">
+      <div id="flashcard-front">
+        <div id="flashcard-word"></div>
+        <button id="tts-button" title="Play pronunciation">🔊</button>
+      </div>
+      <div id="flashcard-back" style="display: none;">
+        <div id="flashcard-meaning" style="font-size: 1.3em; font-weight: bold; color: #2c5282; margin-bottom: 15px; padding: 10px; background: #ebf8ff; border-radius: 8px;"></div>
+        <div id="flashcard-context"></div>
+        <div id="flashcard-source"></div>
+      </div>
+    </div>
+    <div id="flashcard-controls" style="display: none;">
+      <button id="show-answer-btn">Show Answer</button>
+      <div id="rating-buttons" style="display: none;">
+        <button class="rating-btn rating-again" data-rating="1">Again<br><span class="interval-hint" id="again-interval"></span></button>
+        <button class="rating-btn rating-hard" data-rating="2">Hard<br><span class="interval-hint" id="hard-interval"></span></button>
+        <button class="rating-btn rating-good" data-rating="3">Good<br><span class="interval-hint" id="good-interval"></span></button>
+        <button class="rating-btn rating-easy" data-rating="4">Easy<br><span class="interval-hint" id="easy-interval"></span></button>
+      </div>
+    </div>
+    <div id="study-stats">
+      <span id="cards-remaining"></span>
+      <button id="exit-study-btn">Exit Study Mode</button>
+    </div>
+    <div id="study-complete" style="display: none;">
+      <h4>All caught up!</h4>
+      <p>No cards due for review.</p>
+      <button id="study-complete-exit">Back to Word List</button>
+    </div>
+  </div>
+
+  <div id="stats-container">
+    <div id="stats-summary">
+      <div class="stat-card">
+        <div class="stat-value" id="stat-total-words">0</div>
+        <div class="stat-label">Total Words</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-words-learned">0</div>
+        <div class="stat-label">Words Learned</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-streak">0</div>
+        <div class="stat-label">Day Streak</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-accuracy">0%</div>
+        <div class="stat-label">Accuracy</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-today-reviews">0</div>
+        <div class="stat-label">Today's Reviews</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-today-correct">0</div>
+        <div class="stat-label">Today's Correct</div>
+      </div>
+    </div>
+    <div id="stats-chart-container">
+      <h4>Last 7 Days Activity</h4>
+      <div id="stats-chart"></div>
+    </div>
+  </div>
+
+  <div style="margin-bottom: 10px;">
+    <input type="text" id="search-input" placeholder="Search words..." style="padding: 8px 12px; width: 300px; border: 1px solid #ddd; border-radius: 4px; font-size: 1em;">
+    <button id="clear-search" style="margin-left: 5px;">Clear</button>
   </div>
 
   <div id="messages-container">

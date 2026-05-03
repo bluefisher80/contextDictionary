@@ -46,6 +46,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         fetch(dic_url + request.word.toLowerCase()).
             then(response => response.text())
             .then((text) => {
+                // Extract meaning from XML and save it
+                const meaning = extractIcibaMeaning(text);
+                saveWordMeaning(request.word, meaning);
+                
                 chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                     chrome.tabs.sendMessage(tabs[0].id, { action: "parseXML", text });
                 });
@@ -71,6 +75,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         fetch(urlFree)
             .then((response) => response.json())
             .then((data) => {
+                // Extract meaning from Google Translate and save it
+                const meaning = extractGoogleMeaning(data);
+                saveWordMeaning(request.word, meaning);
+                
                 chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                     chrome.tabs.sendMessage(tabs[0].id, { action: "parseJSON5", data });
                 });
@@ -112,6 +120,83 @@ return true;*/
     }
 });
 
+
+function extractIcibaMeaning(xmlText) {
+    try {
+        const parser = new DOMParser();
+        const xml = parser.parseFromString(xmlText, "application/xml");
+        const dicts = xml.getElementsByTagName("dict");
+        if (dicts.length === 0) return null;
+        
+        let meanings = [];
+        const dict = dicts[0];
+        
+        // Extract phonetic
+        const psElements = dict.getElementsByTagName("ps");
+        if (psElements.length > 0 && psElements[0].firstChild) {
+            meanings.push(`[${psElements[0].firstChild.nodeValue}]`);
+        }
+        
+        // Extract definitions by pos (part of speech)
+        const posElements = dict.getElementsByTagName("pos");
+        const acceptationElements = dict.getElementsByTagName("acceptation");
+        for (let i = 0; i < posElements.length; i++) {
+            let def = "";
+            if (posElements[i].firstChild) {
+                def += posElements[i].firstChild.nodeValue + " ";
+            }
+            if (acceptationElements[i] && acceptationElements[i].firstChild) {
+                def += acceptationElements[i].firstChild.nodeValue;
+            }
+            if (def.trim()) meanings.push(def.trim());
+        }
+        
+        return meanings.join("; ");
+    } catch (e) {
+        console.error("Error extracting iciba meaning:", e);
+        return null;
+    }
+}
+
+function extractGoogleMeaning(jsonData) {
+    try {
+        let meaning = "";
+        if (jsonData && jsonData.dict && jsonData.dict.length > 0) {
+            jsonData.dict.forEach(dictEntry => {
+                let entry = "";
+                if (dictEntry.pos) {
+                    entry += dictEntry.pos + ": ";
+                }
+                if (dictEntry.terms) {
+                    entry += dictEntry.terms.join(", ");
+                }
+                if (entry) meaning += entry + "; ";
+            });
+            meaning = meaning.replace(/; $/, "");
+        } else if (jsonData && jsonData.sentences && jsonData.sentences[0] && jsonData.sentences[0].trans) {
+            meaning = jsonData.sentences[0].trans;
+        }
+        return meaning || null;
+    } catch (e) {
+        console.error("Error extracting google meaning:", e);
+        return null;
+    }
+}
+
+function saveWordMeaning(word, meaning) {
+    if (!meaning) return;
+    browserAPI.storage.local.get('savedWords').then(result => {
+        const savedWords = result.savedWords || [];
+        // Find the most recently saved word matching this word
+        for (let i = savedWords.length - 1; i >= 0; i--) {
+            if (savedWords[i].word === word && !savedWords[i].meaning) {
+                savedWords[i].meaning = meaning;
+                browserAPI.storage.local.set({ savedWords });
+                break;
+            }
+        }
+    });
+}
 
 function escapeHTML(str) { return str; }
 
