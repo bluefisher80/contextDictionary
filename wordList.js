@@ -173,7 +173,9 @@ function showCurrentCard() {
   }
   
   const contextSpan = document.getElementById('flashcard-context');
-  const regex = new RegExp(`(${card.word})`, 'gi');
+  // Escape special regex characters in the word
+  const escapedWord = card.word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const regex = new RegExp(`(${escapedWord})`, 'gi');
   const highlightedContext = card.context ? card.context.replace(regex, '<mark>$1</mark>') : '(no context)';
   contextSpan.innerHTML = highlightedContext;
   
@@ -456,7 +458,9 @@ function renderWordList() {
     wordSpan.textContent = word;
     
     const contextSpan = document.createElement('span');
-    const regex = new RegExp(`(${word})`, 'gi');
+    // Escape special regex characters in the word
+    const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`(${escapedWord})`, 'gi');
     const highlightedContext = context ? context.replace(regex, '<mark>$1</mark>') : '';
     contextSpan.innerHTML = highlightedContext + ' ';
     
