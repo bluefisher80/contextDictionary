@@ -431,18 +431,6 @@ a:hover {
   margin-bottom: 20px;
 }
 
-#study-mode-button {
-  background-color: #5bc0de;
-  color: white;
-  font-weight: bold;
-  padding: 10px 20px;
-  border: none;
-}
-
-#study-mode-button:hover {
-  background-color: #46b8da;
-}
-
 #study-complete-exit {
   padding: 10px 20px;
   margin-top: 10px;
