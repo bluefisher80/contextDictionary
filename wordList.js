@@ -425,7 +425,7 @@ function renderWordList() {
   filteredWords.forEach(({ word, pageUrl, context, timestamp, interval, nextReviewDate, meaning }) => {
     const deleteButton = document.createElement('button');
     deleteButton.className = 'btn-delete';
-    deleteButton.innerHTML = '🗑️ Delete';
+    deleteButton.innerHTML = '×';
     deleteButton.title = 'Delete this word';
     deleteButton.onclick = async () => {
       const result = await browserAPI.storage.local.get("savedWords");
