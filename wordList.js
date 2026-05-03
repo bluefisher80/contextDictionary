@@ -790,7 +790,7 @@ function generateTrackingLink() {
   for (let i = 0; i < 6; i++) {
     id += chars.charAt(Math.floor(Math.random() * chars.length));
   }
-  return `https://ctxd.co/r/${id}`;
+  return `context-dictionary.com/r/${id}`;
 }
 
 function stripMarkdown(text) {
