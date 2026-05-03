@@ -662,6 +662,16 @@ Format:
     storyContent.innerHTML = formatStory(story, selectedWords);
     storyContent.style.display = 'block';
     
+    // Show share button
+    document.getElementById('story-share').style.display = 'block';
+    
+    // Store current story for sharing
+    currentStory = {
+      content: story,
+      words: selectedWords.map(w => w.word),
+      timestamp: Date.now()
+    };
+    
     // Save to cache
     await browserAPI.storage.local.set({ 
       cachedStory: { 
@@ -767,6 +777,92 @@ async function callAnthropic(prompt, apiKey, model) {
   return data.content[0].text;
 }
 
+// ============================================
+// Social Sharing
+// ============================================
+
+let currentStory = null;
+
+function generateTrackingLink() {
+  // Generate a short unique ID (8 chars)
+  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let id = '';
+  for (let i = 0; i < 8; i++) {
+    id += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return `https://context-dictionary.com/r/${id}`;
+}
+
+function getShareText() {
+  if (!currentStory) return null;
+  const trackingLink = generateTrackingLink();
+  // Truncate story if too long for social media
+  let storyText = currentStory.content;
+  if (storyText.length > 800) {
+    storyText = storyText.substring(0, 797) + '...';
+  }
+  return {
+    text: storyText,
+    trackingLink: trackingLink,
+    fullText: `${storyText}\n\n---\nGenerated with Context Dictionary ${trackingLink}`
+  };
+}
+
+function openShareWindow(url, title) {
+  const width = 600;
+  const height = 400;
+  const left = (window.innerWidth - width) / 2;
+  const top = (window.innerHeight - height) / 2;
+  window.open(url, title, `width=${width},height=${top},left=${left},top=${top},toolbar=no,menubar=no`);
+}
+
+async function shareToSocial(platform) {
+  const shareData = getShareText();
+  if (!shareData) return;
+  
+  switch (platform) {
+    case 'x':
+      // X (Twitter) Web Intent
+      const xText = encodeURIComponent(shareData.fullText.substring(0, 280)); // X limit
+      openShareWindow(`https://twitter.com/intent/tweet?text=${xText}`, 'Share on X');
+      break;
+      
+    case 'facebook':
+      // Facebook Share Dialog
+      const fbUrl = encodeURIComponent(shareData.trackingLink);
+      openShareWindow(`https://www.facebook.com/sharer/sharer.php?u=${fbUrl}&quote=${encodeURIComponent(shareData.text.substring(0, 200))}`, 'Share on Facebook');
+      break;
+      
+    case 'copy':
+      // Copy to clipboard
+      try {
+        await navigator.clipboard.writeText(shareData.fullText);
+        const status = document.getElementById('share-status');
+        status.style.display = 'inline';
+        setTimeout(() => {
+          status.style.display = 'none';
+        }, 3000);
+      } catch (err) {
+        console.error('Failed to copy:', err);
+        alert('Failed to copy. Please manually copy the story.');
+      }
+      break;
+      
+    default:
+      // Generic Web Share API (mobile)
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: 'My Vocabulary Story',
+            text: shareData.fullText
+          });
+        } catch (err) {
+          // User cancelled
+        }
+      }
+  }
+}
+
 function formatStory(story, selectedWords) {
   // Convert markdown to HTML
   let formatted = story
@@ -786,6 +882,14 @@ document.getElementById('story-settings-btn').addEventListener('click', () => {
   settings.style.display = settings.style.display === 'none' ? 'block' : 'none';
 });
 
+// Share button event listeners
+document.querySelectorAll('.share-btn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    const platform = e.target.dataset.platform;
+    shareToSocial(platform);
+  });
+});
+
 // Load cached story on page load
 document.addEventListener('DOMContentLoaded', async () => {
   const result = await browserAPI.storage.local.get('cachedStory');
@@ -800,6 +904,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         result.cachedStory.words
       );
       storyContent.style.display = 'block';
+      
+      // Restore share functionality
+      currentStory = {
+        content: result.cachedStory.content,
+        words: result.cachedStory.words.map(w => w.word),
+        timestamp: result.cachedStory.timestamp
+      };
+      document.getElementById('story-share').style.display = 'block';
     }
   }
 });
