@@ -21,7 +21,9 @@ function saveOptions(e) {
             dblClick: {
                 key: document.querySelector("#popup-dblclick-key").value
             }
-        }
+        },
+        aiProvider: document.querySelector("#ai-provider").value,
+        aiApiKey: document.querySelector("#ai-api-key").value
     }).then(showSaveStatusAnimation);
 
     e.preventDefault();
@@ -45,8 +47,31 @@ function saveOptions(e) {
         // document.querySelector("#popup-select-checkbox").checked = interaction.select.enabled;
         // document.querySelector("#popup-select-key").value = interaction.select.key;
 
+        // AI settings
+        document.querySelector("#ai-provider").value = results.aiProvider || 'GEMINI';
+        document.querySelector("#ai-api-key").value = results.aiApiKey || '';
+        updateApiKeyLink(results.aiProvider || 'GEMINI');
+
     });
   }
+
+  function updateApiKeyLink(provider) {
+    const providers = {
+      'GEMINI': { url: 'https://aistudio.google.com/app/apikey', text: 'Get free Gemini API key' },
+      'OPENAI': { url: 'https://platform.openai.com/api-keys', text: 'Get OpenAI API key' },
+      'ANTHROPIC': { url: 'https://console.anthropic.com/settings/keys', text: 'Get Anthropic API key' }
+    };
+    const link = document.querySelector("#ai-key-link");
+    const info = providers[provider];
+    if (info) {
+      link.href = info.url;
+      link.textContent = info.text;
+    }
+  }
+
+  document.querySelector("#ai-provider").addEventListener('change', (e) => {
+    updateApiKeyLink(e.target.value);
+  });
   
   function resetOptions (e) {
     browserAPI.storage.local.set({

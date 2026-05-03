@@ -590,16 +590,211 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 });
 
-document.getElementById('story-button').addEventListener('click', function () {
-  chrome.storage.local.get("savedWords", function (result) {
-    const words = result.savedWords || [];
-    const prompt = `Write a story attractive to memorize these words:
-     ${words.map(item => `${item.word} (${new Date(item.timestamp).toLocaleDateString()})`).join(', ')}, 
-     and make a new, unique URL path specifically representing the story with boilerplate https://www.context-dictionary.com/[unique-path-based-on-story]. Date is when the word was saved,
-      you can create story based on user memory line, 
-      Language of the story could be based on the words .
-      Output should be clean, URL embedded in the story, 
-      and no sign of memorization of words,just a natural pure story.`;
-    document.getElementById('story_prompt').textContent = prompt;
+// ============================================
+// AI Story Generation
+// ============================================
+
+async function generateAIStory() {
+  const storyContainer = document.getElementById('story-container');
+  const storyContent = document.getElementById('story-content');
+  const storyLoading = document.getElementById('story-loading');
+  const storyError = document.getElementById('story-error');
+  
+  storyContainer.style.display = 'block';
+  storyLoading.style.display = 'block';
+  storyContent.style.display = 'none';
+  storyError.style.display = 'none';
+  
+  try {
+    // Get words to use (prioritize due words, then recent words)
+    const dueWords = getDueWords(savedWords);
+    const wordsToUse = dueWords.length > 0 ? dueWords : savedWords;
+    
+    if (wordsToUse.length === 0) {
+      throw new Error('No words available. Save some words first!');
+    }
+    
+    // Limit to 10 words for the story
+    const selectedWords = wordsToUse.slice(0, 10);
+    
+    // Get story settings
+    const style = document.getElementById('story-style').value;
+    const length = document.getElementById('story-length').value;
+    
+    // Load AI settings
+    const result = await browserAPI.storage.local.get(['aiProvider', 'aiApiKey', 'aiModel']);
+    const provider = result.aiProvider || 'GEMINI';
+    const apiKey = result.aiApiKey;
+    
+    if (!apiKey) {
+      throw new Error('Please set your AI API key in Extension Options (right-click extension icon → Options)');
+    }
+    
+    // Generate prompt
+    const wordList = selectedWords.map(w => w.word).join(', ');
+    const wordDetails = selectedWords.map(w => 
+      `- ${w.word}: ${w.meaning || '(meaning not available)'}`
+    ).join('\n');
+    
+    const lengthMap = { short: '150-200', medium: '250-350', long: '400-500' };
+    const wordCount = lengthMap[length] || '250-350';
+    
+    const prompt = `Write a ${style} short story (${wordCount} words) that naturally incorporates these vocabulary words:
+
+${wordDetails}
+
+Requirements:
+1. Make the story ${style} and memorable
+2. Bold the target words like **word** when they appear
+3. After the story, add a "Word Review" section listing each word with its meaning
+4. Keep sentences natural - don't force words where they don't fit
+
+Format:
+# [Story Title]
+
+[Story text with **bold** target words]
+
+---
+
+**Word Review:**
+- **word**: definition
+- **word**: definition`;
+
+    // Call AI API
+    let story;
+    if (provider === 'GEMINI') {
+      story = await callGemini(prompt, apiKey);
+    } else if (provider === 'OPENAI') {
+      story = await callOpenAI(prompt, apiKey, result.aiModel);
+    } else if (provider === 'ANTHROPIC') {
+      story = await callAnthropic(prompt, apiKey, result.aiModel);
+    } else {
+      throw new Error('Unknown AI provider');
+    }
+    
+    // Format and display story
+    storyContent.innerHTML = formatStory(story, selectedWords.map(w => w.word));
+    storyContent.style.display = 'block';
+    
+    // Save to cache
+    await browserAPI.storage.local.set({ 
+      cachedStory: { 
+        content: story, 
+        words: selectedWords.map(w => w.word),
+        timestamp: Date.now() 
+      } 
+    });
+    
+  } catch (error) {
+    storyError.textContent = error.message;
+    storyError.style.display = 'block';
+  } finally {
+    storyLoading.style.display = 'none';
+  }
+}
+
+async function callGemini(prompt, apiKey) {
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.8, maxOutputTokens: 2048 }
+      })
+    }
+  );
+  
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error?.message || `API error: ${response.status}`);
+  }
+  
+  const data = await response.json();
+  return data.candidates[0].content.parts[0].text;
+}
+
+async function callOpenAI(prompt, apiKey, model) {
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({
+      model: model || 'gpt-4o-mini',
+      messages: [{ role: 'user', content: prompt }],
+      temperature: 0.8,
+      max_tokens: 2048
+    })
   });
+  
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error?.message || `API error: ${response.status}`);
+  }
+  
+  const data = await response.json();
+  return data.choices[0].message.content;
+}
+
+async function callAnthropic(prompt, apiKey, model) {
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01'
+    },
+    body: JSON.stringify({
+      model: model || 'claude-3-haiku-20240307',
+      max_tokens: 2048,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+  
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error?.message || `API error: ${response.status}`);
+  }
+  
+  const data = await response.json();
+  return data.content[0].text;
+}
+
+function formatStory(story, targetWords) {
+  // Convert markdown bold to HTML
+  let formatted = story
+    .replace(/\*\*(.+?)\*\*/g, '<strong style="color: #2c5282; background: #ebf8ff; padding: 2px 4px; border-radius: 3px;">$1</strong>')
+    .replace(/# (.+)/g, '<h3 style="color: #333; margin-top: 0;">$1</h3>')
+    .replace(/---/g, '<hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">')
+    .replace(/\n/g, '<br>');
+  
+  return formatted;
+}
+
+// Story button event listeners
+document.getElementById('story-button').addEventListener('click', generateAIStory);
+
+document.getElementById('story-settings-btn').addEventListener('click', () => {
+  const settings = document.getElementById('story-settings');
+  settings.style.display = settings.style.display === 'none' ? 'block' : 'none';
+});
+
+// Load cached story on page load
+document.addEventListener('DOMContentLoaded', async () => {
+  const result = await browserAPI.storage.local.get('cachedStory');
+  if (result.cachedStory) {
+    const age = Date.now() - result.cachedStory.timestamp;
+    // Show cached story if less than 1 hour old
+    if (age < 3600000) {
+      document.getElementById('story-container').style.display = 'block';
+      document.getElementById('story-content').innerHTML = formatStory(
+        result.cachedStory.content, 
+        result.cachedStory.words
+      );
+      document.getElementById('story-content').style.display = 'block';
+    }
+  }
 });
