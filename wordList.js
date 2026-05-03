@@ -674,6 +674,7 @@ Format:
     
     // Format and display story
     storyContent.innerHTML = formatStory(story, selectedWords);
+    attachStoryWordListeners(storyContent);
     storyContent.style.display = 'block';
     
     // Save to cache
@@ -792,13 +793,22 @@ function formatStory(story, selectedWords) {
   let formatted = story
     .replace(/\*\*(.+?)\*\*/g, (match, word) => {
       const meaning = wordMap[word.toLowerCase()] || 'Definition not available';
-      return `<span class="story-word" data-word="${word}" data-meaning="${meaning.replace(/"/g, '&quot;')}" style="color: #2c5282; background: #ebf8ff; padding: 2px 6px; border-radius: 4px; cursor: pointer; border-bottom: 2px solid #4299e1; transition: all 0.2s;" onmouseover="this.style.background='#bee3f8';" onmouseout="this.style.background='#ebf8ff';" onclick="showWordTooltip(this)">${word}</span>`;
+      return `<span class="story-word" data-word="${word}" data-meaning="${meaning.replace(/"/g, '&quot;')}">${word}</span>`;
     })
     .replace(/# (.+)/g, '<h3 style="color: #333; margin-top: 0;">$1</h3>')
     .replace(/---/g, '<hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">')
     .replace(/\n/g, '<br>');
   
   return formatted;
+}
+
+function attachStoryWordListeners(container) {
+  container.querySelectorAll('.story-word').forEach(wordEl => {
+    wordEl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      showWordTooltip(wordEl);
+    });
+  });
 }
 
 function showWordTooltip(element) {
@@ -874,11 +884,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Show cached story if less than 1 hour old
     if (age < 3600000) {
       document.getElementById('story-container').style.display = 'block';
-      document.getElementById('story-content').innerHTML = formatStory(
+      const storyContent = document.getElementById('story-content');
+      storyContent.innerHTML = formatStory(
         result.cachedStory.content, 
         result.cachedStory.words
       );
-      document.getElementById('story-content').style.display = 'block';
+      attachStoryWordListeners(storyContent);
+      storyContent.style.display = 'block';
     }
   }
 });
