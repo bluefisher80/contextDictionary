@@ -694,25 +694,42 @@ Format:
 }
 
 async function callGemini(prompt, apiKey) {
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.8, maxOutputTokens: 2048 }
-      })
-    }
-  );
+  // Try multiple model names in case one isn't available
+  const models = ['gemini-1.5-flash-latest', 'gemini-1.5-flash', 'gemini-pro'];
+  let lastError;
   
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error?.message || `API error: ${response.status}`);
+  for (const model of models) {
+    try {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { temperature: 0.8, maxOutputTokens: 2048 }
+          })
+        }
+      );
+      
+      if (response.ok) {
+        const data = await response.json();
+        return data.candidates[0].content.parts[0].text;
+      } else {
+        const error = await response.json();
+        lastError = error.error?.message || `API error: ${response.status}`;
+        // Continue to next model if this one isn't found
+        if (response.status === 404) continue;
+        // For other errors, throw immediately
+        throw new Error(lastError);
+      }
+    } catch (e) {
+      if (e.message && !e.message.includes('404')) throw e;
+      lastError = e.message;
+    }
   }
   
-  const data = await response.json();
-  return data.candidates[0].content.parts[0].text;
+  throw new Error(lastError || 'No Gemini model available. Please check your API key or try a different provider.');
 }
 
 async function callOpenAI(prompt, apiKey, model) {
