@@ -840,7 +840,7 @@ async function shareToSocial(platform) {
       if (firstNewline !== -1) {
         xText = xText.substring(firstNewline + 1).trim();
       }
-      const maxStoryLength = 280 - link.length - 2; // -2 for the newline
+      const maxStoryLength = 280 - link.length - 1 + 8; // -1 for newline, +8 extra chars available
       const xPost = xText.substring(0, maxStoryLength).trim() + '\n' + link;
       openShareWindow(`https://twitter.com/intent/tweet?text=${encodeURIComponent(xPost)}`, 'Share on X');
       break;
