@@ -830,14 +830,13 @@ async function shareToSocial(platform) {
   
   switch (platform) {
     case 'x':
-      // X (Twitter) Web Intent - tight back reference, truncate title
+      // X (Twitter) Web Intent - no title, just story body + link
       const link = shareData.trackingLink;
+      // Remove first line (title) from the text
       let xText = shareData.text;
-      // Truncate long title (first line) to save chars for story body
-      const lines = xText.split('\n');
-      if (lines[0] && lines[0].length > 40) {
-        lines[0] = lines[0].substring(0, 37) + '...';
-        xText = lines.join('\n');
+      const firstNewline = xText.indexOf('\n');
+      if (firstNewline !== -1) {
+        xText = xText.substring(firstNewline + 1).trim();
       }
       const maxStoryLength = 280 - link.length - 2; // -2 for the newline
       const xPost = xText.substring(0, maxStoryLength).trim() + '\n' + link;
