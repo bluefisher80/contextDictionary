@@ -250,9 +250,9 @@ Two interaction modes:
    - Store referrer URL + story content
    - Redirect to context-dictionary.com homepage
 4. **Referrer Display**: On the homepage, show:
-   - "This story was shared from: [referrer URL]"
-   - Link back to the original social post if possible
-   - Display the shared story content
+   - "This story was shared from: [referrer domain]" (e.g., "Shared from twitter.com")
+   - Generic call-to-action: "Install the extension to create your own vocabulary stories"
+   - Note: We cannot fetch the actual story content or link to the specific social post due to platform restrictions and privacy settings
 
 **Benefits**:
 - Organic marketing through user sharing
@@ -262,6 +262,8 @@ Two interaction modes:
 
 **Implementation Notes**:
 - Need server-side endpoint to handle `/r/{id}` redirects
-- Store mapping: unique ID → story content + original URL
+- Store mapping: unique ID → story content + timestamp
 - Track click counts per shared link
+- Referrer detection: Only the domain is reliably available (e.g., "twitter.com"), not the specific post URL
+- Cannot fetch story content from social platforms due to CORS/API restrictions
 - Respect privacy: don't expose user data
