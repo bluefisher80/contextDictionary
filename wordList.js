@@ -124,6 +124,7 @@ function initStudyMode() {
   
   document.getElementById('study-container').style.display = 'block';
   document.getElementById('messages-container').style.display = 'none';
+  document.getElementById('stats-container').style.display = 'none';
   document.getElementById('story-button').style.display = 'none';
   document.getElementById('study-complete').style.display = 'none';
   document.getElementById('flashcard').style.display = 'block';
@@ -275,6 +276,7 @@ function exitStudyMode() {
   isStudyMode = false;
   document.getElementById('study-container').style.display = 'none';
   document.getElementById('messages-container').style.display = 'block';
+  document.getElementById('stats-container').style.display = 'block';
   document.getElementById('story-button').style.display = 'inline-block';
   renderWordList();
   updateStatsDisplay();
