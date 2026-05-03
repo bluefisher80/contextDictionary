@@ -830,10 +830,17 @@ async function shareToSocial(platform) {
   
   switch (platform) {
     case 'x':
-      // X (Twitter) Web Intent - tight back reference
+      // X (Twitter) Web Intent - tight back reference, truncate title
       const link = shareData.trackingLink;
+      let xText = shareData.text;
+      // Truncate long title (first line) to save chars for story body
+      const lines = xText.split('\n');
+      if (lines[0] && lines[0].length > 40) {
+        lines[0] = lines[0].substring(0, 37) + '...';
+        xText = lines.join('\n');
+      }
       const maxStoryLength = 280 - link.length - 2; // -2 for the newline
-      const xPost = shareData.text.substring(0, maxStoryLength).trim() + '\n' + link;
+      const xPost = xText.substring(0, maxStoryLength).trim() + '\n' + link;
       openShareWindow(`https://twitter.com/intent/tweet?text=${encodeURIComponent(xPost)}`, 'Share on X');
       break;
       
