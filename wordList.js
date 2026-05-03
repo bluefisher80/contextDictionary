@@ -125,7 +125,6 @@ function initStudyMode() {
   document.getElementById('study-container').style.display = 'block';
   document.getElementById('messages-container').style.display = 'none';
   document.getElementById('story-button').style.display = 'none';
-  document.getElementById('story_prompt').style.display = 'none';
   document.getElementById('study-complete').style.display = 'none';
   document.getElementById('flashcard').style.display = 'block';
   document.getElementById('flashcard-controls').style.display = 'block';
@@ -275,7 +274,6 @@ function exitStudyMode() {
   document.getElementById('study-container').style.display = 'none';
   document.getElementById('messages-container').style.display = 'block';
   document.getElementById('story-button').style.display = 'inline-block';
-  document.getElementById('story_prompt').style.display = 'block';
   renderWordList();
   updateStatsDisplay();
   updateDueCount();
