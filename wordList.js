@@ -640,6 +640,8 @@ Requirements:
 1. Make the story ${style} and memorable
 2. Bold the target words like **word** when they appear
 3. Keep sentences natural - don't force words where they don't fit
+4. Optimize for social media sharing: short paragraphs, punchy sentences, hook the reader from the first line
+5. Self-contained: no complex formatting, no need for external context
 
 Format:
 # [Story Title]

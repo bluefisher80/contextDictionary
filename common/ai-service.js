@@ -73,6 +73,8 @@ Requirements:
 1. The story should be ${difficulty} level
 2. Each target word should appear 1-2 times in natural context
 3. Make the story memorable and relatable
+4. Optimize for social media sharing: short paragraphs, punchy sentences, hook the reader from the first line
+5. Self-contained: no complex formatting, no need for external context
 
 Format:
 - Story title
