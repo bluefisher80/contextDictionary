@@ -598,6 +598,8 @@ async function generateAIStory() {
   const storyLoading = document.getElementById('story-loading');
   const storyError = document.getElementById('story-error');
   
+  // Hide settings and show story container
+  document.getElementById('story-settings').style.display = 'none';
   storyContainer.style.display = 'block';
   storyLoading.style.display = 'block';
   storyContent.style.display = 'none';
@@ -666,6 +668,9 @@ Format:
     
     // Show share button
     document.getElementById('story-share').style.display = 'block';
+    
+    // Scroll to story container
+    storyContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
     
     // Store current story for sharing
     currentStory = {
