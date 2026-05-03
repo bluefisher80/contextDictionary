@@ -356,17 +356,29 @@ a:hover {
   color: #333;
 }
 
-#story-content h3 {
+#story-content .story-title {
   margin-bottom: 15px;
+  color: #333;
+  margin-top: 0;
 }
 
-#story-content strong {
+#story-content .story-highlight {
+  color: #2c5282;
+  background: #ebf8ff;
+  padding: 2px 6px;
+  border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
-#story-content strong:hover {
-  background-color: #bee3f8 !important;
+#story-content .story-highlight:hover {
+  background-color: #bee3f8;
+}
+
+#story-content .story-divider {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 20px 0;
 }
 
 .spinner {

@@ -893,9 +893,9 @@ async function shareToSocial(platform) {
 function formatStory(story, selectedWords) {
   // Convert markdown to HTML
   let formatted = story
-    .replace(/\*\*(.+?)\*\*/g, '<strong style="color: #2c5282; background: #ebf8ff; padding: 2px 6px; border-radius: 4px;">$1</strong>')
-    .replace(/# (.+)/g, '<h3 style="color: #333; margin-top: 0;">$1</h3>')
-    .replace(/---/g, '<hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">')
+    .replace(/\*\*(.+?)\*\*/g, '<strong class="story-highlight">$1</strong>')
+    .replace(/# (.+)/g, '<h3 class="story-title">$1</h3>')
+    .replace(/---/g, '<hr class="story-divider">')
     .replace(/\n/g, '<br>');
   
   return formatted;
