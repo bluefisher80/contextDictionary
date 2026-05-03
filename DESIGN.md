@@ -235,3 +235,33 @@ Two interaction modes:
 - Pronunciation audio (TTS)
 - Collaborative story sharing
 - Mobile app companion
+
+## Social Platform Sharing
+
+**Purpose**: Enable users to share AI-generated stories to social media while promoting context-dictionary.com and tracking viral spread.
+
+**Mechanism**:
+1. **Share Button**: Add a "Share to Social" button in the story container
+2. **Fake Link Injection**: Append a tracking link to the shared content:
+   - Format: `https://context-dictionary.com/r/{unique-id}`
+   - The unique ID maps to the specific story + user session
+3. **Landing Page**: When someone clicks the shared link:
+   - Detect referrer from HTTP headers
+   - Store referrer URL + story content
+   - Redirect to context-dictionary.com homepage
+4. **Referrer Display**: On the homepage, show:
+   - "This story was shared from: [referrer URL]"
+   - Link back to the original social post if possible
+   - Display the shared story content
+
+**Benefits**:
+- Organic marketing through user sharing
+- Backlink generation to context-dictionary.com
+- Viral tracking via unique IDs
+- Community engagement through shared stories
+
+**Implementation Notes**:
+- Need server-side endpoint to handle `/r/{id}` redirects
+- Store mapping: unique ID → story content + original URL
+- Track click counts per shared link
+- Respect privacy: don't expose user data
