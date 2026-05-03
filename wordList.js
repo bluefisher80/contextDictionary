@@ -479,8 +479,8 @@ function renderWordList() {
 
     const link = document.createElement('a');
     link.href = pageUrl;
+    link.className = 'word-link';
     link.textContent = '🔗';
-    link.style.textDecoration = 'none';
     link.title = pageUrl;
     link.target = 'blank';
 

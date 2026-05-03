@@ -156,6 +156,31 @@ button:active {
   border-radius: 12px;
 }
 
+/* Word link */
+.word-link {
+  background: transparent;
+  color: #ccc;
+  border: none;
+  padding: 4px 8px;
+  font-size: 0.75em;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  opacity: 0.3;
+  text-decoration: none;
+}
+
+#messages-container li:hover .word-link {
+  opacity: 0.6;
+  color: #999;
+}
+
+.word-link:hover {
+  opacity: 1;
+  color: #007bff;
+  background: #f0f7ff;
+  border-radius: 12px;
+}
+
 /* Style the link */
 a {
   color: #007bff;
