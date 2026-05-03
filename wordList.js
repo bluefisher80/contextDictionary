@@ -109,12 +109,22 @@ let isStudyMode = false;
 let searchTerm = '';
 
 function initStudyMode() {
-  const dueWords = getDueWords(savedWords);
+  let dueWords = getDueWords(savedWords);
+  
+  // If no words are due, fall back to all saved words
+  if (dueWords.length === 0 && savedWords.length > 0) {
+    dueWords = savedWords;
+  }
+  
   if (dueWords.length === 0) {
+    document.getElementById('study-container').style.display = 'block';
     document.getElementById('study-complete').style.display = 'block';
     document.getElementById('flashcard').style.display = 'none';
     document.getElementById('flashcard-controls').style.display = 'none';
     document.getElementById('study-stats').style.display = 'none';
+    document.getElementById('messages-container').style.display = 'none';
+    document.getElementById('stats-container').style.display = 'none';
+    document.getElementById('story-button').style.display = 'none';
     return;
   }
   
