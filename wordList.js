@@ -784,13 +784,13 @@ async function callAnthropic(prompt, apiKey, model) {
 let currentStory = null;
 
 function generateTrackingLink() {
-  // Generate a short unique ID (8 chars)
-  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  // Generate a short unique ID (6 chars from a-z)
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
   let id = '';
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < 6; i++) {
     id += chars.charAt(Math.floor(Math.random() * chars.length));
   }
-  return `https://context-dictionary.com/r/${id}`;
+  return `https://ctxd.co/r/${id}`;
 }
 
 function stripMarkdown(text) {
