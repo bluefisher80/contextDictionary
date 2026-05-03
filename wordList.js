@@ -425,7 +425,7 @@ function renderWordList() {
   filteredWords.forEach(({ word, pageUrl, context, timestamp, interval, nextReviewDate, meaning }) => {
     const deleteButton = document.createElement('button');
     deleteButton.className = 'btn-delete';
-    deleteButton.innerHTML = '×';
+    deleteButton.innerHTML = '🗑️ Delete';
     deleteButton.title = 'Delete this word';
     deleteButton.onclick = async () => {
       const result = await browserAPI.storage.local.get("savedWords");
@@ -450,8 +450,6 @@ function renderWordList() {
     const li = document.createElement("li");
     li.style.opacity = 0;
     setTimeout(() => (li.style.opacity = 1), 100);
-
-    li.appendChild(deleteButton);
 
     const wordSpan = document.createElement('span');
     wordSpan.style.fontWeight = 'bold';
@@ -502,6 +500,7 @@ function renderWordList() {
     li.appendChild(contextSpan);
     li.appendChild(link);
     li.appendChild(metaSpan);
+    li.appendChild(deleteButton);
 
     list.appendChild(li);
   });

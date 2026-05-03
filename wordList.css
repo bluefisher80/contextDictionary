@@ -42,16 +42,21 @@ li {
 
 #messages-container li {
   margin: 10px 0;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  background-color: #f9f9f9;
-  transition: transform 0.2s, background-color 0.2s;
+  padding: 12px 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #fafafa;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 #messages-container li:hover {
-  transform: scale(1.02);
-  background-color: #f1f1f1;
+  background-color: #f5f5f5;
+  border-color: #d0d0d0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 /* Style the delete button */
@@ -129,32 +134,33 @@ button:active {
 
 /* Delete button */
 .btn-delete {
-  background: transparent;
-  color: #dc3545;
-  border: 1.5px solid #dc3545;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  font-size: 1.3em;
-  line-height: 1;
-  padding: 0;
-  margin-right: 10px;
+  background: #fff0f0;
+  color: #e74c3c;
+  border: 1px solid #f5c6cb;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85em;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  margin-left: auto;
+  opacity: 0.6;
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  gap: 4px;
 }
 
 .btn-delete:hover {
-  background: #dc3545;
+  background: #e74c3c;
   color: white;
-  transform: scale(1.1);
-  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.4);
+  border-color: #e74c3c;
+  opacity: 1;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
 }
 
 .btn-delete:active {
-  transform: scale(0.95);
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(231, 76, 60, 0.2);
 }
 
 /* Style the link */
