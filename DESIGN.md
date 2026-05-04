@@ -451,3 +451,31 @@ Partner with language learning platforms:
 ### Success Metric
 - **Target**: 10,000+ active users before prioritizing monetization
 - **Signal**: Users emailing "How can I support this?" = time to monetize
+
+## Future Enhancements
+
+### Back-Reference Links
+Social sharing generates unique tracking links (e.g., `context-dictionary.com/r/a3b5c7`). These serve two purposes:
+
+1. **Traffic attribution**: Basic referrer data shows which domains drive clicks (X, Reddit, etc.)
+2. **Content discovery**: Google Search API can find public posts containing the tracking URL
+
+**Future site integration**: Once the website is built, these links can redirect to rich landing pages showing:
+- The original AI-generated story
+- Vocabulary words with definitions
+- Related study resources
+- Options to install the extension
+
+This provides a bridge between social shares and the extension installation flow, even without a backend database mapping URLs to specific posts.
+
+### URL Shortening
+Current tracking links are verbose: `context-dictionary.com/r/a3b5c7d2`.
+
+**Options:**
+- **Third-party services** (bit.ly, tinyurl): Easy to implement, but some may be blocked in certain regions
+- **Custom short domain** (e.g., `cdict.io/r/abc123`): Requires domain purchase and DNS setup
+- **Keep current**: Works fine for now; revisit if users complain about long URLs
+
+**Consideration**: If targeting Chinese users, verify service availability. Some international URL shorteners may be inaccessible from China.
+
+**Priority**: Low — revisit after launch if needed.
