@@ -845,15 +845,7 @@ async function callAnthropic(prompt, apiKey, model) {
 
 let currentStory = null;
 
-function generateTrackingLink() {
-  // Generate a short unique ID (6 chars from a-z)
-  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-  let id = '';
-  for (let i = 0; i < 6; i++) {
-    id += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return `context-dictionary.com/r/${id}`;
-}
+const WEBSITE_URL = 'https://www.context-dictionary.com';
 
 function stripMarkdown(text) {
   return text
@@ -866,15 +858,13 @@ function stripMarkdown(text) {
 
 function getShareText() {
   if (!currentStory) return null;
-  const trackingLink = generateTrackingLink();
   
   // Clean text without markdown
   const cleanText = stripMarkdown(currentStory.content);
   
   return {
     text: cleanText,
-    trackingLink: trackingLink,
-    fullText: `${cleanText}\n\n---\nGenerated with Context Dictionary ${trackingLink}`
+    fullText: `${cleanText}\n\n${WEBSITE_URL}`
   };
 }
 
@@ -892,22 +882,20 @@ async function shareToSocial(platform) {
   
   switch (platform) {
     case 'x':
-      // X (Twitter) Web Intent - no title, just story body + link
-      const link = shareData.trackingLink;
-      // Remove first line (title) from the text
+      // X (Twitter) Web Intent - no title, just story body + URL
       let xText = shareData.text;
       const firstNewline = xText.indexOf('\n');
       if (firstNewline !== -1) {
         xText = xText.substring(firstNewline + 1).trim();
       }
-      const maxStoryLength = 280 - link.length - 1 + 7; // -1 for newline, +7 extra chars available
-      const xPost = xText.substring(0, maxStoryLength).trim() + '\n' + link;
+      const maxStoryLength = 280 - WEBSITE_URL.length - 1; // -1 for newline
+      const xPost = xText.substring(0, maxStoryLength).trim() + '\n' + WEBSITE_URL;
       openShareWindow(`https://twitter.com/intent/tweet?text=${encodeURIComponent(xPost)}`, 'Share on X');
       break;
       
     case 'facebook':
       // Facebook Share Dialog
-      const fbUrl = encodeURIComponent(shareData.trackingLink);
+      const fbUrl = encodeURIComponent(WEBSITE_URL);
       openShareWindow(`https://www.facebook.com/sharer/sharer.php?u=${fbUrl}&quote=${encodeURIComponent(shareData.text.substring(0, 200))}`, 'Share on Facebook');
       break;
       

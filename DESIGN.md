@@ -455,7 +455,11 @@ Partner with language learning platforms:
 ## Future Enhancements
 
 ### Back-Reference Links
-Social sharing generates unique tracking links (e.g., `context-dictionary.com/r/a3b5c7`). These serve two purposes:
+**Status**: Future enhancement — not yet implemented.
+
+**Current implementation**: Shares use base website URL only (`https://www.context-dictionary.com`).
+
+**Future plan**: Social sharing will generate unique tracking links (e.g., `context-dictionary.com/r/a3b5c7`). These serve two purposes:
 
 1. **Traffic attribution**: Basic referrer data shows which domains drive clicks (X, Reddit, etc.)
 2. **Content discovery**: Google Search API can find public posts containing the tracking URL
