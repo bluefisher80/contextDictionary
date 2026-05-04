@@ -441,7 +441,6 @@ function renderWordList() {
   }
 
   // Update word count display
-  const wordCountEl = document.getElementById('word-count');
   if (wordCountEl) {
     wordCountEl.textContent = searchTerm 
       ? `Showing ${filteredWords.length} of ${savedWords.length} words`
@@ -478,10 +477,6 @@ function renderWordList() {
     li.style.opacity = 0;
     setTimeout(() => (li.style.opacity = 1), 100);
 
-    const wordSpan = document.createElement('span');
-    wordSpan.style.fontWeight = 'bold';
-    wordSpan.textContent = word;
-    
     const contextSpan = document.createElement('span');
     // Escape special regex characters in the word
     const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -511,7 +506,6 @@ function renderWordList() {
     link.title = pageUrl;
     link.target = 'blank';
 
-    li.appendChild(wordSpan);
     
     if (meaning) {
       const meaningSpan = document.createElement('span');
