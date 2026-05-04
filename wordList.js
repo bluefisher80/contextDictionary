@@ -144,6 +144,24 @@ function initStudyMode() {
   showCurrentCard();
 }
 
+function studySingleWord(wordData) {
+  // Set up single word study queue
+  studyQueue = [wordData];
+  currentCardIndex = 0;
+  
+  // Show study container
+  document.getElementById('study-container').style.display = 'block';
+  document.getElementById('messages-container').style.display = 'none';
+  document.getElementById('stats-container').style.display = 'none';
+  document.getElementById('story-button').style.display = 'none';
+  document.getElementById('study-complete').style.display = 'none';
+  document.getElementById('flashcard').style.display = 'block';
+  document.getElementById('flashcard-controls').style.display = 'block';
+  document.getElementById('study-stats').style.display = 'block';
+  
+  showCurrentCard();
+}
+
 function showCurrentCard() {
   if (currentCardIndex >= studyQueue.length) {
     // Study session complete
@@ -518,6 +536,17 @@ function renderWordList() {
     
     const metaSpan = document.createElement('span');
     metaSpan.textContent = metaText;
+    metaSpan.style.cursor = 'pointer';
+    metaSpan.title = 'Click to study this word now';
+    metaSpan.addEventListener('click', () => {
+      const wordData = savedWords.find(w => 
+        w.word === word && w.pageUrl === pageUrl && w.timestamp === timestamp
+      );
+      if (wordData) {
+        isStudyMode = true;
+        studySingleWord(wordData);
+      }
+    });
     
     metaRow.appendChild(metaSpan);
     metaRow.appendChild(link);
