@@ -41,9 +41,14 @@ li {
 }
 
 #messages-container li {
-  padding: 12px 0;
+  padding: 12px 8px;
   border-bottom: 1px solid #ebe5d5;
   transition: all 0.2s ease;
+}
+
+.word-context {
+  display: block;
+  line-height: 1.5;
 }
 
 #messages-container li:first-child {
@@ -146,8 +151,18 @@ button:active {
   align-items: center;
   gap: 8px;
   font-size: 0.8em;
-  color: #999;
+  color: #a09078;
   margin-top: 4px;
+  padding-left: 2px;
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: opacity 0.3s ease, max-height 0.3s ease;
+}
+
+#messages-container li:hover .word-meta {
+  opacity: 1;
+  max-height: 30px;
 }
 
 .word-meta span:first-child {

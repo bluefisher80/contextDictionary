@@ -496,6 +496,7 @@ function renderWordList() {
     setTimeout(() => (li.style.opacity = 1), 100);
 
     const contextSpan = document.createElement('span');
+    contextSpan.className = 'word-context';
     // Escape special regex characters in the word
     const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const regex = new RegExp(`(${escapedWord})`, 'gi');
