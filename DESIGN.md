@@ -267,3 +267,77 @@ Two interaction modes:
 - Referrer detection: Only the domain is reliably available (e.g., "twitter.com"), not the specific post URL
 - Cannot fetch story content from social platforms due to CORS/API restrictions
 - Respect privacy: don't expose user data
+
+## Monetization Strategy
+
+**Context**: Google AdSense is prohibited in browser extensions (software application policy). Revenue will be generated through the website (context-dictionary.com) and extension premium features.
+
+### Revenue Streams
+
+#### 1. Website Affiliate Links (Primary)
+On shared story landing pages (`context-dictionary.com/r/{id}`):
+- Show vocabulary words from the story
+- Below each word: "📚 Related Resources" → affiliate links
+- Context-aware recommendations:
+  - "exfoliation" → skincare/health books
+  - "inflation" → economics books
+  - "synthesis" → science/academic books
+- Affiliate programs:
+  - Amazon Associates (pending approval)
+  - Bookshop.org (independent bookstores)
+  - Merriam-Webster/Oxford dictionary referrals
+
+#### 2. Premium Tier ($3-5/month)
+Extension upgrade for heavy users:
+- Unlimited AI stories per day (vs. 3/day free)
+- Custom story lengths (500+ words)
+- Export to Anki/Quizlet
+- Advanced analytics (word frequency, learning curves)
+- Custom study schedules
+- Priority AI model access (faster generation)
+- No branding
+
+#### 3. Sponsored Integrations
+Partner with language learning platforms:
+- Dictionary API referrals (Oxford, Cambridge)
+- Language app promotions (Duolingo, Babbel)
+- Flashcard tool integrations
+
+#### 4. Donations & Merchandise
+- Buy Me a Coffee / GitHub Sponsors
+- Vocabulary notebooks, flashcards, posters
+- "Word of the Day" merchandise
+
+### Implementation Priority
+1. **Phase 1**: Add affiliate links to shared story pages (passive, immediate)
+2. **Phase 2**: Premium tier launch (recurring revenue)
+3. **Phase 3**: Partner integrations (scalable)
+4. **Phase 4**: Merchandise (community building)
+
+### Website Landing Page Monetization
+```
+┌─────────────────────────────────────┐
+│  [Shared Story Title]               │
+│                                     │
+│  Story text with bold words...      │
+│                                     │
+├─────────────────────────────────────┤
+│  Vocabulary in this story:          │
+│  • exfoliation  [📚 Related books]  │
+│  • inflation    [📚 Learn more]     │
+│  • synthesis    [📚 Related books]  │
+├─────────────────────────────────────┤
+│  Create your own vocabulary stories │
+│  [Install Extension - Free]         │
+├─────────────────────────────────────┤
+│  [Context Dictionary Pro]           │
+│  Unlimited stories · Export · More  │
+│  [Upgrade $4/month]                 │
+└─────────────────────────────────────┘
+```
+
+### Disclosure Requirements
+- All affiliate links must include disclosure
+- "We may earn a commission from purchases"
+- Transparent about premium features vs. free
+- Comply with FTC endorsement guidelines
