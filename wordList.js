@@ -906,8 +906,13 @@ function formatStory(story, selectedWords) {
   let formatted = story
     .replace(/\*\*(.+?)\*\*/g, '<strong class="story-highlight">$1</strong>')
     .replace(/# (.+)/g, '<h3 class="story-title">$1</h3>')
-    .replace(/---/g, '<hr class="story-divider">')
-    .replace(/\n/g, '<br>');
+    .replace(/---/g, '<hr class="story-divider">');
+  
+  // Handle newlines: double/triple newlines (paragraph breaks) -> single <br>
+  // Single newlines (line wraps within paragraph) -> space
+  formatted = formatted
+    .replace(/\n\n+/g, '<br>')
+    .replace(/\n/g, ' ');
   
   return formatted;
 }
