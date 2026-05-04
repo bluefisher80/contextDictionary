@@ -379,11 +379,10 @@ function updateStatsChart(dailyStats) {
     
     const bar = document.createElement('div');
     bar.style.width = '100%';
-    // Ensure minimum visible height for bars with reviews
+    // Height proportional to reviews, accurate scaling
     const heightPercent = maxValue > 0 ? (reviews / maxValue) * 100 : 0;
-    bar.style.height = reviews > 0 ? `${Math.max(heightPercent, 15)}%` : '0';
-    bar.style.minHeight = reviews > 0 ? '20px' : '0';
-    bar.style.backgroundColor = reviews > 0 ? '#5cb85c' : '#eee';
+    bar.style.height = reviews > 0 ? `${heightPercent}%` : '4px';
+    bar.style.backgroundColor = reviews > 0 ? '#5cb85c' : '#e0e0e0';
     bar.style.borderRadius = '4px 4px 0 0';
     bar.style.transition = 'height 0.3s ease';
     bar.title = `${day}: ${reviews} reviews, ${correct} correct`;
