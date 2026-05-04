@@ -484,21 +484,6 @@ function renderWordList() {
     const highlightedContext = context ? context.replace(regex, '<mark>$1</mark>') : '';
     contextSpan.innerHTML = highlightedContext + ' ';
     
-    const metaSpan = document.createElement('span');
-    metaSpan.style.fontSize = '0.85em';
-    metaSpan.style.color = '#666';
-    let metaText = ` (${new Date(timestamp).toLocaleDateString()})`;
-    if (interval !== undefined) {
-      metaText += ` [interval: ${formatInterval(interval)}]`;
-    }
-    if (nextReviewDate) {
-      const isDue = new Date(nextReviewDate) <= new Date();
-      if (isDue) {
-        metaText += ' due now';
-      }
-    }
-    metaSpan.textContent = metaText;
-
     const link = document.createElement('a');
     link.href = pageUrl;
     link.className = 'word-link';
@@ -509,18 +494,35 @@ function renderWordList() {
     
     if (meaning) {
       const meaningSpan = document.createElement('span');
-      meaningSpan.style.fontSize = '0.9em';
-      meaningSpan.style.color = '#2c5282';
-      meaningSpan.style.display = 'block';
-      meaningSpan.style.margin = '5px 0';
+      meaningSpan.className = 'word-meaning';
       meaningSpan.textContent = meaning;
       li.appendChild(meaningSpan);
     }
     
     li.appendChild(contextSpan);
-    li.appendChild(link);
-    li.appendChild(metaSpan);
-    li.appendChild(deleteButton);
+    
+    // Meta row with date, interval, link, delete
+    const metaRow = document.createElement('div');
+    metaRow.className = 'word-meta';
+    
+    let metaText = `${new Date(timestamp).toLocaleDateString()}`;
+    if (interval !== undefined) {
+      metaText += ` · ${formatInterval(interval)}`;
+    }
+    if (nextReviewDate) {
+      const isDue = new Date(nextReviewDate) <= new Date();
+      if (isDue) {
+        metaText += ' · due';
+      }
+    }
+    
+    const metaSpan = document.createElement('span');
+    metaSpan.textContent = metaText;
+    
+    metaRow.appendChild(metaSpan);
+    metaRow.appendChild(link);
+    metaRow.appendChild(deleteButton);
+    li.appendChild(metaRow);
 
     list.appendChild(li);
   });
