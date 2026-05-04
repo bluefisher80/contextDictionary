@@ -192,14 +192,9 @@ function showCurrentCard() {
     speakWord(card.word);
   };
   
-  // Set meaning, context and source for back
+  // Hide meaning in flashcard - only shown in popup on first lookup
   const meaningDiv = document.getElementById('flashcard-meaning');
-  if (card.meaning) {
-    meaningDiv.textContent = card.meaning;
-    meaningDiv.style.display = 'block';
-  } else {
-    meaningDiv.style.display = 'none';
-  }
+  meaningDiv.style.display = 'none';
   
   const contextSpan = document.getElementById('flashcard-context');
   // Escape special regex characters in the word
@@ -439,8 +434,7 @@ function renderWordList() {
   const filteredWords = searchTerm 
     ? savedWords.filter(w => 
         w.word.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (w.context && w.context.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (w.meaning && w.meaning.toLowerCase().includes(searchTerm.toLowerCase()))
+        (w.context && w.context.toLowerCase().includes(searchTerm.toLowerCase()))
       )
     : savedWords;
   
@@ -466,7 +460,7 @@ function renderWordList() {
   }
 
   const list = document.createElement("ul");
-  filteredWords.forEach(({ word, pageUrl, context, timestamp, interval, nextReviewDate, meaning }) => {
+  filteredWords.forEach(({ word, pageUrl, context, timestamp, interval, nextReviewDate }) => {
     const deleteButton = document.createElement('button');
     deleteButton.className = 'btn-delete';
     deleteButton.innerHTML = '×';
@@ -511,13 +505,7 @@ function renderWordList() {
     link.target = 'blank';
 
     
-    if (meaning) {
-      const meaningSpan = document.createElement('span');
-      meaningSpan.className = 'word-meaning';
-      meaningSpan.textContent = meaning;
-      li.appendChild(meaningSpan);
-    }
-    
+    // Meaning intentionally hidden in list view - only shown in popup/flashcard
     li.appendChild(contextSpan);
     
     // Meta row with date, interval, link, delete

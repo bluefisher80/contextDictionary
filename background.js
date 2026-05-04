@@ -81,10 +81,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         fetch(dic_url + request.word.toLowerCase()).
             then(response => response.text())
             .then((text) => {
-                // Extract meaning from XML and save it
-                const meaning = extractIcibaMeaning(text);
-                saveWordMeaning(request.word, meaning);
-                
                 chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                     chrome.tabs.sendMessage(tabs[0].id, { action: "parseXML", text });
                 });
@@ -110,10 +106,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         fetch(urlFree)
             .then((response) => response.json())
             .then((data) => {
-                // Extract meaning from Google Translate and save it
-                const meaning = extractGoogleMeaning(data);
-                saveWordMeaning(request.word, meaning);
-                
                 chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                     chrome.tabs.sendMessage(tabs[0].id, { action: "parseJSON5", data });
                 });
@@ -216,21 +208,6 @@ function extractGoogleMeaning(jsonData) {
         console.error("Error extracting google meaning:", e);
         return null;
     }
-}
-
-function saveWordMeaning(word, meaning) {
-    if (!meaning) return;
-    browserAPI.storage.local.get('savedWords').then(result => {
-        const savedWords = result.savedWords || [];
-        // Find the most recently saved word matching this word
-        for (let i = savedWords.length - 1; i >= 0; i--) {
-            if (savedWords[i].word === word && !savedWords[i].meaning) {
-                savedWords[i].meaning = meaning;
-                browserAPI.storage.local.set({ savedWords });
-                break;
-            }
-        }
-    });
 }
 
 function escapeHTML(str) { return str; }
