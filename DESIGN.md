@@ -254,8 +254,10 @@ Two interaction modes:
    - Displays vocabulary words with related resource links (affiliate)
 
 3. **Background discovery process** (optional, with user consent):
-   - Periodic job searches social platforms for posts containing the tracking link
-   - Uses referrer domain + link hash to locate original post
+   - Since Referer header only provides the domain (e.g., `twitter.com`), finding the specific post requires additional methods:
+     - **Platform APIs**: Search Twitter/X API, Reddit API, etc. for posts containing the tracking link
+     - **Manual submission**: User pastes their post URL into a form on the landing page
+     - **Web scraping**: Search public timelines for the link hash (fragile, rate-limited)
    - Scrapes or API-calls to get the actual post content and engagement metrics
    - **Requires user opt-in** in extension settings ("Allow Context Dictionary to feature my shared stories")
 
@@ -269,15 +271,25 @@ Two interaction modes:
 ### Referrer Tracking
 
 **What we capture**:
-- `Referer` HTTP header domain (twitter.com, facebook.com, reddit.com, etc.)
+- `Referer` HTTP header **domain only** (twitter.com, facebook.com, reddit.com, etc.)
 - Click timestamp
 - Link ID (maps to story + words)
 - User agent (basic analytics)
 
+**Important limitations**:
+- **Social media platforms strip specific URLs**: Twitter/X, Facebook, and most platforms use `Referrer-Policy: strict-origin-when-cross-origin`, which sends only the domain (e.g., `twitter.com/`), not the specific post URL (e.g., `twitter.com/username/status/1234567890`)
+- **Browser privacy**: Safari/Firefox may truncate to domain; Private/Incognito mode often strips Referer entirely; HTTPS→HTTP requests drop Referer completely
+- **What we CANNOT reliably get**: The specific post URL, username, or any personal information from the Referer header
+
 **What we DON'T capture** (privacy):
-- Specific post URLs (unless user opts in)
+- Specific post URLs (unless user manually provides them)
 - Personal information
 - Social media profiles
+
+**To get specific post URLs** (optional, with explicit user consent):
+- User manually submits their post URL via a form on the landing page
+- Background API search using the tracking link hash (limited by platform APIs)
+- Always require opt-in before featuring any user content
 
 ### Viral Loop Benefits
 
