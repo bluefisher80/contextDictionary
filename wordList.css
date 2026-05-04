@@ -310,10 +310,13 @@ a:hover {
   border-radius: 8px;
 }
 
-#flashcard-context mark {
-  background-color: #fff3cd;
-  padding: 2px 4px;
-  border-radius: 3px;
+#flashcard-context mark,
+#messages-container mark {
+  color: #2c5282;
+  background-color: #ebf8ff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
 }
 
 #flashcard-source {
