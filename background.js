@@ -28,9 +28,20 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         timestamp: new Date().toISOString()
     };
 
-//save the word for any mode, since the 'selection' mode now is companioned with keyboard action mode
-
-    if (request.triggerMode == 'caret'  || request.triggerMode == 'selection') {
+// Determine effective language (default to zh-CN if not set)
+    const effectiveLang = (request.lang && request.lang.trim()) ? request.lang.trim() : 'zh-CN';
+    
+    // Decide whether to save based on trigger mode
+    // Long-Press (caret) = intentional, always save (with language fallback)
+    // Double-click (selection) = only save if user explicitly set a language
+    let shouldSave = false;
+    if (request.triggerMode === 'caret') {
+        shouldSave = true; // Long-Press always saves
+    } else if (request.triggerMode === 'selection') {
+        shouldSave = !!(request.lang && request.lang.trim()); // Double-click only if language explicitly set
+    }
+    
+    if (shouldSave) {
         browserAPI.storage.local.get('savedWords').then(result => {
             const savedWords = result.savedWords || [];
             console.log('Saved words:', savedWords);
@@ -40,7 +51,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
     
 
-    if (request.lang == 'zh-CN' && /^[a-zA-Z]+$/.test(request.word) && (request.originalPageLang.startsWith('en'))) {
+    if (effectiveLang == 'zh-CN' && /^[a-zA-Z]+$/.test(request.word) && (request.originalPageLang.startsWith('en'))) {
         //Only English to Chinese Single word dictioanry when original page is English to exclude German , which 
         //is not supported by iciba but supported by Google, German share same alphabet with English
         fetch(dic_url + request.word.toLowerCase()).
@@ -65,7 +76,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         return true;
     } else {
         const word = encodeURIComponent(request.word);
-        lang = request.lang;
+        lang = effectiveLang;
 
         console.log("word is " + word);
 
