@@ -108,6 +108,28 @@ User Action (Long-Press or Double-click)
 - **Phrases with spaces**: Selection mode allows multi-word selections
 - **Numbers/symbols**: Stripped by word detection regex
 
+#### Language Configuration Reminder
+
+**When Shown**: 
+- Double-click (selection) mode triggered
+- Page language matches target language (silent skip)
+- User has not explicitly configured "My Language" in Options
+- Reminder flag (`langReminderShown`) not set
+
+**Display**:
+- Non-intrusive popup in top-right corner
+- Text: "Set your language in Options to save words from [PAGE_LANG] pages"
+- Buttons: [Open Options] [Dismiss]
+- Auto-dismisses after 10 seconds
+
+**Storage**:
+- Flag: `langReminderShown` (boolean) in browser.storage.local
+- Set when reminder shown
+- Cleared when user saves language in Options page
+- Shows only once per installation
+
+**Purpose**: Guide users to configure language without being intrusive
+
 ### 2. Dictionary Integration
 
 **Iciba API** (English → Chinese):

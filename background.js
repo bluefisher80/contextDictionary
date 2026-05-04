@@ -35,6 +35,23 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const pageLangPrefix = request.originalPageLang ? request.originalPageLang.split('-')[0] : '';
     const targetLangPrefix = effectiveLang.split('-')[0];
     if (pageLangPrefix === targetLangPrefix) {
+        // Check if we should show language configuration reminder
+        if (request.triggerMode === 'selection' && !(request.lang && request.lang.trim())) {
+            // Double-click without language config - check reminder flag
+            browserAPI.storage.local.get('langReminderShown').then(result => {
+                if (!result.langReminderShown) {
+                    // Show reminder in popup
+                    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                        chrome.tabs.sendMessage(tabs[0].id, { 
+                            action: "showLangReminder",
+                            pageLang: request.originalPageLang 
+                        });
+                    });
+                    // Set flag so reminder only shows once
+                    browserAPI.storage.local.set({ langReminderShown: true });
+                }
+            });
+        }
         return; // Silent skip - same language, no vocabulary benefit
     }
     

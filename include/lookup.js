@@ -608,6 +608,51 @@ function removePopup() {
     popup_opened = false;
 }
 
+/**
+ * Show language configuration reminder
+ */
+function showLangReminder(pageLang) {
+    // Create a simple reminder popup
+    const reminderDiv = document.createElement("div");
+    reminderDiv.className = "dictionaryDiv";
+    reminderDiv.style.cssText = "position:fixed; top:20px; right:20px; z-index:1000001; background:#fff8e1; border:1px solid #ffc107; border-radius:8px; padding:12px 16px; box-shadow:0 4px 12px rgba(0,0,0,0.15); font-family:Arial,sans-serif; font-size:14px; max-width:280px;";
+    
+    const langName = pageLang ? pageLang.split('-')[0].toUpperCase() : 'current';
+    reminderDiv.innerHTML = `
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+            <span style="font-size:18px;">💡</span>
+            <strong style="color:#333;">Language Not Configured</strong>
+        </div>
+        <p style="margin:0 0 10px 0; color:#555; line-height:1.4;">
+            Set your language in Options to save words from ${langName} pages.
+        </p>
+        <div style="display:flex; gap:8px;">
+            <button id="cd-open-options" style="flex:1; padding:6px 12px; background:#ffc107; color:#333; border:none; border-radius:4px; cursor:pointer; font-weight:500;">Open Options</button>
+            <button id="cd-dismiss-reminder" style="padding:6px 12px; background:#f5f5f5; color:#666; border:1px solid #ddd; border-radius:4px; cursor:pointer;">Dismiss</button>
+        </div>
+    `;
+    
+    document.body.appendChild(reminderDiv);
+    popup_opened = true;
+    
+    // Handle buttons
+    reminderDiv.querySelector("#cd-open-options").addEventListener("click", function() {
+        browserAPI.runtime.openOptionsPage();
+        removePopup();
+    });
+    
+    reminderDiv.querySelector("#cd-dismiss-reminder").addEventListener("click", function() {
+        removePopup();
+    });
+    
+    // Auto-dismiss after 10 seconds
+    setTimeout(() => {
+        if (document.body.contains(reminderDiv)) {
+            removePopup();
+        }
+    }, 10000);
+}
+
 function is_chinese(word) {
     return (/^[\u4e00-\u9fa5]+$/g).test(word);
 }
@@ -723,6 +768,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             removePopup();
         }
         appendToDiv(createdDiv, content);
+    } else if (message.action === "showLangReminder") {
+        // Show language configuration reminder
+        showLangReminder(message.pageLang);
     }
 }
 );

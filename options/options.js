@@ -15,8 +15,10 @@ const DEFAULT_LANGUAGE = 'cn',
 const browserAPI = typeof browser !== 'undefined' ? browser : chrome;
 
 function saveOptions(e) {
+    const language = document.querySelector("#language-selector").value;
+    
     browserAPI.storage.local.set({
-        language: document.querySelector("#language-selector").value,
+        language: language,
         interaction: {
             dblClick: {
                 key: document.querySelector("#popup-dblclick-key").value
@@ -24,7 +26,13 @@ function saveOptions(e) {
         },
         aiProvider: document.querySelector("#ai-provider").value,
         aiApiKey: document.querySelector("#ai-api-key").value
-    }).then(showSaveStatusAnimation);
+    }).then(() => {
+        // Reset reminder flag if language is configured
+        if (language && language.trim()) {
+            browserAPI.storage.local.remove('langReminderShown');
+        }
+        showSaveStatusAnimation();
+    });
 
     e.preventDefault();
   }
