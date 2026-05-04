@@ -52,6 +52,62 @@ Two interaction modes:
 - **Flexibility**: Works with any selection length
 - **Context**: Uses selection text or anchor node text as context
 
+### Word Saving Policy
+
+**Core Principle**: Only save words when there's clear learning value and user intent.
+
+#### Decision Matrix
+
+| Trigger Mode | Language Set? | Page vs Target | Action | Reason |
+|--------------|---------------|----------------|--------|--------|
+| **Long-Press** (caret) | No | Any | ✅ Save | Intentional action; defaults to zh-CN |
+| **Long-Press** (caret) | Yes | Different | ✅ Save | Clear learning intent |
+| **Long-Press** (caret) | Yes | Same | ❌ Skip | No vocabulary benefit |
+| **Double-click** (selection) | No | Any | ❌ Skip | Likely accidental; no language configured |
+| **Double-click** (selection) | Yes | Different | ✅ Save | User configured language |
+| **Double-click** (selection) | Yes | Same | ❌ Skip | No vocabulary benefit |
+
+#### Language Detection
+
+- **Page Language**: Detected from `document.documentElement.lang` or `html[lang]` attribute
+- **Target Language**: User-selected in options (defaults to `zh-CN` for Long-Press if unset)
+- **Comparison**: Language prefixes matched (e.g., `en-US` == `en-GB` == `en`)
+
+#### Code Flow
+
+```
+User Action (Long-Press or Double-click)
+  → Content Script detects word/selection
+  → Determine trigger mode (caret vs selection)
+  → Get page language from HTML lang attribute
+  → Get target language from user options
+  → Compare: pagePrefix === targetPrefix?
+    → YES: Silent skip (return)
+    → NO: Continue to save logic
+  → Check trigger mode:
+    → caret (Long-Press): Always save (language fallback to zh-CN)
+    → selection (Double-click): Only save if language explicitly set
+  → Save wordData {word, pageUrl, context, timestamp}
+  → Fetch translation asynchronously
+    → zh-CN + English word + English page → Iciba API
+    → All other cases → Google Translate
+  → Update saved word with meaning
+```
+
+#### Rationale
+
+1. **Long-Press = Intentional**: Harder to trigger accidentally, always saves (with fallback)
+2. **Double-click = Risky**: Easy to trigger while reading, only saves if language explicitly configured
+3. **Same-language = Useless**: English→English or Chinese→Chinese has no learning value
+4. **Empty language = Uncertain**: User hasn't configured extension, don't pollute word list
+
+#### Edge Cases
+
+- **No HTML lang attribute**: Defaults to "en" (most common)
+- **CJK characters**: Iciba only handles a-z; Google handles everything else
+- **Phrases with spaces**: Selection mode allows multi-word selections
+- **Numbers/symbols**: Stripped by word detection regex
+
 ### 2. Dictionary Integration
 
 **Iciba API** (English → Chinese):
