@@ -155,7 +155,7 @@ Two interaction modes:
 ### Main Page (`wordList.html`)
 ```
 ┌─────────────────────────────────────┐
-│  Saved Messages                     │
+│  My Vocabulary                      │
 ├─────────────────────────────────────┤
 │  [Study Mode] (3 due) [Gen Story ⚙️]│
 ├─────────────────────────────────────┤
