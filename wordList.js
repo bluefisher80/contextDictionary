@@ -380,6 +380,7 @@ function updateStatsChart(dailyStats) {
     
     const bar = document.createElement('div');
     bar.style.width = '100%';
+    bar.style.marginTop = 'auto'; // Push bar to bottom so it grows upward
     // Height proportional to reviews, accurate scaling
     const heightPercent = maxValue > 0 ? (reviews / maxValue) * 100 : 0;
     if (reviews > 0) {
