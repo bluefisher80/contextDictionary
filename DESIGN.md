@@ -238,35 +238,86 @@ Two interaction modes:
 
 ## Social Platform Sharing
 
-**Purpose**: Enable users to share AI-generated stories to social media while promoting context-dictionary.com and tracking viral spread.
+**Purpose**: Enable users to share AI-generated stories to social media while creating a viral loop that aggregates user-generated content on context-dictionary.com.
 
-**Mechanism**:
-1. **Share Button**: Add a "Share to Social" button in the story container
-2. **Fake Link Injection**: Append a tracking link to the shared content:
-   - Format: `https://context-dictionary.com/r/{unique-id}`
-   - The unique ID maps to the specific story + user session
-3. **Landing Page**: When someone clicks the shared link:
-   - Detect referrer from HTTP headers
-   - Store referrer URL + story content
-   - Redirect to context-dictionary.com homepage
-4. **Referrer Display**: On the homepage, show:
-   - "This story was shared from: [referrer domain]" (e.g., "Shared from twitter.com")
-   - Generic call-to-action: "Install the extension to create your own vocabulary stories"
-   - Note: We cannot fetch the actual story content or link to the specific social post due to platform restrictions and privacy settings
+### User Journey
 
-**Benefits**:
-- Organic marketing through user sharing
-- Backlink generation to context-dictionary.com
-- Viral tracking via unique IDs
-- Community engagement through shared stories
+1. **User shares story** from the extension:
+   - Extension generates tracking link: `https://context-dictionary.com/r/{unique-id}`
+   - User posts to X, Facebook, Reddit, etc.
 
-**Implementation Notes**:
-- Need server-side endpoint to handle `/r/{id}` redirects
-- Store mapping: unique ID → story content + timestamp
-- Track click counts per shared link
-- Referrer detection: Only the domain is reliably available (e.g., "twitter.com"), not the specific post URL
-- Cannot fetch story content from social platforms due to CORS/API restrictions
-- Respect privacy: don't expose user data
+2. **Someone clicks the link**:
+   - Lands on `context-dictionary.com/r/{id}`
+   - Website captures **Referer header** (e.g., `twitter.com`, `facebook.com`)
+   - Records: `{id, referrer_domain, timestamp, click_count}`
+   - Shows the story content (embedded in the link or fetched from storage)
+   - Displays vocabulary words with related resource links (affiliate)
+
+3. **Background discovery process** (optional, with user consent):
+   - Periodic job searches social platforms for posts containing the tracking link
+   - Uses referrer domain + link hash to locate original post
+   - Scrapes or API-calls to get the actual post content and engagement metrics
+   - **Requires user opt-in** in extension settings ("Allow Context Dictionary to feature my shared stories")
+
+4. **Content aggregation** (with user consent):
+   - Featured stories page: "Community Stories"
+   - Categorized by topic (health, economics, science, etc.)
+   - Shows: story preview, vocabulary list, "Shared by [username] on [platform]"
+   - Link back to original social post
+   - SEO benefit: user-generated content drives organic traffic
+
+### Referrer Tracking
+
+**What we capture**:
+- `Referer` HTTP header domain (twitter.com, facebook.com, reddit.com, etc.)
+- Click timestamp
+- Link ID (maps to story + words)
+- User agent (basic analytics)
+
+**What we DON'T capture** (privacy):
+- Specific post URLs (unless user opts in)
+- Personal information
+- Social media profiles
+
+### Viral Loop Benefits
+
+- **SEO**: Each shared link creates a backlink; aggregated stories create content pages
+- **Social proof**: "See what others are learning" increases trust
+- **Discovery**: Users find the tool through shared stories, not ads
+- **Content**: User-generated stories reduce need for original content creation
+- **Affiliate revenue**: Story pages show related book links
+
+### Implementation
+
+**Extension side** (already implemented):
+- Generate unique ID: `crypto.randomUUID()` or timestamp-based
+- Tracking link format: `context-dictionary.com/r/{8-char-id}`
+- Story data stored locally until shared
+
+**Website side** (Hugo + serverless):
+- `/r/{id}` endpoint: 
+  - Log referrer, redirect to story page or homepage
+  - If story data exists (user opted in), show the story
+- `/stories` page:
+  - Curated grid of featured community stories
+  - Filter by language, topic, date
+- Background worker (cloud function):
+  - Daily scan for shared links on social platforms
+  - Index new stories with user consent
+  - Update click counts and engagement metrics
+
+**Database** (simple KV store):
+```
+share_links:
+  id: "a3b5c7"
+  words: ["exfoliation", "inflation"]
+  story_preview: "The annual inflation rate..."
+  timestamp: 1715420000
+  referrer_domain: "twitter.com"
+  clicks: 42
+  user_consent: true
+  featured: false
+```
 
 ## Monetization Strategy
 
