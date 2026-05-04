@@ -376,12 +376,18 @@ function updateStatsChart(dailyStats) {
     barContainer.style.flexDirection = 'column';
     barContainer.style.alignItems = 'center';
     barContainer.style.flex = '1';
+    barContainer.style.height = '100%';
     
     const bar = document.createElement('div');
     bar.style.width = '100%';
     // Height proportional to reviews, accurate scaling
     const heightPercent = maxValue > 0 ? (reviews / maxValue) * 100 : 0;
-    bar.style.height = reviews > 0 ? `${heightPercent}%` : '4px';
+    if (reviews > 0) {
+      bar.style.height = `${heightPercent}%`;
+      bar.style.minHeight = '8px';
+    } else {
+      bar.style.height = '4px';
+    }
     bar.style.backgroundColor = reviews > 0 ? '#5cb85c' : '#e0e0e0';
     bar.style.borderRadius = '4px 4px 0 0';
     bar.style.transition = 'height 0.3s ease';
