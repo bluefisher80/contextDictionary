@@ -31,6 +31,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 // Determine effective language (default to zh-CN if not set)
     const effectiveLang = (request.lang && request.lang.trim()) ? request.lang.trim() : 'zh-CN';
     
+    // Skip if page language matches target language (same-language lookup has no learning value)
+    const pageLangPrefix = request.originalPageLang ? request.originalPageLang.split('-')[0] : '';
+    const targetLangPrefix = effectiveLang.split('-')[0];
+    if (pageLangPrefix === targetLangPrefix) {
+        return; // Silent skip - same language, no vocabulary benefit
+    }
+    
     // Decide whether to save based on trigger mode
     // Long-Press (caret) = intentional, always save (with language fallback)
     // Double-click (selection) = only save if user explicitly set a language
