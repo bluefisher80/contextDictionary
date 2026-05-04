@@ -517,7 +517,6 @@ function renderWordList() {
       li.appendChild(meaningSpan);
     }
     
-    li.appendChild(document.createTextNode(' - '));
     li.appendChild(contextSpan);
     li.appendChild(link);
     li.appendChild(metaSpan);
