@@ -62,7 +62,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.triggerMode === 'caret') {
         shouldSave = true; // Long-Press always saves
     } else if (request.triggerMode === 'selection') {
-        shouldSave = !!(request.lang && request.lang.trim()); // Double-click only if language explicitly set
+        shouldSave = true;
     }
     
     if (shouldSave) {
