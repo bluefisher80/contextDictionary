@@ -402,8 +402,52 @@ Partner with language learning platforms:
 └─────────────────────────────────────┘
 ```
 
-### Disclosure Requirements
-- All affiliate links must include disclosure
-- "We may earn a commission from purchases"
-- Transparent about premium features vs. free
-- Comply with FTC endorsement guidelines
+## User Growth Strategy
+
+**Priority**: Higher than monetization. Focus on organic growth before revenue.
+
+### Growth Channels
+
+#### 1. Organic Sharing (Primary)
+- One-click share to X, Facebook, Reddit
+- Pre-written share text optimized per platform
+- Copy link button for forums/Discord/Slack
+- **Key**: Output quality must be good enough that users *want* to share
+
+#### 2. SEO Content
+- Public story gallery at `/stories` (discovered via Google Search API)
+- Blog posts: "Learn vocabulary through AI stories"
+- Target long-tail keywords: "vocabulary story about economics"
+- Each discovered story becomes an indexed page
+
+#### 3. Community Seeding
+- Post in r/languagelearning, r/vocabulary with example stories
+- Share on Hacker News, Product Hunt
+- Partner with language learning YouTubers for reviews
+- **Rule**: Lead with value (show stories), not the tool
+
+#### 4. Content Marketing
+- Weekly "Word of the Day" stories on social media
+- Twitter/X threads showing AI story generation
+- Create shareable infographics: "10 words from today's news"
+
+### Growth Features
+
+#### Import/Export (Lower Barrier)
+- Import from Anki decks, Kindle highlights
+- Export to Anki (users love this)
+- Chrome bookmark import
+
+#### Public Story Gallery
+- `/stories` page showing best community stories
+- Filter by topic, difficulty, word count
+- Becomes shareable content itself
+
+#### Multi-Platform Distribution
+- Chrome Web Store
+- Firefox Add-ons
+- Edge Add-ons
+
+### Success Metric
+- **Target**: 10,000+ active users before prioritizing monetization
+- **Signal**: Users emailing "How can I support this?" = time to monetize
