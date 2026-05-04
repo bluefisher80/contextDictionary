@@ -426,20 +426,27 @@ function renderWordList() {
       )
     : savedWords;
   
+  const wordCountEl = document.getElementById('word-count');
+
   if (filteredWords.length === 0) {
     container.innerHTML = searchTerm 
       ? "<p>No words match your search.</p>" 
       : "<p>No messages found.</p>";
+    if (wordCountEl) {
+      wordCountEl.textContent = searchTerm 
+        ? `Showing 0 of ${savedWords.length} words`
+        : 'Total Words: 0';
+    }
     return;
   }
 
-  // Display word count
-  const wordCount = document.createElement("p");
-  wordCount.textContent = searchTerm 
-    ? `Showing ${filteredWords.length} of ${savedWords.length} words`
-    : `Total Words: ${savedWords.length}`;
-  wordCount.style.fontWeight = "bold";
-  container.appendChild(wordCount);
+  // Update word count display
+  const wordCountEl = document.getElementById('word-count');
+  if (wordCountEl) {
+    wordCountEl.textContent = searchTerm 
+      ? `Showing ${filteredWords.length} of ${savedWords.length} words`
+      : `Total Words: ${savedWords.length}`;
+  }
 
   const list = document.createElement("ul");
   filteredWords.forEach(({ word, pageUrl, context, timestamp, interval, nextReviewDate, meaning }) => {

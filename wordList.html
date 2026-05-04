@@ -122,9 +122,12 @@
     </div>
   </div>
 
-  <div style="margin-bottom: 10px;">
-    <input type="text" id="search-input" placeholder="Search words..." style="padding: 8px 12px; width: 300px; border: 1px solid #ddd; border-radius: 4px; font-size: 1em;">
-    <button id="clear-search" style="margin-left: 5px;">Clear</button>
+  <div style="margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; gap: 15px;">
+    <div>
+      <input type="text" id="search-input" placeholder="Search words..." style="padding: 8px 12px; width: 300px; border: 1px solid #ddd; border-radius: 4px; font-size: 1em;">
+      <button id="clear-search" style="margin-left: 5px;">Clear</button>
+    </div>
+    <span id="word-count" style="font-weight: bold; color: #333;"></span>
   </div>
 
   <div id="messages-container">
