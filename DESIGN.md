@@ -243,53 +243,49 @@ Two interaction modes:
 ### User Journey
 
 1. **User shares story** from the extension:
-   - Extension generates tracking link: `https://context-dictionary.com/r/{unique-id}`
+   - Extension generates random tracking link: `https://context-dictionary.com/r/{unique-id}`
+   - **No data is stored or transmitted** - the link is just a random ID
    - User posts to X, Facebook, Reddit, etc.
 
 2. **Someone clicks the link**:
    - Lands on `context-dictionary.com/r/{id}`
-   - Website captures **Referer header** (e.g., `twitter.com`, `facebook.com`)
-   - Records: `{id, referrer_domain, timestamp, click_count}`
-   - Shows the story content (embedded in the link or fetched from storage)
-   - Displays vocabulary words with related resource links (affiliate)
+   - Initially shows generic landing page: "Install Context Dictionary to create your own vocabulary stories"
+   - No story content is displayed yet
 
-3. **Background discovery process** (optional, with user consent):
-   - Since Referer header only provides the domain (e.g., `twitter.com`), finding the specific post requires additional methods:
-     - **Platform APIs**: Search Twitter/X API, Reddit API, etc. for posts containing the tracking link
-     - **Manual submission**: User pastes their post URL into a form on the landing page
-     - **Web scraping**: Search public timelines for the link hash (fragile, rate-limited)
-   - Scrapes or API-calls to get the actual post content and engagement metrics
-   - **Requires user opt-in** in extension settings ("Allow Context Dictionary to feature my shared stories")
+3. **Background discovery process** (privacy-respecting):
+   - **Google Search API** searches for: `"context-dictionary.com/r/{id}"`
+   - If found on Twitter/X, Facebook, Reddit, etc.:
+     - Capture the post content from search results
+     - Extract vocabulary words using NLP
+     - Populate `/r/{id}` page with the discovered content
+     - Show related resource links (affiliate)
+   - If not found:
+     - Page remains generic
+     - No data stored
 
-4. **Content aggregation** (with user consent):
+4. **Content aggregation** (discovered organically):
    - Featured stories page: "Community Stories"
+   - Only shows stories that were successfully discovered via search
    - Categorized by topic (health, economics, science, etc.)
-   - Shows: story preview, vocabulary list, "Shared by [username] on [platform]"
    - Link back to original social post
-   - SEO benefit: user-generated content drives organic traffic
+   - SEO benefit: discovered content drives organic traffic
 
-### Referrer Tracking
+### Privacy Note
 
-**What we capture**:
-- `Referer` HTTP header **domain only** (twitter.com, facebook.com, reddit.com, etc.)
-- Click timestamp
-- Link ID (maps to story + words)
-- User agent (basic analytics)
+**No user data stored initially**:
+- Extension generates random ID, no data transmitted
+- When someone clicks the link, we only know the random ID
+- No referrer tracking, no cookies, no analytics
 
-**Important limitations**:
-- **Social media platforms strip specific URLs**: Twitter/X, Facebook, and most platforms use `Referrer-Policy: strict-origin-when-cross-origin`, which sends only the domain (e.g., `twitter.com/`), not the specific post URL (e.g., `twitter.com/username/status/1234567890`)
-- **Browser privacy**: Safari/Firefox may truncate to domain; Private/Incognito mode often strips Referer entirely; HTTPS→HTTP requests drop Referer completely
-- **What we CANNOT reliably get**: The specific post URL, username, or any personal information from the Referer header
+**Discovery is opt-out by design**:
+- We search public platforms for posts containing the link
+- Only index content that is already publicly visible
+- Users can request removal by contacting us
 
-**What we DON'T capture** (privacy):
-- Specific post URLs (unless user manually provides them)
+**What we DON'T capture**:
 - Personal information
-- Social media profiles
-
-**To get specific post URLs** (optional, with explicit user consent):
-- User manually submits their post URL via a form on the landing page
-- Background API search using the tracking link hash (limited by platform APIs)
-- Always require opt-in before featuring any user content
+- Private messages
+- Browsing history
 
 ### Viral Loop Benefits
 
@@ -302,32 +298,39 @@ Two interaction modes:
 ### Implementation
 
 **Extension side** (already implemented):
-- Generate unique ID: `crypto.randomUUID()` or timestamp-based
-- Tracking link format: `context-dictionary.com/r/{8-char-id}`
-- Story data stored locally until shared
+- Generate random ID: 8-character alphanumeric
+- Tracking link format: `context-dictionary.com/r/{id}`
+- **No data transmitted** - ID is just a random string
 
 **Website side** (Hugo + serverless):
-- `/r/{id}` endpoint: 
-  - Log referrer, redirect to story page or homepage
-  - If story data exists (user opted in), show the story
+- `/r/{id}` page:
+  - Static Hugo template with client-side JavaScript
+  - On load: check if content exists in lightweight cache (e.g., Cloudflare KV)
+  - If content exists: display story + vocabulary + affiliate links
+  - If not: show generic landing page with install CTA
 - `/stories` page:
-  - Curated grid of featured community stories
-  - Filter by language, topic, date
-- Background worker (cloud function):
-  - Daily scan for shared links on social platforms
-  - Index new stories with user consent
-  - Update click counts and engagement metrics
+  - Curated grid of discovered community stories
+  - Filter by topic, date, platform
 
-**Database** (simple KV store):
+**Background discovery** (cloud function, runs daily):
+- Query Google Search API: `"context-dictionary.com/r/{id}"`
+- For each result:
+  - Extract post content from search snippet
+  - Identify platform (Twitter/X, Facebook, Reddit, etc.)
+  - Extract vocabulary words using simple NLP (capitalized words, bold text)
+  - Store in cache: `{id, content, words, platform, url, discovered_at}`
+- No user consent needed - we're indexing public posts
+- Respect robots.txt and rate limits
+
+**Data storage** (only for discovered content):
 ```
-share_links:
+discovered_stories:
   id: "a3b5c7"
-  words: ["exfoliation", "inflation"]
-  story_preview: "The annual inflation rate..."
-  timestamp: 1715420000
-  referrer_domain: "twitter.com"
-  clicks: 42
-  user_consent: true
+  source_url: "https://twitter.com/username/status/123..."
+  platform: "twitter"
+  content: "The annual inflation rate..."
+  words: ["inflation", "exfoliation"]
+  discovered_at: 1715420000
   featured: false
 ```
 
