@@ -726,6 +726,8 @@ function event_click(event) {
     });
 })();
 
+const GOOGLE_GIVES_SAME_TRANSLATION_AS_SOUCE = "qwertyuiopasdfghjklzxcvbnmnbvcxzlkjhgfds"; // Placeholder for the translation key
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     console.log("Received message in content script:", message);
     console.log("Content script is loaded for each iframe, so the message from the background script is received in each iframe.");
