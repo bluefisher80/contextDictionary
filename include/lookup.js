@@ -1,6 +1,8 @@
 const DEFAULT_LANGUAGE = "zh-CN";
 var DEFAULT_TRIGGER_KEY = "ctrl", LANGUAGE, TRIGGER_KEY;
 
+const GOOGLE_SPEECH_URI = 'https://www.google.com/speech-api/v1/synthesize';
+
 const browserAPI = typeof browser !== 'undefined' ? browser : chrome;
 
 //Copilot tell me browser is default in firefox but not window.browser
@@ -747,7 +749,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         appendToDiv(createdDiv, content); // Use the global createdDiv
     } else if (message.action === "displayError") {
         console.error(message.error);
-        const createdDiv = createDiv({ word: "Error" });
         noMeaningFound(createdDiv);
     } else if (message.action === "parseJSON") {
         // Handle JSON parsing if needed
@@ -867,7 +868,10 @@ function extractMeaningIciba(xml, context) {
             if (shop.getElementsByTagName("pos")[e].firstChild) {
                 meaning += shop.getElementsByTagName("pos")[e].firstChild.nodeValue;
             }
-            meaning += shop.getElementsByTagName("acceptation")[e].firstChild.nodeValue;
+            const acceptation = shop.getElementsByTagName("acceptation")[e];
+            if (acceptation && acceptation.firstChild) {
+                meaning += acceptation.firstChild.nodeValue;
+            }
         }
     }
 
