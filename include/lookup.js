@@ -382,16 +382,19 @@ function getSelectionInfo(event) {
 }
 
 function retrieveMeaning(info) {
-
-    browserAPI.runtime.sendMessage({
-        word: info.word,
-        theURL: info.theURL,
-        theContext: info.theContext,
-        lang: LANGUAGE,
-        time: Date.now(),
-        originalPageLang: info.originalPageLang,
-        triggerMode: info.triggerMode
-    });
+    try {
+        browserAPI.runtime.sendMessage({
+            word: info.word,
+            theURL: info.theURL,
+            theContext: info.theContext,
+            lang: LANGUAGE,
+            time: Date.now(),
+            originalPageLang: info.originalPageLang,
+            triggerMode: info.triggerMode
+        });
+    } catch (e) {
+        console.warn("Extension context invalidated, cannot send message:", e);
+    }
 }
 
 /**
@@ -474,9 +477,13 @@ function createDiv(info) {
     var reviewLink = document.createElement("a");
     reviewLink.addEventListener("click", function (e) {
         e.preventDefault();
-        browserAPI.runtime.sendMessage({
-            action: "openWordList"
-        });
+        try {
+            browserAPI.runtime.sendMessage({
+                action: "openWordList"
+            });
+        } catch (err) {
+            console.warn("Extension context invalidated, cannot open word list:", err);
+        }
     });
     reviewLink.style = "float: left; text-decoration:none;";
     reviewLink.target = "_blank";
