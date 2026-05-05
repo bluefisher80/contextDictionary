@@ -733,13 +733,6 @@ function event_click(event) {
     });
 })();
 
-// Detect extension reload and refresh page to re-inject content script
-const port = browserAPI.runtime.connect();
-port.onDisconnect.addListener(() => {
-    console.log("Extension disconnected, reloading page to re-inject content script...");
-    window.location.reload();
-});
-
 const GOOGLE_GIVES_SAME_TRANSLATION_AS_SOUCE = "qwertyuiopasdfghjklzxcvbnmnbvcxzlkjhgfds"; // Placeholder for the translation key
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
