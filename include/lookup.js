@@ -802,8 +802,6 @@ function extractMeaningJSON(jsonData) {
     return { word: word, meaning: meaning, audioSrc: audioSrc };
 }
 
-const GOOGLE_GIVES_SAME_TRANSLATION_AS_SOUCE = "qwertyuiopasdfghjklzxcvbnmnbvcxzlkjhgfds"; // Placeholder for the translation key
-
 /**
  * Parse the JSON data received from the Google client5 and extract the meaning.
  * @param {*} jsonData 
