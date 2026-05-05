@@ -154,44 +154,6 @@ return true;*/
     }
 });
 
-
-function extractIcibaMeaning(xmlText) {
-    try {
-        const parser = new DOMParser();
-        const xml = parser.parseFromString(xmlText, "application/xml");
-        const dicts = xml.getElementsByTagName("dict");
-        if (dicts.length === 0) return null;
-        
-        let meanings = [];
-        const dict = dicts[0];
-        
-        // Extract phonetic
-        const psElements = dict.getElementsByTagName("ps");
-        if (psElements.length > 0 && psElements[0].firstChild) {
-            meanings.push(`[${psElements[0].firstChild.nodeValue}]`);
-        }
-        
-        // Extract definitions by pos (part of speech)
-        const posElements = dict.getElementsByTagName("pos");
-        const acceptationElements = dict.getElementsByTagName("acceptation");
-        for (let i = 0; i < posElements.length; i++) {
-            let def = "";
-            if (posElements[i].firstChild) {
-                def += posElements[i].firstChild.nodeValue + " ";
-            }
-            if (acceptationElements[i] && acceptationElements[i].firstChild) {
-                def += acceptationElements[i].firstChild.nodeValue;
-            }
-            if (def.trim()) meanings.push(def.trim());
-        }
-        
-        return meanings.join("; ");
-    } catch (e) {
-        console.error("Error extracting iciba meaning:", e);
-        return null;
-    }
-}
-
 function extractGoogleMeaning(jsonData) {
     try {
         let meaning = "";
