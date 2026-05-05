@@ -11,7 +11,7 @@ DEFAULT_HISTORY_SETTING = {
         enabled: true
     };
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((request, sender) => {
 
     if (request.action === "openWordList") {
         chrome.tabs.create({
@@ -86,12 +86,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             })
             .catch((error) => {
                 console.error("Error fetching dictionary data:", error);
-                sendResponse({ error: "Failed to fetch dictionary data" });
             });
-        // return true from the event listener to indicate you wish to send a response asynchronously
-        // (this will keep the message channel open to the other end until sendResponse is called).
-        //TODO does it need to return true here since code is now SendMessage? is it async?
-        return true;
     } else {
         const word = encodeURIComponent(request.word);
         const lang = effectiveLang;
@@ -119,10 +114,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             })
             .catch((error) => {
                 console.error("Error fetching free translation data:", error);
-                sendResponse({ error: "Failed to fetch free translation data" });
             });
-
-        return true;
 
         /**  Official Google Translate API (requires key)
          *  APIs & Services > Credentials > Create credentials > API key
