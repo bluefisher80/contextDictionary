@@ -65,22 +65,20 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         shouldSave = true;
     }
     
-    if (shouldSave) {
-        browserAPI.storage.local.get('savedWords').then(result => {
-            const savedWords = result.savedWords || [];
-            console.log('Saved words:', savedWords);
-            savedWords.push(wordData);
-            browserAPI.storage.local.set({ savedWords });
-        });
-    }
-    
-
     if (effectiveLang == 'zh-CN' && /^[a-zA-Z]+$/.test(request.word) && (request.originalPageLang.startsWith('en'))) {
         //Only English to Chinese Single word dictioanry when original page is English to exclude German , which 
         //is not supported by iciba but supported by Google, German share same alphabet with English
         fetch(dic_url + request.word.toLowerCase()).
             then(response => response.text())
             .then((text) => {
+                // Save if iciba returned any data (content script validates popup display)
+                if (text && text.trim() && shouldSave) {
+                    browserAPI.storage.local.get('savedWords').then(result => {
+                        const savedWords = result.savedWords || [];
+                        savedWords.push(wordData);
+                        browserAPI.storage.local.set({ savedWords });
+                    });
+                }
                 chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                     chrome.tabs.sendMessage(tabs[0].id, { action: "parseXML", text });
                 });
@@ -96,7 +94,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         return true;
     } else {
         const word = encodeURIComponent(request.word);
-        lang = effectiveLang;
+        const lang = effectiveLang;
 
         console.log("word is " + word);
 
@@ -106,6 +104,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         fetch(urlFree)
             .then((response) => response.json())
             .then((data) => {
+                // Only save if lookup returned a valid meaning (not same as source word)
+                const meaning = extractGoogleMeaning(data);
+                if (meaning && meaning !== request.word && shouldSave) {
+                    browserAPI.storage.local.get('savedWords').then(result => {
+                        const savedWords = result.savedWords || [];
+                        savedWords.push(wordData);
+                        browserAPI.storage.local.set({ savedWords });
+                    });
+                }
                 chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                     chrome.tabs.sendMessage(tabs[0].id, { action: "parseJSON5", data });
                 });
