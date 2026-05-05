@@ -477,7 +477,7 @@ function renderWordList() {
       savedWords = updatedWords;
       
       li.remove();
-      wordCount.textContent = `Total Words: ${updatedWords.length}`;
+      wordCountEl.textContent = `Total Words: ${updatedWords.length}`;
 
       if (updatedWords.length === 0) {
         container.innerHTML = "<p>No messages found.</p>";
