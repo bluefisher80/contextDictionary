@@ -1,0 +1,56 @@
+{
+   "manifest_version": 2,
+   "name": "Context Dictionary",
+   "version": "7.1.12",
+   "description": "Web dictionary with context information.",
+
+   "browser_specific_settings": {
+   "gecko": {
+      "id": "addon@context-dictionary.com"
+      }
+   },
+
+   "icons": {
+      "128": "icon128.png",
+      "16": "icon16.png",
+      "256": "icon256.png",
+      "32": "icon32.png",
+      "48": "icon48.png"
+   },
+   "content_scripts": [
+      {
+         "all_frames": true,
+         "js": [
+               "lookup.js"
+         ],
+         "matches": [
+            "<all_urls>"
+         ]
+      }
+   ],
+   "content_security_policy": "script-src 'self'; object-src 'self'",
+   "options_ui": {
+      "page": "options.html"
+   },
+   "permissions": [
+      "unlimitedStorage",
+      "storage",
+      "activeTab",
+      "https://*/*",
+      "http://*/*"
+   ],
+   "web_accessible_resources": [
+      "wordList.html",
+      "img/icon.svg",
+      "img/history.png"
+   ],
+
+   "browser_action": {
+      "default_icon": "icon32.png",
+      "default_title": "Show Messages"
+   },
+   "background": {
+      "scripts": ["background.js"],
+      "persistent": false
+   }
+}
