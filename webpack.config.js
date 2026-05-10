@@ -8,14 +8,12 @@ module.exports = (env, argv) => {
   const browser = env.browser || 'chrome';
   const isProduction = argv.mode === 'production';
 
-  let manifestBase;
+  const manifestExtra = {};
 
-  if (browser === 'firefox') {
-    // Firefox uses Manifest V2
-    manifestBase = path.resolve(__dirname, 'manifest-firefox.json');
+  if (browser === 'chrome') {
+    manifestExtra.background = { service_worker: "background.js" };
   } else {
-    // Chrome/Edge use Manifest V3
-    manifestBase = path.resolve(__dirname, 'manifest.json');
+    manifestExtra.background = { scripts: ["background.js"] };
   }
 
   const optimizationConfig = {
@@ -82,8 +80,8 @@ module.exports = (env, argv) => {
       }),
       new ExtensionManifestPlugin({
         config: {
-          base: manifestBase,
-          extend: browser !== 'firefox' ? { background: { service_worker: "background.js" } } : {}
+          base: path.resolve(__dirname, 'manifest.json'),
+          extend: manifestExtra,
         },
       }),
       new CopyWebpackPlugin({
