@@ -81,11 +81,9 @@ chrome.runtime.onMessage.addListener((request, sender) => {
                 }
                 chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                     if (tabs && tabs[0] && tabs[0].id) {
-                        try {
-                            chrome.tabs.sendMessage(tabs[0].id, { action: "parseXML", text });
-                        } catch (e) {
-                            console.warn("Tab closed or navigated before response:", e);
-                        }
+                        chrome.tabs.sendMessage(tabs[0].id, { action: "parseXML", text }).catch((e) => {
+                            console.warn("Tab closed or navigated before response:", e.message);
+                        });
                     }
                 });
 
@@ -116,11 +114,9 @@ chrome.runtime.onMessage.addListener((request, sender) => {
                 }
                 chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                     if (tabs && tabs[0] && tabs[0].id) {
-                        try {
-                            chrome.tabs.sendMessage(tabs[0].id, { action: "parseJSON5", data });
-                        } catch (e) {
-                            console.warn("Tab closed or navigated before response:", e);
-                        }
+                        chrome.tabs.sendMessage(tabs[0].id, { action: "parseJSON5", data }).catch((e) => {
+                            console.warn("Tab closed or navigated before response:", e.message);
+                        });
                     }
                 });
             })
