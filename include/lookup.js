@@ -382,17 +382,21 @@ function getSelectionInfo(event) {
 }
 
 function retrieveMeaning(info) {
-    browserAPI.runtime.sendMessage({
-        word: info.word,
-        theURL: info.theURL,
-        theContext: info.theContext,
-        lang: LANGUAGE,
-        time: Date.now(),
-        originalPageLang: info.originalPageLang,
-        triggerMode: info.triggerMode
-    }).catch((e) => {
-        console.warn("Cannot reach background script:", e.message);
-    });
+    try {
+        browserAPI.runtime.sendMessage({
+            word: info.word,
+            theURL: info.theURL,
+            theContext: info.theContext,
+            lang: LANGUAGE,
+            time: Date.now(),
+            originalPageLang: info.originalPageLang,
+            triggerMode: info.triggerMode
+        }).catch((e) => {
+            console.warn("Cannot reach background script:", e.message);
+        });
+    } catch (e) {
+        console.warn("Extension context invalidated, cannot send message:", e.message);
+    }
 }
 
 /**
@@ -475,11 +479,15 @@ function createDiv(info) {
     var reviewLink = document.createElement("a");
     reviewLink.addEventListener("click", function (e) {
         e.preventDefault();
-        browserAPI.runtime.sendMessage({
-            action: "openWordList"
-        }).catch((err) => {
-            console.warn("Cannot open word list:", err.message);
-        });
+        try {
+            browserAPI.runtime.sendMessage({
+                action: "openWordList"
+            }).catch((err) => {
+                console.warn("Cannot open word list:", err.message);
+            });
+        } catch (err) {
+            console.warn("Extension context invalidated, cannot open word list:", err.message);
+        }
     });
     reviewLink.style = "float: left; text-decoration:none;";
     reviewLink.target = "_blank";
