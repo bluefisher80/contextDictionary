@@ -83,6 +83,7 @@ module.exports = (env, argv) => {
       new ExtensionManifestPlugin({
         config: {
           base: manifestBase,
+          extend: browser !== 'firefox' ? { background: { service_worker: "background.js" } } : {}
         },
       }),
       new CopyWebpackPlugin({
