@@ -12,11 +12,23 @@ npm run build:chrome
 npm run build:firefox
 ```
 
-### Development (no minification)
+### Development Build (no minification, keeps console.log)
+
+**Chrome:**
 ```bash
 npm run dev:chrome
+```
+- No code minification
+- Keeps all `console.log` statements
+- Generates source maps for debugging
+- Faster build time
+
+**Firefox:**
+```bash
 npm run dev:firefox
 ```
+- Same as above but with Firefox Manifest V2 format
+- Use this for Firefox development and debugging
 
 ## Debugging
 
