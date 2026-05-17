@@ -1,7 +1,7 @@
 {
    "manifest_version": 3,
    "name": "Context Dictionary",
-   "version": "7.1.12",
+   "version": "7.2.0",
    "description": "Web dictionary with context information.",
 
    "browser_specific_settings": {
