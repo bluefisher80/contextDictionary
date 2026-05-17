@@ -65,9 +65,9 @@ chrome.runtime.onMessage.addListener((request, sender) => {
         shouldSave = true;
     }
     
-    if (effectiveLang == 'zh-CN' && /^[a-zA-Z]+$/.test(request.word) && (request.originalPageLang.startsWith('en'))) {
-        //Only English to Chinese Single word dictioanry when original page is English to exclude German , which 
-        //is not supported by iciba but supported by Google, German share same alphabet with English
+    if (false) {
+        // iciba API is no longer working - switched to Google Translate below
+        // Keeping the old code for reference
         fetch(dic_url + request.word.toLowerCase()).
             then(response => response.text())
             .then((text) => {
